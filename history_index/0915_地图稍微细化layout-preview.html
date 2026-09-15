@@ -120,47 +120,13 @@
             background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
         }
 
-        /* SVG地图样式 */
-        .china-map-svg {
+        /* Canvas 地图样式 */
+        .china-map-canvas {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            max-width: 1000px;
-            max-height: 600px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-        }
-
-        .china-map {
-            fill: var(--map-primary);
-            stroke: var(--map-border);
-            stroke-width: 1;
-            transition: all 0.3s ease;
-        }
-
-        .china-map:hover {
-            fill: var(--map-secondary);
-            cursor: pointer;
-        }
-
-        .provinces {
-            opacity: 0.3;
-            transition: opacity 0.3s ease;
-        }
-
-        .china-map-container:hover .provinces {
-            opacity: 0.5;
-        }
-
-        .map-marker {
-            fill: var(--map-marker);
-            stroke: white;
-            stroke-width: 2;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .map-marker:hover {
-            r: 12;
-            fill: var(--map-marker-hover);
+            display: block;
         }
 
         /* 主题变量 */
@@ -247,7 +213,6 @@
         .project-card-overlay {
             position: absolute;
             width: 280px;
-            height: 120px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
@@ -255,7 +220,6 @@
             pointer-events: auto;
             cursor: pointer;
             transition: all 0.3s ease;
-            overflow: hidden;
         }
 
         .project-card-overlay:hover {
@@ -442,6 +406,7 @@
 
         .project-card-overlay {
             position: absolute;
+            width: 280px;
             background: white;
             border-radius: 8px;
             padding: 15px;
@@ -1156,81 +1121,11 @@
         <main class="content-section">
             <!-- 中国地图容器 - 桌面端 -->
             <div class="china-map-container">
-                <!-- SVG中国地图 -->
-                <svg class="china-map-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-                    <!-- 中国地图轮廓 -->
-                    <g class="china-map">
-                        <!-- 中国大陆轮廓（简化版） -->
-                        <path d="M200,150 C250,120 300,100 350,120 C400,140 450,160 500,150 C550,140 600,130 650,140 C700,150 750,160 800,150 C850,140 900,130 950,140 L950,450 C900,440 850,430 800,440 C750,450 700,460 650,450 C600,440 550,430 500,440 C450,450 400,460 350,450 C300,440 250,430 200,440 Z" 
-                              fill="var(--map-primary)" stroke="var(--map-border)" stroke-width="2"/>
-                        
-                        <!-- 主要城市标记点 -->
-                        <circle cx="350" cy="250" r="8" fill="var(--map-marker)" class="map-marker" data-city="xian" title="西安"/>
-                        <circle cx="750" cy="350" r="8" fill="var(--map-marker)" class="map-marker" data-city="shenzhen" title="深圳"/>
-                        <circle cx="650" cy="200" r="8" fill="var(--map-marker)" class="map-marker" data-city="beijing" title="北京"/>
-                        <circle cx="450" cy="400" r="8" fill="var(--map-marker)" class="map-marker" data-city="shanghai" title="上海"/>
-                        <circle cx="550" cy="300" r="8" fill="var(--map-marker)" class="map-marker" data-city="chengdu" title="成都"/>
-                    </g>
-                    
-                    <!-- 省份轮廓（简化版） -->
-                    <g class="provinces">
-                        <path d="M250,180 C300,170 350,180 400,170 C450,160 500,170 550,180" 
-                              fill="none" stroke="var(--map-secondary)" stroke-width="2"/>
-                        <path d="M350,250 C400,240 450,250 500,240 C550,230 600,240 650,250" 
-                              fill="none" stroke="var(--map-tertiary)" stroke-width="2"/>
-                        <path d="M450,350 C500,340 550,350 600,340 C650,330 700,340 750,350" 
-                              fill="none" stroke="var(--map-primary)" stroke-width="2"/>
-                    </g>
-                </svg>
+                <!-- 中国地图 Canvas（Natural Earth 110m 轮廓 + 墨卡托投影） -->
+                <canvas class="china-map-canvas"></canvas>
                 
-                <!-- 项目卡片叠加层 - 桌面端 -->
-                <div class="project-overlay">
-                    <div class="project-card-overlay project-card-xian">
-                        <img class="project-image" src="https://picsum.photos/seed/xian-garden/280/120.jpg" alt="乡村花境方案设计">
-                        <div class="project-title">乡村花境方案设计</div>
-                        <div class="project-desc">以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。</div>
-                        <div class="project-tags">
-                            <span class="tag">手绘</span>
-                            <span class="tag">场地规划</span>
-                            <span class="tag">植物配置</span>
-                        </div>
-                        <div class="project-location">📍 西安 · 2020-03</div>
-                    </div>
-                    
-                    <div class="project-card-overlay project-card-xian" style="top: 45%; left: 40%;">
-                        <img class="project-image" src="https://picsum.photos/seed/lanzhou-courtyard/280/120.jpg" alt="庭院改造设计">
-                        <div class="project-title">庭院改造设计</div>
-                        <div class="project-desc">城市中的私密空间设计，注重光影变化与四季植物选择。</div>
-                        <div class="project-tags">
-                            <span class="tag">庭院设计</span>
-                            <span class="tag">光影</span>
-                        </div>
-                        <div class="project-location">📍 兰州 · 2020-08</div>
-                    </div>
-                    
-                    <div class="project-card-overlay project-card-shenzhen">
-                        <img class="project-image" src="https://picsum.photos/seed/shenzhen-park/280/120.jpg" alt="城市公园改造">
-                        <div class="project-title">城市公园改造</div>
-                        <div class="project-desc">深圳某城市公园的生态化改造，融合现代设计理念与传统园林美学。</div>
-                        <div class="project-tags">
-                            <span class="tag">城市设计</span>
-                            <span class="tag">生态修复</span>
-                            <span class="tag">公共空间</span>
-                        </div>
-                        <div class="project-location">📍 深圳 · 2021-06</div>
-                    </div>
-                    
-                    <div class="project-card-overlay project-card-shenzhen" style="top: 75%; right: 25%;">
-                        <img class="project-image" src="https://picsum.photos/seed/hangzhou-community/280/120.jpg" alt="社区花园营造">
-                        <div class="project-title">社区花园营造</div>
-                        <div class="project-desc">与居民共同参与的社区花园项目，强调互动性与可持续性。</div>
-                        <div class="project-tags">
-                            <span class="tag">社区参与</span>
-                            <span class="tag">可持续</span>
-                        </div>
-                        <div class="project-location">📍 杭州 · 2021-11</div>
-                    </div>
-                </div>
+                <!-- 项目卡片叠加层 - 桌面端（由 ProjectRenderer 动态渲染并按投影坐标定位） -->
+                <div class="project-overlay"></div>
             </div>
 
             <!-- 项目信息流 - 移动端 -->
@@ -1321,6 +1216,7 @@
         </footer>
     </div>
 
+    <script src="assets/data/china-map-data.js"></script>
     <script>
         // 主题切换预览
         const themes = {
@@ -1376,14 +1272,16 @@
 
             // 更新卡片样式
             cards.forEach(card => {
+                const titleEl = card.querySelector('.project-title-mobile');
+                const descEl = card.querySelector('.project-desc-mobile');
                 if (theme !== 'garden') {
                     card.style.background = theme === 'code' ? '#16213e' : '#1a1a1a';
-                    card.querySelector('.project-card-title').style.color = '#eaeaea';
-                    card.querySelector('.project-card-desc').style.color = '#aaa';
+                    if (titleEl) titleEl.style.color = '#eaeaea';
+                    if (descEl) descEl.style.color = '#aaa';
                 } else {
                     card.style.background = '#ffffff';
-                    card.querySelector('.project-card-title').style.color = '#333';
-                    card.querySelector('.project-card-desc').style.color = '#666';
+                    if (titleEl) titleEl.style.color = '#333';
+                    if (descEl) descEl.style.color = '#666';
                 }
             });
 
@@ -1392,6 +1290,399 @@
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
+
+            // 重新渲染地图（三种渲染风格切换）
+            if (window.chinaMap) {
+                window.chinaMap.render(theme);
+                positionDesktopCards();
+            }
+        }
+
+        // ============ 城市坐标表（真实经纬度，WGS84） ============
+        const CITIES = {
+            xian:     { name: '西安', lat: 34.34, lng: 108.94, markerType: 'star' },
+            lanzhou:  { name: '兰州', lat: 36.06, lng: 103.83, markerType: 'star' },
+            shenzhen: { name: '深圳', lat: 22.54, lng: 114.06, markerType: 'star' },
+            hangzhou: { name: '杭州', lat: 30.27, lng: 120.16, markerType: 'star' },
+            beijing:  { name: '北京', lat: 39.90, lng: 116.40, markerType: 'star' },
+            shanghai: { name: '上海', lat: 31.23, lng: 121.47, markerType: 'star' },
+            chengdu:  { name: '成都', lat: 30.57, lng: 104.07, markerType: 'star' }
+        };
+
+        // 城市名（中文）→ key 映射，用于从 location 字符串反查坐标
+        const CITY_BY_NAME = Object.fromEntries(
+            Object.entries(CITIES).map(([key, c]) => [c.name, key])
+        );
+
+        // ============ ChinaMap：Canvas 中国地图组件（方案B） ============
+        // 数据源: assets/data/china-map-data.js（Natural Earth 110m）
+        // 投影: Web Mercator（自定义实现），轮廓 fit 画布居中
+        // 渲染: 三个独立风格渲染器（garden 水彩手绘 / code 像素网格 / ai 科技数据流）
+        class ChinaMap {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.style = 'garden';
+                this.markers = [];
+                this.highlightedCity = null;
+                this._projected = null;   // 缓存投影后轮廓（Path2D + 变换）
+                this._rafId = null;
+                this._frame = 0;
+                this.onCityClick = null;
+
+                this._initMarkers();
+                this.resize();
+                this._startLoop();
+            }
+
+            // ---- 城市标记管理（预留接口 CityMarker） ----
+            _initMarkers() {
+                this.markers = Object.entries(CITIES).map(([key, c]) => ({
+                    city: key,
+                    name: c.name,
+                    coordinates: { lat: c.lat, lng: c.lng },
+                    markerType: c.markerType,
+                    screenPosition: { x: 0, y: 0 }
+                }));
+            }
+            addCityMarker(marker) { this.markers.push(marker); this._projected = null; }
+            clearMarkers() { this.markers = []; this._projected = null; }
+            setCityMarkers(markers) { this.markers = markers; this._projected = null; }
+
+            // ---- Web Mercator 投影（公开：供卡片定位使用） ----
+            project(lng, lat) {
+                const R = 6378137;
+                const x = (lng * Math.PI / 180) * R;
+                const y = Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI / 180) / 2)) * R;
+                return { x, y };
+            }
+
+            // 计算 fit 变换：轮廓 bbox → 画布（居中、留边距）
+            _computeTransform() {
+                const w = this.canvas.clientWidth;
+                const h = this.canvas.clientHeight;
+                if (!w || !h || !window.CHINA_MAP_DATA) return null;
+
+                const { outer } = window.CHINA_MAP_DATA;
+                const pts = outer.map(([lng, lat]) => this.project(lng, lat));
+                let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                pts.forEach(p => {
+                    if (p.x < minX) minX = p.x;
+                    if (p.x > maxX) maxX = p.x;
+                    if (p.y < minY) minY = p.y;
+                    if (p.y > maxY) maxY = p.y;
+                });
+
+                const margin = Math.min(w, h) * 0.08;
+                const scale = Math.min(
+                    (w - margin * 2) / (maxX - minX),
+                    (h - margin * 2) / (maxY - minY)
+                );
+                const cx = (minX + maxX) / 2;
+                const cy = (minY + maxY) / 2;
+                return { scale, cx, cy, w, h };
+            }
+
+            _toScreen(lng, lat, t) {
+                const p = this.project(lng, lat);
+                return {
+                    x: (p.x - t.cx) * t.scale + t.w / 2,
+                    y: t.h / 2 - (p.y - t.cy) * t.scale   // y 轴翻转（纬度北为上）
+                };
+            }
+
+            getCityScreenPosition(cityKey) {
+                const t = this._computeTransform();
+                if (!t || !CITIES[cityKey]) return { x: 0, y: 0 };
+                const c = CITIES[cityKey];
+                return this._toScreen(c.lng, c.lat, t);
+            }
+
+            // ---- 生命周期 ----
+            resize() {
+                const rect = this.canvas.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                this.canvas.width = Math.max(1, Math.round(rect.width * dpr));
+                this.canvas.height = Math.max(1, Math.round(rect.height * dpr));
+                this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                this._projected = null;
+            }
+
+            render(style) {
+                this.style = style;
+                this._projected = null;
+                this._draw();
+            }
+
+            clearCanvas() {
+                this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+            }
+
+            destroy() {
+                cancelAnimationFrame(this._rafId);
+                this._rafId = null;
+            }
+
+            // ---- 动画循环（呼吸/闪烁/脉冲） ----
+            _startLoop() {
+                const tick = () => {
+                    if (this.canvas.clientWidth > 0 && this.canvas.clientHeight > 0 &&
+                        getComputedStyle(this.canvas).display !== 'none') {
+                        this._frame++;
+                        this._draw();
+                    }
+                    this._rafId = requestAnimationFrame(tick);
+                };
+                this._rafId = requestAnimationFrame(tick);
+            }
+
+            // ---- 读取主题 CSS 变量 ----
+            _themeVar(name, fallback) {
+                const root = document.querySelector('.app-container');
+                const v = getComputedStyle(root).getPropertyValue(name).trim();
+                return v || fallback;
+            }
+
+            _buildPaths(t) {
+                if (this._projected) return this._projected;
+                const path = new Path2D();
+                const { outer, holes } = window.CHINA_MAP_DATA || { outer: [], holes: [] };
+
+                outer.forEach(([lng, lat], i) => {
+                    const s = this._toScreen(lng, lat, t);
+                    if (i === 0) path.moveTo(s.x, s.y);
+                    else path.lineTo(s.x, s.y);
+                });
+                path.closePath();
+
+                const holePaths = holes.map(ring => {
+                    const hp = new Path2D();
+                    ring.forEach(([lng, lat], i) => {
+                        const s = this._toScreen(lng, lat, t);
+                        if (i === 0) hp.moveTo(s.x, s.y);
+                        else hp.lineTo(s.x, s.y);
+                    });
+                    hp.closePath();
+                    return hp;
+                });
+
+                // 城市标记屏幕坐标
+                this.markers.forEach(m => {
+                    const s = this._toScreen(m.coordinates.lng, m.coordinates.lat, t);
+                    m.screenPosition = { x: s.x, y: s.y };
+                });
+
+                this._projected = { path, holePaths };
+                return this._projected;
+            }
+
+            // ---- 主绘制入口 ----
+            _draw() {
+                const t = this._computeTransform();
+                if (!t) return;
+                const { path, holePaths } = this._buildPaths(t);
+                const ctx = this.ctx;
+                ctx.clearRect(0, 0, t.w, t.h);
+
+                if (this.style === 'garden') this._drawGarden(ctx, t, path, holePaths);
+                else if (this.style === 'code') this._drawCode(ctx, t, path, holePaths);
+                else this._drawAI(ctx, t, path, holePaths);
+
+                this._drawCityMarkers(ctx);
+            }
+
+            // ---- 渲染器 1：水彩手绘（garden） ----
+            _drawGarden(ctx, t, path, holePaths) {
+                const fill = this._themeVar('--map-primary', '#ff6b6b');
+                const stroke = this._themeVar('--map-border', '#3c3228');
+
+                // 纸张底色填充（半透明）
+                ctx.save();
+                ctx.fillStyle = fill;
+                ctx.globalAlpha = 0.28;
+                ctx.fill(path);
+                ctx.globalAlpha = 1;
+                holePaths.forEach(hp => {
+                    ctx.fillStyle = 'rgba(245,240,230,0.6)';
+                    ctx.fill(hp);
+                });
+
+                // 手绘描边：两层叠加（深色细 + 抖动粗笔触）
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = stroke;
+                ctx.globalAlpha = 0.85;
+                ctx.lineWidth = 2.2;
+                ctx.stroke(path);
+
+                ctx.globalAlpha = 0.25;
+                ctx.lineWidth = 5;
+                ctx.setLineDash([6, 4]);
+                ctx.stroke(path);
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+
+            // ---- 渲染器 2：像素网格（code） ----
+            _drawCode(ctx, t, path, holePaths) {
+                const fill = this._themeVar('--map-primary', '#1a1a2e');
+                const glow = this._themeVar('--map-secondary', '#00ffcc');
+                const grid = 7;
+
+                // 背景网格线
+                ctx.save();
+                ctx.strokeStyle = glow;
+                ctx.globalAlpha = 0.05;
+                ctx.lineWidth = 1;
+                for (let x = 0; x < t.w; x += grid) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, t.h); ctx.stroke();
+                }
+                for (let y = 0; y < t.h; y += grid) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(t.w, y); ctx.stroke();
+                }
+                ctx.restore();
+
+                // 像素化轮廓：对投影轮廓点取整，以方块填充
+                ctx.save();
+                const px = (lng, lat) => {
+                    const s = this._toScreen(lng, lat, t);
+                    return { x: Math.round(s.x / grid) * grid, y: Math.round(s.y / grid) * grid };
+                };
+
+                // 用轮廓路径裁剪后再画方块填充（取轮廓内部栅格）
+                ctx.save();
+                ctx.beginPath();
+                window.CHINA_MAP_DATA.outer.forEach(([lng, lat], i) => {
+                    const p = px(lng, lat);
+                    if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+                });
+                ctx.closePath();
+                ctx.fillStyle = fill;
+                ctx.globalAlpha = 0.55;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = glow;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+                ctx.restore();
+            }
+
+            // ---- 渲染器 3：科技数据流（ai） ----
+            _drawAI(ctx, t, path, holePaths) {
+                const accent = this._themeVar('--map-secondary', '#00d9ff');
+                const border = this._themeVar('--map-border', '#00d9ff');
+
+                // 细线发光描边（多层 glow）
+                ctx.save();
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = accent;
+                ctx.shadowColor = accent;
+                ctx.shadowBlur = 14;
+                ctx.lineWidth = 1.4;
+                ctx.stroke(path);
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = 0.35;
+                ctx.strokeStyle = border;
+                ctx.lineWidth = 4;
+                ctx.stroke(path);
+                ctx.restore();
+            }
+
+            // ---- 城市标记（三风格差异化） ----
+            _drawCityMarkers(ctx) {
+                this.markers.forEach(m => {
+                    const { x, y } = m.screenPosition;
+                    const isHi = this.highlightedCity === m.city;
+                    const accent = this._themeVar('--map-marker', '#ff6b6b');
+                    const hover = this._themeVar('--map-marker-hover', '#ff8787');
+                    const t = this._frame / 60; // 60fps 基准
+
+                    if (this.style === 'garden') {
+                        // 手绘星形 + 呼吸
+                        const pulse = 1 + Math.sin(t * Math.PI * 2) * 0.12;
+                        const r = (isHi ? 12 : 8) * pulse;
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.beginPath();
+                        const spikes = 5, outer = r, inner = r * 0.45;
+                        for (let i = 0; i < spikes * 2; i++) {
+                            const rad = i % 2 === 0 ? outer : inner;
+                            const ang = (i * Math.PI) / spikes - Math.PI / 2;
+                            const px = Math.cos(ang) * rad;
+                            const py = Math.sin(ang) * rad;
+                            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath();
+                        ctx.fillStyle = isHi ? hover : accent;
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                        ctx.restore();
+                    } else if (this.style === 'code') {
+                        // 像素方块 + 闪烁
+                        const blink = Math.sin(t * Math.PI * 4) > -0.4;
+                        const s = isHi ? 18 : 12;
+                        ctx.save();
+                        ctx.fillStyle = blink ? (isHi ? hover : accent) : 'rgba(0,0,0,0)';
+                        ctx.fillRect(x - s / 2, y - s / 2, s, s);
+                        ctx.strokeStyle = accent;
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x - s / 2, y - s / 2, s, s);
+                        ctx.restore();
+                    } else {
+                        // 发光圆点 + 脉冲
+                        const pulse = 1 + Math.sin(t * Math.PI * 2) * 0.3;
+                        const r = (isHi ? 9 : 6) * pulse;
+                        ctx.save();
+                        const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+                        grad.addColorStop(0, hover);
+                        grad.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(x - r * 3, y - r * 3, r * 6, r * 6);
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2);
+                        ctx.fillStyle = accent;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+
+                    // 城市名标注（仅高亮时显示）
+                    if (isHi) {
+                        ctx.save();
+                        ctx.font = '12px "Inter", "Noto Sans SC", sans-serif';
+                        ctx.fillStyle = this._themeVar('--color-text', '#333');
+                        ctx.textAlign = 'center';
+                        ctx.fillText(m.name, x, y - (this.style === 'garden' ? 18 : 22));
+                        ctx.restore();
+                    }
+                });
+            }
+
+            // ---- 命中检测（Canvas 点击 → 城市高亮） ----
+            handleClick(clientX, clientY) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+                let hit = null;
+                let best = Infinity;
+
+                this.markers.forEach(m => {
+                    const d = Math.hypot(x - m.screenPosition.x, y - m.screenPosition.y);
+                    if (d < 24 && d < best) { best = d; hit = m; }
+                });
+
+                if (hit) {
+                    this.highlightedCity = this.highlightedCity === hit.city ? null : hit.city;
+                    if (this.onCityClick) this.onCityClick(hit.city, this.highlightedCity);
+                }
+                return hit;
+            }
+
+            highlightCity(cityKey) {
+                this.highlightedCity = cityKey || null;
+            }
         }
 
         // 交互功能
@@ -1550,6 +1841,11 @@
                         this.renderProject(project, mobileContainer);
                     }
                 });
+
+                // 桌面端卡片按投影坐标定位
+                if (this.deviceType === 'desktop' && window.chinaMap) {
+                    positionDesktopCards();
+                }
             }
             
             addProjectInteractions(card, project) {
@@ -1576,24 +1872,18 @@
             }
             
             highlightCity(city) {
-                // 移除所有高亮
-                document.querySelectorAll('.map-marker, .project-card-overlay').forEach(el => {
+                // 同步 Canvas 标记高亮
+                if (window.chinaMap) {
+                    window.chinaMap.highlightedCity = city;
+                }
+
+                // 高亮对应城市的项目卡片
+                document.querySelectorAll('.project-card-overlay').forEach(el => {
                     el.style.opacity = '0.5';
                 });
-                
-                // 高亮对应城市
-                const cityMap = {
-                    'xian': '.map-marker[data-city="xian"], .project-card-overlay[data-city="xian"]',
-                    'shenzhen': '.map-marker[data-city="shenzhen"], .project-card-overlay[data-city="shenzhen"]',
-                    'beijing': '.map-marker[data-city="beijing"]',
-                    'shanghai': '.map-marker[data-city="shanghai"]',
-                    'chengdu': '.map-marker[data-city="chengdu"]'
-                };
-                
-                if (cityMap[city]) {
-                    document.querySelectorAll(cityMap[city]).forEach(el => {
+                if (city) {
+                    document.querySelectorAll(`.project-card-overlay[data-city="${city}"]`).forEach(el => {
                         el.style.opacity = '1';
-                        el.style.transform = 'scale(1.2)';
                     });
                 }
             }
@@ -1703,7 +1993,22 @@
                 // 初始化渲染
                 this.projectRenderer.renderAllProjects();
                 this.timelineRenderer.renderTimeline();
-                
+
+                // 初始化 Canvas 中国地图（方案B：GeoJSON + 墨卡托投影）
+                const canvas = document.querySelector('.china-map-canvas');
+                if (canvas) {
+                    window.chinaMap = new ChinaMap(canvas);
+                    window.chinaMap.onCityClick = (cityKey, highlighted) => {
+                        contentManager.projectRenderer.highlightCity(highlighted ? cityKey : null);
+                    };
+                    canvas.addEventListener('pointerdown', (e) => {
+                        window.chinaMap.handleClick(e.clientX, e.clientY);
+                    });
+                    const currentTheme = document.querySelector('.app-container').getAttribute('data-theme') || 'garden';
+                    window.chinaMap.render(currentTheme);
+                    positionDesktopCards();
+                }
+
                 // 监听窗口大小变化
                 window.addEventListener('resize', () => {
                     this.handleResize();
@@ -1724,6 +2029,13 @@
                     this.projectRenderer.deviceType = newDeviceType;
                     this.projectRenderer.renderAllProjects();
                     this.timelineRenderer.renderTimeline();
+                }
+
+                // 地图重算尺寸与卡片定位
+                if (window.chinaMap) {
+                    window.chinaMap.resize();
+                    window.chinaMap.render(window.chinaMap.style);
+                    positionDesktopCards();
                 }
             }
             
@@ -1795,28 +2107,65 @@
         // 初始化内容管理器
         const contentManager = new ContentManager();
 
+        // 桌面端项目卡片定位：投影坐标 → 叠加层百分比坐标（含简单防遮挡偏移）
+        // 注意：.project-card-overlay 使用 translate(-50%,-50%) 中心对齐，left/top 即卡片中心
+        function positionDesktopCards() {
+            if (!window.chinaMap) return;
+            const container = document.querySelector('.china-map-container');
+            const overlay = document.querySelector('.project-overlay');
+            if (!container || !overlay) return;
+
+            const cw = container.clientWidth;
+            const ch = container.clientHeight;
+            if (!cw || !ch) return;
+
+            // 同一城市多个项目的偏移步进（上下错开）
+            const cityOffset = {};
+
+            projectData.forEach((project, index) => {
+                const card = overlay.querySelector(`.project-card-overlay[data-project-id="${project.id}"]`);
+                if (!card) return;
+
+                // 优先用 location 字符串反查真实城市坐标（如"兰州"），fallback 到 city 字段
+                const cityName = (project.location || '').split(' ')[0];
+                const cityKey = CITY_BY_NAME[cityName] || project.city;
+                const pos = window.chinaMap.getCityScreenPosition(cityKey);
+
+                // 计算卡片尺寸（offset 可能为 0，用 CSS 值兜底）
+                const cwCard = card.offsetWidth || 280;
+                const chCard = card.offsetHeight || 190;
+
+                // 标记右侧偏移 + 同城错位
+                const idx = cityOffset[cityKey] = (cityOffset[cityKey] || 0);
+                const stagger = idx * 40;
+                const left = pos.x + cwCard / 2 + 26 + stagger * 0.35;
+                const top = pos.y + stagger;
+                cityOffset[cityKey]++;
+
+                // 边界夹取（卡片中心在容器内，且卡片整体不溢出）
+                const clampedLeft = Math.min(Math.max(cwCard / 2 + 4, left), cw - cwCard / 2 - 8);
+                const clampedTop = Math.min(Math.max(chCard / 2 + 4, top), ch - chCard / 2 - 8);
+
+                card.style.left = (clampedLeft / cw * 100) + '%';
+                card.style.top = (clampedTop / ch * 100) + '%';
+                card.style.right = 'auto';
+                card.style.bottom = 'auto';
+
+                // 图片加载完成后重定位（卡片高度变化）
+                const img = card.querySelector('.project-image');
+                if (img && !img.complete) {
+                    img.addEventListener('load', () => {
+                        if (window.chinaMap) positionDesktopCards();
+                    }, { once: true });
+                }
+            });
+        }
+
         // 交互功能
         document.addEventListener('DOMContentLoaded', function() {
-            const mapMarkers = document.querySelectorAll('.map-marker');
-            const stageMarkers = document.querySelectorAll('.stage-marker');
             const dragCursor = document.querySelector('.drag-cursor');
             
-            // 地图标记点击事件
-            mapMarkers.forEach(marker => {
-                marker.addEventListener('click', function() {
-                    const city = this.getAttribute('data-city');
-                    contentManager.projectRenderer.highlightCity(city);
-                });
-                
-                marker.addEventListener('mouseenter', function() {
-                    const city = this.getAttribute('data-city');
-                    showCityTooltip(city, this);
-                });
-                
-                marker.addEventListener('mouseleave', function() {
-                    hideCityTooltip();
-                });
-            });
+            // 地图交互已由 ChinaMap 处理（Canvas pointerdown 命中检测）
             
             // 拖拽游标交互
             if (dragCursor) {

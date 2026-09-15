@@ -369,34 +369,78 @@ body{
 .modal-desc{font-size:14px;color:var(--color-muted);line-height:1.7;margin-bottom:14px}
 
 /* ============================================================
-   MOBILE (unchanged)
+   MOBILE GATE — desktop only (code theme styled)
    ============================================================ */
-.project-flow-mobile{display:none}
+.mobile-gate{display:none}
+
 @media(max-width:768px){
-  body{overflow-y:auto;overflow-x:hidden}
-  #china-map-bg{display:none}
-  #ui-overlay{position:relative;pointer-events:auto}
-  .header-section{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--color-bg);padding:12px 16px;border-bottom:1px solid var(--color-border);text-shadow:none}
-  .stage-description{text-shadow:none;font-size:14px}
-  .content-section{position:relative;top:auto;bottom:auto;margin-top:12vh;margin-bottom:var(--timeline-h);min-height:calc(100vh - 12vh - var(--timeline-h));pointer-events:auto}
-  .console-panel,.display-panel{display:none}
-  .project-flow-mobile{display:flex;flex-direction:column;gap:14px;padding:14px;max-width:420px;margin:0 auto}
-  .project-card-mobile{background:var(--panel-bg);border:var(--panel-border);border-radius:12px;overflow:hidden;cursor:pointer;text-shadow:none;transition:transform 0.2s}
-  .project-card-mobile:active{transform:scale(0.98)}
-  .card-image-mobile{width:100%;height:170px;object-fit:cover;background:var(--color-tag-bg)}
-  .card-content-mobile{padding:14px}
-  .card-title-mobile{font-size:16px;font-weight:600;color:var(--color-text);margin-bottom:4px}
-  .card-desc-mobile{font-size:13px;color:var(--color-muted);line-height:1.5;margin-bottom:8px}
-  .card-tags-mobile{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
-  .card-tag-mobile{background:var(--color-tag-bg);color:var(--color-tag-text);padding:3px 10px;border-radius:12px;font-size:11px}
-  .card-location-mobile{font-size:11px;color:var(--color-muted)}
-  .timeline-section{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--color-bg);border-top:1px solid var(--color-border);height:var(--timeline-h)}
-  .current-year-display{font-size:9px;top:-16px}
-  .stage-timeline,.mouse-coords{display:none}
+  html,body{
+    height:100%;
+    overflow:hidden;
+    position:fixed;
+    inset:0;
+    width:100%;
+    overscroll-behavior:none;
+    touch-action:none;
+  }
+  #china-map-bg,#ui-overlay{display:none!important}
+
+  .mobile-gate{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:fixed;inset:0;z-index:999;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    background:#1a1a2e;color:#EAEAEA;
+    padding:calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+    text-align:center;
+    overflow:hidden;
+    box-sizing:border-box;
+  }
+  /* CRT scanlines */
+  .mobile-gate::before{
+    content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0.22) 0px,rgba(0,0,0,0.22) 1px,transparent 1px,transparent 3px);
+  }
+  .mobile-gate::after{
+    content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:radial-gradient(ellipse at center,rgba(0,255,204,0.07) 0%,rgba(0,0,0,0.5) 100%);
+  }
+  .mobile-gate .gate-icon{
+    font-size:clamp(36px,12vw,64px);line-height:1;margin-bottom:18px;
+    text-shadow:0 0 24px rgba(0,255,204,0.6);
+    animation:gate-flicker 3.2s infinite;
+  }
+  .mobile-gate .gate-title{
+    font-size:clamp(16px,5vw,22px);font-weight:700;color:#00ffcc;
+    letter-spacing:2px;margin-bottom:10px;
+    text-shadow:0 0 14px rgba(0,255,204,0.55);
+  }
+  .mobile-gate .gate-sub{
+    font-size:clamp(12px,3.6vw,14px);color:#9aa0b8;line-height:1.7;
+    max-width:320px;margin:0 auto 22px;
+  }
+  .mobile-gate .gate-hint{
+    font-size:clamp(10px,3vw,12px);color:#5a5f7a;letter-spacing:1px;
+    font-family:'SF Mono','Cascadia Code','Consolas',monospace;
+    animation:gate-blink 1.6s steps(2) infinite;
+  }
+  @keyframes gate-blink{0%,55%{opacity:1}56%,100%{opacity:0.25}}
+  @keyframes gate-flicker{
+    0%,97%,100%{opacity:1}98%{opacity:0.6}99%{opacity:0.9}
+  }
+  /* 超低高度（横屏手机等）压缩间距，保证不溢出 */
+  @media(max-height:420px){
+    .mobile-gate .gate-icon{font-size:28px;margin-bottom:8px}
+    .mobile-gate .gate-title{font-size:14px;margin-bottom:6px;letter-spacing:1px}
+    .mobile-gate .gate-sub{font-size:11px;margin-bottom:10px;line-height:1.5}
+    .mobile-gate .gate-hint{font-size:9px}
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
   .caliper-slider,.modal-content{transition:none!important}
+  .mobile-gate .gate-icon,.mobile-gate .gate-hint{animation:none!important}
 }
 </style>
 </head>
@@ -427,9 +471,6 @@ body{
       <div class="section-label">项目导航</div>
       <div id="console-list"></div>
     </div>
-
-    <!-- MOBILE -->
-    <div class="project-flow-mobile" id="project-flow-mobile"></div>
   </main>
 
   <!-- CALIPER TIMELINE -->
@@ -469,6 +510,8 @@ body{
   </div>
 </div>
 
+<script src="assets/data/china-geo-data.js"></script>
+<script src="assets/data/map-style-data.js"></script>
 <script>
 // ============================================================
 // CONFIG
@@ -554,115 +597,166 @@ function XYToLonLat(x,y){
   return{lat,lng:lon};
 }
 
-function resizeMap(){ mapCanvas.width=window.innerWidth; mapCanvas.height=window.innerHeight; drawMap(); }
+function resizeMap(){ mapCanvas.width=window.innerWidth; mapCanvas.height=window.innerHeight; staticKey=''; drawMap(); }
 
-function drawMap(){
-  const w=mapCanvas.width, h=mapCanvas.height;
-  const cx=w/2, cy=h*0.44, scale=Math.min(w,h)*0.44;
+// ---- 视觉基线令牌：来自 assets/data/map-style.json（Maputnik 可编辑） ----
+function styleTokens(theme){
+  const t={};
+  ((window.MAP_STYLE||{layers:[]}).layers||[]).forEach(l=>{
+    if(l.metadata&&l.metadata.theme===theme)t[l.metadata.role]=Object.assign({},t[l.metadata.role],l.paint||{});
+  });
+  return t;
+}
+
+// ---- 静态图层缓存（背景/轮廓/省界/河流/湖泊/文字），主题或尺寸变化时重建 ----
+let staticLayer=null,staticKey='';
+function ensureStaticLayer(){
+  const w=mapCanvas.width,h=mapCanvas.height;
+  const key=currentStage+'_'+w+'x'+h;
+  if(staticLayer&&staticKey===key)return;
+  staticKey=key;
+  staticLayer=document.createElement('canvas');
+  staticLayer.width=w;staticLayer.height=h;
+  const s=staticLayer.getContext('2d');
+  const tok=styleTokens(STAGES[currentStage].theme);
+  const geo=window.CHINA_GEO_DATA;
+  const cx=w/2,cy=h*0.44,scale=Math.min(w,h)*0.44;
   mapParams={cx,cy,scale};
-  mapCtx.clearRect(0,0,w,h);
+  const px=p=>{const q=lonLatToXY(p[0],p[1]);return[cx+q.x*scale,cy+q.y*scale]};
 
-  // Radial gradient background
-  const grad=mapCtx.createRadialGradient(cx,cy,scale*0.3,cx,cy,scale*1.4);
-  const mapBg=getComputedStyle(document.documentElement).getPropertyValue('--map-bg').trim();
-  grad.addColorStop(0,mapBg);grad.addColorStop(1,'rgba(0,0,0,0.35)');
-  mapCtx.fillStyle=grad;mapCtx.fillRect(0,0,w,h);
+  // 背景径向渐变
+  const bg=tok.bg?tok.bg['background-color']:'#F5F0E6';
+  const end=tok.bg&&tok.bg['gradient-end']?tok.bg['gradient-end']:'rgba(0,0,0,0.35)';
+  const grad=s.createRadialGradient(cx,cy,scale*0.3,cx,cy,scale*1.4);
+  grad.addColorStop(0,bg);grad.addColorStop(1,end);
+  s.fillStyle=grad;s.fillRect(0,0,w,h);
 
-  // China outline
-  const strokeCol=getComputedStyle(document.documentElement).getPropertyValue('--map-stroke').trim();
-  mapCtx.strokeStyle=strokeCol;mapCtx.lineWidth=1.5;mapCtx.globalAlpha=0.45;
-  mapCtx.beginPath();
-  const body=[
-    [0.15,0.07],[0.25,0.03],[0.38,-0.02],[0.50,-0.01],[0.60,0.02],
-    [0.70,0.06],[0.78,0.11],[0.83,0.18],[0.80,0.26],[0.75,0.34],
-    [0.66,0.40],[0.56,0.42],[0.46,0.40],[0.36,0.37],
-    [0.26,0.34],[0.18,0.30],[0.10,0.25],[0.06,0.20],[0.09,0.14]
+  if(!geo)return;
+
+  const tracePath=(ring,start)=>{
+    for(let i=0;i<ring.length;i++){const q=px(ring[i]);if(start||i===0)s.moveTo(q[0],q[1]);else s.lineTo(q[0],q[1]);}
+  };
+
+  // 国界轮廓：填充（evenodd 挖孔）+ 描边 + 风格叠层
+  if(tok['outline-fill']){
+    s.beginPath();tracePath(geo.outer);
+    geo.holes.forEach(r=>{tracePath(r)});
+    s.closePath();
+    s.fillStyle=tok['outline-fill']['fill-color'];s.globalAlpha=tok['outline-fill']['fill-opacity']||0.05;
+    s.fill('evenodd');s.globalAlpha=1;
+  }
+  if(tok.outline){
+    s.beginPath();tracePath(geo.outer);
+    geo.holes.forEach(r=>{tracePath(r)});
+    s.strokeStyle=tok.outline['line-color'];s.lineWidth=tok.outline['line-width']||1.5;
+    s.globalAlpha=tok.outline['line-opacity']||0.45;s.stroke();s.globalAlpha=1;
+  }
+  // 手绘/像素叠层（虚线）
+  const overlayTok=tok['outline-handdrawn']||tok['outline-pixel'];
+  if(overlayTok){
+    s.beginPath();tracePath(geo.outer);geo.holes.forEach(r=>{tracePath(r)});
+    s.strokeStyle=overlayTok['line-color'];s.lineWidth=overlayTok['line-width']||3;
+    s.globalAlpha=overlayTok['line-opacity']||0.14;
+    s.setLineDash(overlayTok['line-dasharray']||[10,6]);s.stroke();s.setLineDash([]);s.globalAlpha=1;
+  }
+
+  // 省界 / 河流 / 湖泊
+  const strokeLines=(arr,tokName)=>{
+    const t=tok[tokName];if(!t||!arr)return;
+    s.strokeStyle=t['line-color'];s.lineWidth=t['line-width']||0.8;s.globalAlpha=t['line-opacity']||0.12;
+    s.beginPath();arr.forEach(r=>tracePath(r));s.stroke();s.globalAlpha=1;
+  };
+  strokeLines(geo.provinces,'provinces');
+  strokeLines(geo.rivers,'rivers');
+  if(tok.lakes&&geo.lakes){
+    s.fillStyle=tok.lakes['fill-color'];s.globalAlpha=tok.lakes['fill-opacity']||0.12;
+    s.beginPath();geo.lakes.forEach(r=>tracePath(r));s.closePath();s.fill('evenodd');s.globalAlpha=1;
+  }
+
+  // 周边地理标注
+  const st=tok.surrounding||{};
+  const sc=st['text-color']||'#3C3228';
+  const so=st['text-opacity']||0.08;
+  const sfont=(st['text-font']||'sans-serif')==='serif'?'serif':'sans-serif';
+  s.globalAlpha=so;s.font=`${scale*0.025}px ${sfont}`;s.textAlign='center';
+  const labels=[
+    ['中亚 · Central Asia',-0.88,-0.12],['俄罗斯 · Russia',0.10,-0.26],['蒙古 · Mongolia',0.38,-0.18],
+    ['朝鲜半岛',0.84,0.12],['日本 · Japan',0.90,0.28],['东南亚',0.50,0.52],
+    ['南亚 · South Asia',-0.32,0.46],['喜马拉雅',-0.42,0.18]
   ];
-  mapCtx.moveTo(cx+body[0][0]*scale,cy+body[0][1]*scale);
-  for(let i=1;i<body.length;i++)mapCtx.lineTo(cx+body[i][0]*scale,cy+body[i][1]*scale);
-  mapCtx.closePath();mapCtx.stroke();
-  mapCtx.fillStyle=strokeCol;mapCtx.globalAlpha=0.06;mapCtx.fill();mapCtx.globalAlpha=1;
+  labels.forEach(L=>s.fillText(L[0],cx+L[1]*scale,cy+L[2]*scale));
+  s.textAlign='start';s.globalAlpha=1;
 
-  // Province lines
-  mapCtx.globalAlpha=0.10;mapCtx.lineWidth=1;
-  const prov=[
-    [[0.18,0.12],[0.32,0.08],[0.46,0.10],[0.58,0.09]],
-    [[0.22,0.22],[0.36,0.18],[0.50,0.22],[0.64,0.20]],
-    [[0.28,0.34],[0.42,0.30],[0.56,0.34],[0.66,0.32]],
-    [[0.20,0.42],[0.32,0.39],[0.44,0.38],[0.54,0.41]]
-  ];
-  prov.forEach(pts=>{mapCtx.beginPath();mapCtx.moveTo(cx+pts[0][0]*scale,cy+pts[0][1]*scale);for(let i=1;i<pts.length;i++)mapCtx.lineTo(cx+pts[i][0]*scale,cy+pts[i][1]*scale);mapCtx.stroke()});
-  mapCtx.globalAlpha=1;
+  // “中 国”字样
+  const lt=tok.labels||{};
+  s.globalAlpha=lt['text-opacity']||0.12;
+  s.font=`300 ${scale*0.07}px ${(lt['text-font']||'serif')==='serif'?'serif':'sans-serif'}`;
+  s.textAlign='center';s.fillText('中  国',cx,cy-scale*0.03);s.textAlign='start';s.globalAlpha=1;
+}
 
-  // Surrounding geography
-  mapCtx.globalAlpha=0.06;mapCtx.font=`${scale*0.025}px sans-serif`;mapCtx.textAlign='center';
-  mapCtx.fillText('中亚 · Central Asia',cx-scale*0.88,cy-scale*0.12);
-  mapCtx.fillText('俄罗斯 · Russia',cx+scale*0.10,cy-scale*0.26);
-  mapCtx.fillText('蒙古 · Mongolia',cx+scale*0.38,cy-scale*0.18);
-  mapCtx.fillText('朝鲜半岛',cx+scale*0.84,cy+scale*0.12);
-  mapCtx.fillText('日本 · Japan',cx+scale*0.90,cy+scale*0.28);
-  mapCtx.fillText('东南亚',cx+scale*0.50,cy+scale*0.52);
-  mapCtx.fillText('南亚 · South Asia',cx-scale*0.32,cy+scale*0.46);
-  mapCtx.fillText('喜马拉雅',cx-scale*0.42,cy+scale*0.18);
-  mapCtx.textAlign='start';mapCtx.globalAlpha=1;
-
-  // ===== 3-LEVEL CITY MARKERS =====
-  const ac=getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+// ---- 动态图层：三级城市标记（每帧重绘，主题化 shape） ----
+function drawMarkers(s){
+  const tok=styleTokens(STAGES[currentStage].theme);
+  const m=tok.marker||{};
+  const ac=m['circle-color']||getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
   const txtCol=getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim();
+  const shape=m['marker-shape']||'dot';
+  const {cx,cy,scale}=mapParams;
+  if(!scale)return;
   const stage=STAGES[currentStage];
   const stageProjects=PROJECTS.filter(p=>p.stage===currentStage);
   const selectedP=PROJECTS.find(p=>p.id===selectedProjectId);
-
-  // Helper: collect unique cities from project locations
   const citySet=new Map();
   stageProjects.forEach(p=>{const k=p.lat.toFixed(2)+','+p.lng.toFixed(2);if(!citySet.has(k))citySet.set(k,{lat:p.lat,lng:p.lng,name:p.location.split(' · ')[0]});});
 
-  // Level 1 — stage primary city (largest, anchor)
+  const drawShape=(mx,my,r,alpha,haloR,haloAlpha,fontW,name)=>{
+    s.fillStyle=ac;s.globalAlpha=alpha;
+    if(shape==='square'){s.fillRect(mx-r,my-r,r*2,r*2);}
+    else if(shape==='star'){
+      s.beginPath();const spikes=5,outer=r,inner=r*0.45;
+      for(let i=0;i<spikes*2;i++){const rad=(i%2===0?outer:inner);const ang=i*Math.PI/spikes-Math.PI/2;
+        const qx=mx+Math.cos(ang)*rad,qy=my+Math.sin(ang)*rad;if(i===0)s.moveTo(qx,qy);else s.lineTo(qx,qy);}
+      s.closePath();s.fill();
+    }
+    else if(shape==='glow'){
+      const g=s.createRadialGradient(mx,my,0,mx,my,r*3);
+      g.addColorStop(0,ac);g.addColorStop(1,'rgba(0,0,0,0)');
+      s.fillStyle=g;s.fillRect(mx-r*3,my-r*3,r*6,r*6);
+      s.beginPath();s.arc(mx,my,r,0,Math.PI*2);s.fillStyle=ac;s.fill();
+    }
+    else{s.beginPath();s.arc(mx,my,r,0,Math.PI*2);s.fill();}
+    if(haloR){s.strokeStyle=ac;s.globalAlpha=haloAlpha;s.lineWidth=fontW?2:1.5;s.beginPath();s.arc(mx,my,haloR,0,Math.PI*2);s.stroke();}
+    if(name){s.fillStyle=txtCol;s.globalAlpha=0.55;s.font=`${fontW?'bold ':''}${scale*0.02}px sans-serif`;s.fillText(name,mx+10,my+4);}
+    s.globalAlpha=1;
+  };
+
+  // L1 阶段主城
   if(stage.primaryLat){
     const p1=lonLatToXY(stage.primaryLat,stage.primaryLng);
-    const mx=cx+p1.x*scale, my=cy+p1.y*scale;
-    mapCtx.fillStyle=ac;mapCtx.globalAlpha=0.8;
-    mapCtx.beginPath();mapCtx.arc(mx,my,4,0,Math.PI*2);mapCtx.fill();
-    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.3;mapCtx.lineWidth=1.5;
-    mapCtx.beginPath();mapCtx.arc(mx,my,8,0,Math.PI*2);mapCtx.stroke();
-    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.55;mapCtx.font=`bold ${scale*0.024}px sans-serif`;
     const primaryName=stage.experiences?.[0]?.text?.split(' ')[0]||stage.title.split('｜')[0]||'';
-    mapCtx.fillText(primaryName,mx+10,my+4);
-    mapCtx.globalAlpha=1;
+    drawShape(cx+p1.x*scale,cy+p1.y*scale,m['primary-radius']||4,m['primary-opacity']||0.8,m['primary-halo']||8,m['primary-halo-opacity']||0.3,true,primaryName);
   }
-
-  // Level 2 — project location cities (medium)
-  citySet.forEach((c,k)=>{
-    if(selectedP&&Math.abs(c.lat-selectedP.lat)<0.01&&Math.abs(c.lng-selectedP.lng)<0.01)return; // skip selected
+  // L2 项目城市
+  citySet.forEach(c=>{
+    if(selectedP&&Math.abs(c.lat-selectedP.lat)<0.01&&Math.abs(c.lng-selectedP.lng)<0.01)return;
     const p2=lonLatToXY(c.lat,c.lng);
-    const mx=cx+p2.x*scale, my=cy+p2.y*scale;
-    mapCtx.fillStyle=ac;mapCtx.globalAlpha=0.55;
-    mapCtx.beginPath();mapCtx.arc(mx,my,2.5,0,Math.PI*2);mapCtx.fill();
-    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.2;mapCtx.lineWidth=1;
-    mapCtx.beginPath();mapCtx.arc(mx,my,5,0,Math.PI*2);mapCtx.stroke();
-    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.35;mapCtx.font=`${scale*0.018}px sans-serif`;
-    mapCtx.fillText(c.name||'',mx+6,my+3);
-    mapCtx.globalAlpha=1;
+    drawShape(cx+p2.x*scale,cy+p2.y*scale,m['secondary-radius']||2.5,m['secondary-opacity']||0.55,m['secondary-halo']||5,m['secondary-halo-opacity']||0.2,false,c.name||'');
   });
-
-  // Level 3 — currently selected project city (highlighted, pulsing)
+  // L3 选中项目（脉冲）
   if(selectedP){
     const p3=lonLatToXY(selectedP.lat,selectedP.lng);
-    const mx=cx+p3.x*scale, my=cy+p3.y*scale;
     const pulse=1+0.15*Math.sin(Date.now()/600);
-    mapCtx.fillStyle=ac;mapCtx.globalAlpha=1;
-    mapCtx.beginPath();mapCtx.arc(mx,my,3.5*pulse,0,Math.PI*2);mapCtx.fill();
-    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.5;mapCtx.lineWidth=2;
-    mapCtx.beginPath();mapCtx.arc(mx,my,7*pulse,0,Math.PI*2);mapCtx.stroke();
-    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.7;mapCtx.font=`bold ${scale*0.02}px sans-serif`;
-    const cityName=selectedP.location.split(' · ')[0];
-    mapCtx.fillText(cityName,mx+8,my+4);
-    mapCtx.globalAlpha=1;
+    const mx=cx+p3.x*scale,my=cy+p3.y*scale;
+    drawShape(mx,my,(m['selected-radius']||3.5)*pulse,m['selected-opacity']||1,m['primary-halo']*pulse||8,0.5,true,selectedP.location.split(' · ')[0]);
   }
+}
 
-  // "中 国" centered label
-  mapCtx.globalAlpha=0.12;mapCtx.font=`300 ${scale*0.07}px serif`;mapCtx.textAlign='center';
-  mapCtx.fillText('中  国',cx,cy-scale*0.03);mapCtx.textAlign='start';mapCtx.globalAlpha=1;
+function drawMap(){
+  if(mapCanvas.clientWidth===0||getComputedStyle(mapCanvas).display==='none')return; // 移动端跳过
+  ensureStaticLayer();
+  mapCtx.clearRect(0,0,mapCanvas.width,mapCanvas.height);
+  if(staticLayer)mapCtx.drawImage(staticLayer,0,0);
+  drawMarkers(mapCtx);
 }
 
 // Mouse tracking
@@ -698,7 +792,7 @@ function renderConsolePanel(stage){
   list.innerHTML=projects.map(p=>`
     <div class="console-item${selectedProjectId===p.id?' active':''}" data-id="${p.id}">
       <div class="ci-title">${p.title}</div>
-      <div class="ci-meta">📍 ${p.location}</div>
+      <div class="ci-meta">📍 ${p.location} · ${fmtYear(p.year)}</div>
     </div>
   `).join('');
   list.querySelectorAll('.console-item').forEach(el=>el.addEventListener('click',()=>selectProject(el.dataset.id)));
@@ -796,28 +890,6 @@ function showEmptyDisplay(){
 }
 
 // ============================================================
-// MOBILE FLOW (future NOT shown)
-// ============================================================
-function renderMobileFlow(stage){
-  if(stage==='future'){document.getElementById('project-flow-mobile').innerHTML='';return}
-  const projects=PROJECTS.filter(p=>p.stage===stage);
-  const c=document.getElementById('project-flow-mobile');
-  c.innerHTML=projects.map(p=>`
-    <div class="project-card-mobile" data-id="${p.id}">
-      <img class="card-image-mobile" src="${p.mobileImage}" alt="${p.title}" loading="lazy" onerror="this.style.background='var(--color-tag-bg)';this.style.minHeight='170px'">
-      <div class="card-content-mobile">
-        <div class="card-title-mobile">${p.title}</div>
-        <div class="card-desc-mobile">${p.desc}</div>
-        <div class="card-tags-mobile">${p.tags.map(t=>`<span class="card-tag-mobile">${t}</span>`).join('')}</div>
-        <div class="card-location-mobile">📍 ${p.location}</div>
-      </div>
-    </div>
-  `).join('');
-  c.querySelectorAll('.project-card-mobile').forEach(el=>{
-    el.addEventListener('click',()=>{const p=PROJECTS.find(x=>x.id===el.dataset.id);if(p)openModal(p)});
-  });
-}
-
 // ============================================================
 // THEME
 // ============================================================
@@ -828,7 +900,7 @@ function setTheme(theme){
   document.getElementById('stage-desc').textContent=s.description;
   document.querySelectorAll('.panel-theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.theme===theme));
   drawMap();drawTicks();updateBoundaries();
-  renderConsolePanel(theme);renderMobileFlow(theme);applyFocus(theme);
+  renderConsolePanel(theme);applyFocus(theme);
 }
 
 function detectStage(year){
@@ -949,11 +1021,19 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 function init(){
   buildAllExperiences();
   resizeMap();window.addEventListener('resize',()=>{resizeMap();drawTicks();updateBoundaries()});
-  drawTicks();updateBoundaries();renderConsolePanel('garden');renderMobileFlow('garden');applyFocus('garden');
+  drawTicks();updateBoundaries();renderConsolePanel('garden');applyFocus('garden');
   slider.style.left=(ratioFromYear(YEAR_START)*100)+'%';yearDisplay.textContent=fmtYear(YEAR_START);
 }
 init();
 </script>
+
+<!-- MOBILE GATE -->
+<div class="mobile-gate">
+  <div class="gate-icon">🖥️</div>
+  <div class="gate-title">请用桌面端查看，以获得最佳效果</div>
+  <div class="gate-sub">本网站为大屏沉浸式体验设计<br>请使用宽度大于 768px 的桌面设备访问</div>
+  <div class="gate-hint">▌PLEASE VIEW ON DESKTOP · ≥768PX</div>
+</div>
 
 </body>
 </html>
