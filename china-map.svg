@@ -1,0 +1,25 @@
+<svg width="100%" height="100%" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 中国地图轮廓 - 使用更真实的轮廓 -->
+  <g class="china-map">
+    <!-- 中国大陆轮廓（简化版） -->
+    <path d="M150,120 C200,100 250,90 300,110 C350,130 400,140 450,130 C500,120 550,110 600,120 C650,130 700,140 750,130 C800,120 850,110 900,120 L900,480 C850,470 800,460 750,470 C700,480 650,490 600,480 C550,470 500,460 450,470 C400,480 350,490 300,480 C250,470 200,460 150,470 Z" 
+          fill="var(--map-primary)" stroke="var(--map-border)" stroke-width="2"/>
+    
+    <!-- 主要城市标记点 -->
+    <circle cx="350" cy="250" r="8" fill="var(--map-marker)" class="map-marker" data-city="xian" title="西安"/>
+    <circle cx="750" cy="350" r="8" fill="var(--map-marker)" class="map-marker" data-city="shenzhen" title="深圳"/>
+    <circle cx="650" cy="200" r="8" fill="var(--map-marker)" class="map-marker" data-city="beijing" title="北京"/>
+    <circle cx="450" cy="400" r="8" fill="var(--map-marker)" class="map-marker" data-city="shanghai" title="上海"/>
+    <circle cx="550" cy="300" r="8" fill="var(--map-marker)" class="map-marker" data-city="chengdu" title="成都"/>
+  </g>
+  
+  <!-- 省份轮廓（简化版） -->
+  <g class="provinces" opacity="0.3">
+    <path d="M200,150 C250,140 300,150 350,140 C400,130 450,140 500,150 C550,160 600,150 650,160" 
+          fill="none" stroke="var(--map-secondary)" stroke-width="2"/>
+    <path d="M300,250 C350,240 400,250 450,240 C500,230 550,240 600,250 C650,260 700,250 750,260" 
+          fill="none" stroke="var(--map-tertiary)" stroke-width="2"/>
+    <path d="M400,350 C450,340 500,350 550,340 C600,330 650,340 700,350 C750,360 800,350 850,360" 
+          fill="none" stroke="var(--map-primary)" stroke-width="2"/>
+  </g>
+</svg>

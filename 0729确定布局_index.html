@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="garden">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人履历 — 风景园林 × 软件工程 × AI工程</title>
+<style>
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* ============================================================
+   CSS VARIABLES — GARDEN (default)
+   ============================================================ */
+:root{
+  --blur-amount:10px;
+  --touch-target:48px;
+  --fs-title:clamp(2rem,8vw,4.5rem);
+  --timeline-h:7vh;
+  --panel-bg:rgba(255,255,255,0.18);
+  --panel-border:1px solid rgba(255,255,255,0.45);
+  --panel-text-shadow:0 1px 3px rgba(0,0,0,0.35);
+  --color-bg:#F5F0E6;
+  --color-text:#3C3228;
+  --color-accent:#92A87C;
+  --color-muted:rgba(60,50,40,0.65);
+  --color-tag-bg:rgba(146,168,124,0.25);
+  --color-tag-text:#3C3228;
+  --color-border:rgba(255,255,255,0.45);
+  --map-bg:#F5F0E6;
+  --map-stroke:#92A87C;
+  --map-marker-fill:#92A87C;
+  --caliper-track:rgba(146,168,124,0.35);
+  --caliper-tick:rgba(146,168,124,0.45);
+  --caliper-label:rgba(60,50,40,0.75);
+  --caliper-slider-bg:#92A87C;
+  --caliper-slider-border:#6b8a5a;
+  --stage-boundary:rgba(146,168,124,0.7);
+  --transition-theme:0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ============================================================
+   THEME: CODE
+   ============================================================ */
+[data-theme="code"]{
+  --panel-bg:rgba(22,33,62,0.15);
+  --panel-border:1px solid rgba(0,255,204,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,255,204,0.25);
+  --color-bg:#1a1a2e;--color-text:#EAEAEA;--color-accent:#00ffcc;
+  --color-muted:rgba(200,200,210,0.6);--color-tag-bg:rgba(0,255,204,0.12);
+  --color-tag-text:#00ffcc;--color-border:rgba(0,255,204,0.45);
+  --map-bg:#1a1a2e;--map-stroke:#00ffcc;--map-marker-fill:#00ffcc;
+  --caliper-track:rgba(0,255,204,0.25);--caliper-tick:rgba(0,255,204,0.35);
+  --caliper-label:rgba(0,255,204,0.65);--caliper-slider-bg:#00ffcc;
+  --caliper-slider-border:#00aa88;--stage-boundary:rgba(0,255,204,0.6);
+}
+
+/* ============================================================
+   THEME: AI
+   ============================================================ */
+[data-theme="ai"]{
+  --panel-bg:rgba(10,10,10,0.15);
+  --panel-border:1px solid rgba(0,217,255,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,217,255,0.25);
+  --color-bg:#0a0a0a;--color-text:#E0E0E0;--color-accent:#00d9ff;
+  --color-muted:rgba(200,200,210,0.55);--color-tag-bg:rgba(0,217,255,0.10);
+  --color-tag-text:#00d9ff;--color-border:rgba(0,217,255,0.45);
+  --map-bg:#0a0a0a;--map-stroke:#00d9ff;--map-marker-fill:#00d9ff;
+  --caliper-track:rgba(0,217,255,0.25);--caliper-tick:rgba(0,217,255,0.35);
+  --caliper-label:rgba(0,217,255,0.65);--caliper-slider-bg:#00d9ff;
+  --caliper-slider-border:#0099bb;--stage-boundary:rgba(0,217,255,0.6);
+}
+
+/* ============================================================
+   THEME: FUTURE (inherits AI palette)
+   ============================================================ */
+[data-theme="future"]{
+  --panel-bg:rgba(8,8,8,0.12);
+  --panel-border:1px solid rgba(180,180,190,0.35);
+  --panel-text-shadow:0 0 8px rgba(180,180,190,0.2);
+  --color-bg:#060606;--color-text:#C0C0C0;--color-accent:#888;
+  --color-muted:rgba(180,180,190,0.5);--color-tag-bg:rgba(255,255,255,0.06);
+  --color-tag-text:#999;--color-border:rgba(180,180,190,0.35);
+  --map-bg:#060606;--map-stroke:rgba(180,180,190,0.3);--map-marker-fill:#888;
+  --caliper-track:rgba(180,180,190,0.2);--caliper-tick:rgba(180,180,190,0.25);
+  --caliper-label:rgba(180,180,190,0.5);--caliper-slider-bg:#999;
+  --caliper-slider-border:#666;--stage-boundary:rgba(180,180,190,0.4);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:768px){
+  :root{--blur-amount:0px;--timeline-h:15vh;--panel-bg:rgba(255,255,255,0.9);--panel-border:1px solid #ddd;--panel-text-shadow:none}
+}
+
+/* ============================================================
+   BODY & LAYOUT
+   ============================================================ */
+body{
+  font-family:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--color-bg);color:var(--color-text);
+  overflow:hidden;height:100vh;
+  transition:background var(--transition-theme),color var(--transition-theme);
+}
+
+/* --- MAP CANVAS --- */
+#china-map-bg{position:fixed;inset:0;z-index:0;width:100vw;height:100vh}
+
+/* --- UI OVERLAY --- */
+#ui-overlay{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* --- HEADER --- */
+.header-section{
+  position:absolute;top:0;left:0;right:0;padding:14px 32px 10px;
+  pointer-events:auto;text-align:center;background:transparent;
+}
+.stage-description{
+  font-size:clamp(14px,2vw,20px);font-weight:400;color:var(--color-text);
+  max-width:640px;margin:0 auto;line-height:1.5;
+  text-shadow:0 1px 4px rgba(0,0,0,0.35);
+  transition:color var(--transition-theme);
+}
+
+/* --- CONTENT --- */
+.content-section{
+  position:absolute;top:10vh;left:0;right:0;bottom:calc(var(--timeline-h) + 4px);
+  pointer-events:none;
+}
+
+/* LEFT DISPLAY PANEL */
+.display-panel{
+  position:absolute;left:3vw;top:0;bottom:0;width:28vw;
+  overflow-y:auto;pointer-events:auto;
+  background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
+  backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
+  padding:0;color:var(--color-text);text-shadow:var(--panel-text-shadow);
+  transition:background var(--transition-theme),border-color 0.8s;
+  box-shadow:0 0 30px rgba(0,0,0,0.08);
+}
+.display-panel::-webkit-scrollbar{width:2px}
+.display-panel::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:1px;opacity:0.4}
+.display-image{width:100%;max-height:200px;object-fit:cover;display:block;background:var(--color-tag-bg)}
+.display-body{padding:20px 22px}
+.display-category{
+  display:inline-block;padding:3px 14px;border-radius:3px;
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  background:var(--color-accent);color:#fff;margin-bottom:10px;
+}
+.display-title{font-size:21px;font-weight:700;margin-bottom:4px}
+.display-subtitle{font-size:11px;color:var(--color-muted);margin-bottom:14px}
+.display-divider{
+  border:none;border-top:1px solid var(--color-border);margin:14px 0;
+  opacity:0.5;
+}
+.display-desc{font-size:13px;color:var(--color-muted);line-height:1.7;margin-bottom:0}
+.display-section-label{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--color-accent);opacity:0.7;margin-bottom:8px;
+}
+.display-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:0}
+.display-tag{background:var(--color-tag-bg);color:var(--color-tag-text);padding:2px 10px;border-radius:10px;font-size:11px}
+.display-link{
+  display:inline-block;margin-top:4px;font-size:12px;color:var(--color-accent);
+  text-decoration:none;border-bottom:1px solid transparent;transition:border-color 0.2s;
+}
+.display-link:hover{border-bottom-color:var(--color-accent)}
+.display-outcome{
+  font-size:12px;color:var(--color-muted);line-height:1.6;
+  border-left:1px solid var(--color-accent);padding-left:10px;
+}
+
+/* --- BOTTOM-RIGHT CORNER --- */
+.stage-timeline{
+  position:absolute;bottom:calc(var(--timeline-h) + 72px);right:3vw;
+  width:18vw;max-height:30vh;overflow-y:auto;
+  pointer-events:auto;z-index:5;
+  background:var(--panel-bg);border:var(--panel-border);
+  border-radius:10px;padding:10px 0;
+  backdrop-filter:blur(var(--blur-amount));
+  -webkit-backdrop-filter:blur(var(--blur-amount));
+  transition:background var(--transition-theme),border-color 0.8s;
+}
+.stage-timeline::-webkit-scrollbar{width:2px}
+.stage-timeline::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:1px;opacity:0.3}
+.stage-timeline .st-entry{
+  display:flex;align-items:flex-start;gap:10px;padding:5px 14px;
+  cursor:default;
+  transition:opacity 0.5s,transform 0.5s;
+}
+.stage-timeline .st-entry.out-of-focus{
+  opacity:0.15;transform:scale(0.88);
+}
+.stage-timeline .st-entry.out-of-focus .st-dot{
+  width:3px;height:3px;background:var(--color-muted);
+}
+.stage-timeline .st-entry.out-of-focus .st-text{font-size:9px}
+.stage-timeline .st-entry.out-of-focus .st-year{font-size:7px}
+.stage-timeline .st-entry.in-focus{
+  opacity:1;transform:scale(1);
+}
+.stage-timeline .st-entry:hover{background:var(--color-tag-bg)}
+.stage-timeline .st-entry.active .st-dot{
+  background:var(--color-accent);box-shadow:0 0 6px var(--color-accent);
+}
+.stage-timeline .st-dot-wrap{
+  flex-shrink:0;width:16px;display:flex;flex-direction:column;align-items:center;
+}
+.stage-timeline .st-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--color-muted);
+  margin-top:4px;transition:background 0.3s,box-shadow 0.3s;
+}
+.stage-timeline .st-line{
+  width:1px;flex:1;min-height:4px;background:var(--color-border);margin-top:2px;
+}
+.stage-timeline .st-entry:last-child .st-line{background:transparent}
+.stage-timeline .st-body{flex:1;min-width:0}
+.stage-timeline .st-text{
+  font-size:11px;color:var(--color-text);text-shadow:var(--panel-text-shadow);
+  line-height:1.4;transition:color var(--transition-theme);
+}
+.stage-timeline .st-year{
+  font-size:9px;color:var(--color-accent);margin-bottom:2px;
+  font-family:'SF Mono','Consolas',monospace;
+}
+.mouse-coords{
+  position:absolute;bottom:calc(var(--timeline-h) + 46px);right:3vw;
+  pointer-events:none;z-index:5;
+  font-size:10px;color:var(--color-muted);text-shadow:var(--panel-text-shadow);
+  font-family:'SF Mono','Cascadia Code','Consolas',monospace;
+  background:var(--panel-bg);border:var(--panel-border);
+  border-radius:6px;padding:4px 10px;
+  opacity:0;transition:opacity 0.25s;
+}
+.mouse-coords.visible{opacity:1}
+
+/* RIGHT CONSOLE PANEL */
+.console-panel{
+  position:absolute;right:3vw;top:0;width:18vw;max-height:100%;
+  overflow-y:auto;pointer-events:auto;
+  background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
+  backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
+  padding:18px 16px;color:var(--color-text);text-shadow:var(--panel-text-shadow);
+  transition:background var(--transition-theme),border-color 0.8s;
+  box-shadow:0 0 30px rgba(0,0,0,0.08);
+}
+.console-panel::-webkit-scrollbar{width:2px}
+.console-panel::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:1px;opacity:0.4}
+.console-panel .section-label{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--color-accent);opacity:0.7;margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--color-border);
+}
+.console-item{
+  padding:9px 12px;border-radius:8px;cursor:pointer;margin-bottom:5px;
+  transition:background 0.2s,color 0.2s;font-size:13px;line-height:1.35;
+  color:var(--color-text);text-shadow:var(--panel-text-shadow);
+  border:1px solid transparent;
+}
+.console-item:hover{background:var(--color-tag-bg);border-color:var(--color-border)}
+.console-item.active{
+  background:var(--color-accent);color:#fff;text-shadow:none;font-weight:600;
+  border-color:var(--color-accent);
+}
+.console-item .ci-title{font-weight:600;margin-bottom:2px}
+.console-item .ci-meta{font-size:10px;opacity:0.65}
+
+/* --- CALIPER TIMELINE --- */
+.timeline-section{
+  position:absolute;bottom:0;left:0;right:0;height:var(--timeline-h);
+  pointer-events:auto;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;padding-bottom:2px;
+  transition:height var(--transition-theme);
+}
+
+/* ticks canvas (top 60%) */
+.caliper-ticks{position:relative;width:88%;height:60%;margin-bottom:0}
+.caliper-ticks canvas{width:100%;height:100%}
+
+/* track + slider (bottom 40%) */
+.caliper-track-wrap{position:relative;width:88%;height:28%}
+.caliper-track-line{
+  position:absolute;top:50%;left:0;right:0;height:1px;
+  background:var(--caliper-track);transform:translateY(-50%);
+}
+.caliper-slider{
+  position:absolute;top:0;bottom:0;width:4px;
+  background:var(--caliper-slider-bg);border:1px solid var(--caliper-slider-border);
+  border-radius:2px;transform:translateX(-50%);cursor:grab;z-index:10;
+  transition:box-shadow 0.15s;
+}
+.caliper-slider::before{
+  content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;
+  border-bottom:7px solid var(--caliper-slider-bg);
+}
+.caliper-slider:hover{box-shadow:0 0 10px var(--caliper-slider-bg)}
+.caliper-slider.dragging{cursor:grabbing;box-shadow:0 0 16px var(--caliper-slider-bg)}
+
+/* stage boundaries */
+.stage-boundary-marker{
+  position:absolute;top:-30px;bottom:0;width:2px;
+  background:var(--stage-boundary);opacity:0.7;pointer-events:none;z-index:2;
+  transition:background var(--transition-theme);
+}
+.stage-boundary-label{
+  position:absolute;top:-42px;transform:translateX(-50%);
+  font-size:8px;font-weight:600;letter-spacing:1px;
+  color:var(--stage-boundary);white-space:nowrap;pointer-events:none;
+  opacity:0.7;
+}
+
+/* year display on slider */
+.current-year-display{
+  position:absolute;top:-22px;transform:translateX(-50%);
+  font-size:11px;color:var(--color-accent);font-weight:700;
+  white-space:nowrap;pointer-events:none;
+  text-shadow:0 0 8px var(--color-accent);
+}
+
+/* console theme dots */
+.panel-theme-dots{
+  display:flex;gap:5px;justify-content:center;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--color-border);
+}
+.panel-theme-dot{
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid transparent;cursor:pointer;
+  transition:transform 0.2s,border-color 0.2s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+.panel-theme-dot:hover{transform:scale(1.2)}
+.panel-theme-dot.active{border-color:#fff;transform:scale(1.15)}
+.panel-theme-dot.garden{background:#92A87C}
+.panel-theme-dot.code{background:#00ffcc}
+.panel-theme-dot.ai{background:#00d9ff}
+.panel-theme-dot.future{background:#888}
+
+/* --- MODAL --- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal-content{
+  background:var(--panel-bg);border-radius:16px;padding:28px;
+  max-width:480px;width:90%;max-height:80vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;
+  transform:scale(0.9);transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  border:var(--panel-border);color:var(--color-text);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.modal-overlay.active .modal-content{transform:scale(1)}
+.modal-close{
+  position:absolute;top:12px;right:12px;width:34px;height:34px;
+  border:none;background:var(--color-tag-bg);color:var(--color-text);
+  border-radius:50%;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:var(--color-accent);color:#fff}
+.modal-image{width:100%;height:190px;object-fit:cover;border-radius:8px;margin-bottom:14px;background:var(--color-tag-bg)}
+.modal-title{font-size:21px;font-weight:700;margin-bottom:8px}
+.modal-desc{font-size:14px;color:var(--color-muted);line-height:1.7;margin-bottom:14px}
+
+/* ============================================================
+   MOBILE (unchanged)
+   ============================================================ */
+.project-flow-mobile{display:none}
+@media(max-width:768px){
+  body{overflow-y:auto;overflow-x:hidden}
+  #china-map-bg{display:none}
+  #ui-overlay{position:relative;pointer-events:auto}
+  .header-section{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--color-bg);padding:12px 16px;border-bottom:1px solid var(--color-border);text-shadow:none}
+  .stage-description{text-shadow:none;font-size:14px}
+  .content-section{position:relative;top:auto;bottom:auto;margin-top:12vh;margin-bottom:var(--timeline-h);min-height:calc(100vh - 12vh - var(--timeline-h));pointer-events:auto}
+  .console-panel,.display-panel{display:none}
+  .project-flow-mobile{display:flex;flex-direction:column;gap:14px;padding:14px;max-width:420px;margin:0 auto}
+  .project-card-mobile{background:var(--panel-bg);border:var(--panel-border);border-radius:12px;overflow:hidden;cursor:pointer;text-shadow:none;transition:transform 0.2s}
+  .project-card-mobile:active{transform:scale(0.98)}
+  .card-image-mobile{width:100%;height:170px;object-fit:cover;background:var(--color-tag-bg)}
+  .card-content-mobile{padding:14px}
+  .card-title-mobile{font-size:16px;font-weight:600;color:var(--color-text);margin-bottom:4px}
+  .card-desc-mobile{font-size:13px;color:var(--color-muted);line-height:1.5;margin-bottom:8px}
+  .card-tags-mobile{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .card-tag-mobile{background:var(--color-tag-bg);color:var(--color-tag-text);padding:3px 10px;border-radius:12px;font-size:11px}
+  .card-location-mobile{font-size:11px;color:var(--color-muted)}
+  .timeline-section{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--color-bg);border-top:1px solid var(--color-border);height:var(--timeline-h)}
+  .current-year-display{font-size:9px;top:-16px}
+  .stage-timeline,.mouse-coords{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .caliper-slider,.modal-content{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="china-map-bg"></canvas>
+
+<div id="ui-overlay">
+
+  <header class="header-section">
+    <h1 class="stage-description" id="stage-desc">读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动</h1>
+  </header>
+
+  <main class="content-section" id="content-section">
+    <!-- LEFT DISPLAY -->
+    <div class="display-panel" id="display-panel">
+      <div id="display-content">选择右侧项目查看详情</div>
+    </div>
+
+    <!-- RIGHT CONSOLE + THEME -->
+    <div class="console-panel" id="console-panel">
+      <div class="panel-theme-dots" id="panel-theme-dots">
+        <button class="panel-theme-dot garden active" data-theme="garden" onclick="setTheme('garden')" title="风景园林"></button>
+        <button class="panel-theme-dot code" data-theme="code" onclick="setTheme('code')" title="千禧街机"></button>
+        <button class="panel-theme-dot ai" data-theme="ai" onclick="setTheme('ai')" title="AI未来"></button>
+        <button class="panel-theme-dot future" data-theme="future" onclick="setTheme('future')" title="未来"></button>
+      </div>
+      <div class="section-label">项目导航</div>
+      <div id="console-list"></div>
+    </div>
+
+    <!-- MOBILE -->
+    <div class="project-flow-mobile" id="project-flow-mobile"></div>
+  </main>
+
+  <!-- CALIPER TIMELINE -->
+  <footer class="timeline-section" id="timeline-section">
+    <div class="caliper-ticks" id="caliper-ticks">
+      <canvas id="ticks-canvas"></canvas>
+    </div>
+    <div class="caliper-track-wrap" id="caliper-track-wrap">
+      <div class="caliper-track-line"></div>
+      <div class="stage-boundary-marker" id="boundary-code"></div>
+      <div class="stage-boundary-label" id="boundary-code-label">街机</div>
+      <div class="stage-boundary-marker" id="boundary-ai"></div>
+      <div class="stage-boundary-label" id="boundary-ai-label">AI</div>
+      <div class="stage-boundary-marker" id="boundary-future"></div>
+      <div class="stage-boundary-label" id="boundary-future-label">未来</div>
+      <div class="caliper-slider" id="caliper-slider">
+        <div class="current-year-display" id="year-display">2016.9</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BOTTOM-RIGHT CORNER -->
+  <div class="stage-timeline" id="stage-timeline"></div>
+  <div class="mouse-coords" id="mouse-coords">0.00°N, 0.00°E</div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <img class="modal-image" id="modal-img" src="" alt="">
+    <h2 class="modal-title" id="modal-title"></h2>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="display-tags" id="modal-tags"></div>
+    <div class="display-location" style="margin-top:10px" id="modal-location"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const YEAR_START = 2016.75;  // 2016.9
+const YEAR_END   = 2027.0;    // 2026.12
+
+const STAGES = {
+  garden: { id:'garden', theme:'garden', yearStart:2016.75, yearEnd:2021.75,
+    title:'阶段一｜风景园林学习',
+    description:'读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动',
+    badge:'阶段 01',
+    primaryLat:34.28, primaryLng:108.07,
+    experiences:[
+      {year:2016.75,text:'西北农林科技大学 风景园林 本科入学'},
+      {year:2018.5,text:'获校级景观设计竞赛一等奖'},
+      {year:2020.5,text:'西安 ×× 景观设计院 实习'},
+      {year:2021.5,text:'西北农林科技大学 风景园林 本科毕业'}
+    ]},
+  code: { id:'code', theme:'code', yearStart:2021.75, yearEnd:2024.5,
+    title:'阶段二｜千禧街机 · 软件工程',
+    description:'读懂逻辑，读懂代码，用键盘敲击凌晨三点半程序的运行',
+    badge:'阶段 02',
+    primaryLat:30.27, primaryLng:120.12,
+    experiences:[
+      {year:2021.75,text:'浙江大学 软件工程 硕士入学'},
+      {year:2022.5,text:'开源项目获 GitHub Trending'},
+      {year:2023.5,text:'杭州 ×× 科技公司 后端开发实习'},
+      {year:2024.25,text:'浙江大学 软件工程 硕士毕业'}
+    ]},
+  ai: { id:'ai', theme:'ai', yearStart:2024.5, yearEnd:2026.58,
+    title:'阶段三｜AI未来 · 人工智能',
+    description:'读懂数据，读懂智能，用算法模拟未来三秒钟世界的重构',
+    badge:'阶段 03',
+    primaryLat:31.23, primaryLng:121.47,
+    experiences:[
+      {year:2024.75,text:'上海人工智能实验室 算法研究员'},
+      {year:2025.5,text:'多模态生成论文获 CVPR 接收'},
+      {year:2026.0,text:'端侧推理引擎开源发布'}
+    ]},
+  future: { id:'future', theme:'future', yearStart:2026.58, yearEnd:2027.0,
+    title:'未来 · Future',
+    description:'—— 内容预留，等待书写 ——',
+    badge:'未 来',
+    experiences:[] }
+};
+
+const PROJECTS = [
+  {id:'g1',title:'乡村花境方案设计',category:'景观设计',desc:'以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。',tags:['手绘','场地规划','植物配置'],location:'西安 · 2020-03',image:'https://picsum.photos/seed/garden1/600/260',mobileImage:'https://picsum.photos/seed/garden1-m/640/340',stage:'garden',year:2017.25,outcome:'设计方案被甲方采纳，项目已施工落地',link:'#',lat:34.34,lng:108.94},
+  {id:'g2',title:'庭院改造设计',category:'景观设计',desc:'城市中的私密空间设计，注重光影变化与四季植物选择，营造从室内到自然的过渡体验。',tags:['庭院设计','光影','植物'],location:'兰州 · 2020-08',image:'https://picsum.photos/seed/garden2/600/260',mobileImage:'https://picsum.photos/seed/garden2-m/640/340',stage:'garden',year:2019.5,outcome:'入选学院年度优秀作品展',link:'#',lat:36.06,lng:103.83},
+  {id:'g3',title:'城市公园生态改造',category:'景观设计',desc:'深圳某城市公园的生态化改造，将现代设计理念融入传统园林骨架之中。',tags:['城市设计','生态修复','公共空间'],location:'深圳 · 2021-06',image:'https://picsum.photos/seed/garden3/600/260',mobileImage:'https://picsum.photos/seed/garden3-m/640/340',stage:'garden',year:2020.75,outcome:'获市级景观设计竞赛二等奖',link:'#',lat:22.54,lng:114.06},
+  {id:'c1',title:'全栈开发者工具链',category:'系统开发',desc:'自研前端构建工具与组件库，从编译器原理到工程化实践的全链路探索。',tags:['TypeScript','AST','构建工具'],location:'北京 · 2023-03',image:'https://picsum.photos/seed/code1/600/260',mobileImage:'https://picsum.photos/seed/code1-m/640/340',stage:'code',year:2023.25,outcome:'开源项目获 1.2k Star，被多个团队采用',link:'#',lat:39.91,lng:116.40},
+  {id:'c2',title:'社区花园营造系统',category:'系统开发',desc:'与居民共同参与的社区花园数字化管理平台，强调互动性与可持续设计理念。',tags:['社区参与','可持续','全栈'],location:'杭州 · 2023-08',image:'https://picsum.photos/seed/code2/600/260',mobileImage:'https://picsum.photos/seed/code2-m/640/340',stage:'code',year:2023.75,outcome:'覆盖 3 个试点社区，服务 2000+ 居民',link:'#',lat:30.27,lng:120.15},
+  {id:'c3',title:'低延迟交易系统',category:'系统开发',desc:'面向金融场景的高性能C++交易引擎，从内存布局到网络协议的全栈优化。',tags:['C++','低延迟','系统编程'],location:'上海 · 2024-03',image:'https://picsum.photos/seed/code3/600/260',mobileImage:'https://picsum.photos/seed/code3-m/640/340',stage:'code',year:2024.25,outcome:'延迟降低至 12μs，达到行业领先水平',link:'#',lat:31.23,lng:121.47},
+  {id:'a1',title:'AI多模态内容生成',category:'AI研究',desc:'基于大语言模型与扩散模型的创意内容生成平台，融合视觉理解与文本创作。',tags:['LLM','Diffusion','多模态'],location:'上海 · 2024-09',image:'https://picsum.photos/seed/ai1/600/260',mobileImage:'https://picsum.photos/seed/ai1-m/640/340',stage:'ai',year:2024.75,outcome:'内部测试阶段，生成质量超基准模型 18%',link:'#',lat:31.23,lng:121.47},
+  {id:'a2',title:'智能城市数据可视化',category:'AI研究',desc:'结合实时数据流的城市运行态势感知系统，三维GIS与大屏交互展示。',tags:['GIS','实时数据','3D可视化'],location:'成都 · 2025-01',image:'https://picsum.photos/seed/ai2/600/260',mobileImage:'https://picsum.photos/seed/ai2-m/640/340',stage:'ai',year:2025.08,outcome:'中标某省会城市智慧交通项目',link:'#',lat:30.57,lng:104.07},
+  {id:'a3',title:'端侧推理引擎优化',category:'AI研究',desc:'面向移动与边缘设备的模型量化部署管线，从ONNX到TFLite的全流程。',tags:['ONNX','量化','边缘计算'],location:'深圳 · 2025-09',image:'https://picsum.photos/seed/ai3/600/260',mobileImage:'https://picsum.photos/seed/ai3-m/640/340',stage:'ai',year:2025.75,outcome:'模型体积压缩 72%，端侧推理速度提升 3.2×',link:'#',lat:22.54,lng:114.06},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentStage = 'garden';
+let selectedProjectId = null;
+let isDragging = false;
+
+// ============================================================
+// MAP CANVAS — with lon/lat projection & 3-level city markers
+// ============================================================
+const mapCanvas = document.getElementById('china-map-bg');
+const mapCtx = mapCanvas.getContext('2d');
+let mapParams = { cx:0, cy:0, scale:0 }; // updated on resize
+
+// Coordinate projection (simple cylindrical — China bounding box)
+const LON_MIN=73, LON_MAX=135, LAT_MIN=18, LAT_MAX=54;
+function lonLatToXY(lon,lat){
+  const x=(lon-LON_MIN)/(LON_MAX-LON_MIN)*0.96-0.05;
+  const y=0.44-(lat-LAT_MIN)/(LAT_MAX-LAT_MIN)*0.70;
+  return{x,y};
+}
+function XYToLonLat(x,y){
+  const lon=LON_MIN+(x+0.05)/0.96*(LON_MAX-LON_MIN);
+  const lat=LAT_MIN+(0.44-y)/0.70*(LAT_MAX-LAT_MIN);
+  return{lat,lng:lon};
+}
+
+function resizeMap(){ mapCanvas.width=window.innerWidth; mapCanvas.height=window.innerHeight; drawMap(); }
+
+function drawMap(){
+  const w=mapCanvas.width, h=mapCanvas.height;
+  const cx=w/2, cy=h*0.44, scale=Math.min(w,h)*0.44;
+  mapParams={cx,cy,scale};
+  mapCtx.clearRect(0,0,w,h);
+
+  // Radial gradient background
+  const grad=mapCtx.createRadialGradient(cx,cy,scale*0.3,cx,cy,scale*1.4);
+  const mapBg=getComputedStyle(document.documentElement).getPropertyValue('--map-bg').trim();
+  grad.addColorStop(0,mapBg);grad.addColorStop(1,'rgba(0,0,0,0.35)');
+  mapCtx.fillStyle=grad;mapCtx.fillRect(0,0,w,h);
+
+  // China outline
+  const strokeCol=getComputedStyle(document.documentElement).getPropertyValue('--map-stroke').trim();
+  mapCtx.strokeStyle=strokeCol;mapCtx.lineWidth=1.5;mapCtx.globalAlpha=0.45;
+  mapCtx.beginPath();
+  const body=[
+    [0.15,0.07],[0.25,0.03],[0.38,-0.02],[0.50,-0.01],[0.60,0.02],
+    [0.70,0.06],[0.78,0.11],[0.83,0.18],[0.80,0.26],[0.75,0.34],
+    [0.66,0.40],[0.56,0.42],[0.46,0.40],[0.36,0.37],
+    [0.26,0.34],[0.18,0.30],[0.10,0.25],[0.06,0.20],[0.09,0.14]
+  ];
+  mapCtx.moveTo(cx+body[0][0]*scale,cy+body[0][1]*scale);
+  for(let i=1;i<body.length;i++)mapCtx.lineTo(cx+body[i][0]*scale,cy+body[i][1]*scale);
+  mapCtx.closePath();mapCtx.stroke();
+  mapCtx.fillStyle=strokeCol;mapCtx.globalAlpha=0.06;mapCtx.fill();mapCtx.globalAlpha=1;
+
+  // Province lines
+  mapCtx.globalAlpha=0.10;mapCtx.lineWidth=1;
+  const prov=[
+    [[0.18,0.12],[0.32,0.08],[0.46,0.10],[0.58,0.09]],
+    [[0.22,0.22],[0.36,0.18],[0.50,0.22],[0.64,0.20]],
+    [[0.28,0.34],[0.42,0.30],[0.56,0.34],[0.66,0.32]],
+    [[0.20,0.42],[0.32,0.39],[0.44,0.38],[0.54,0.41]]
+  ];
+  prov.forEach(pts=>{mapCtx.beginPath();mapCtx.moveTo(cx+pts[0][0]*scale,cy+pts[0][1]*scale);for(let i=1;i<pts.length;i++)mapCtx.lineTo(cx+pts[i][0]*scale,cy+pts[i][1]*scale);mapCtx.stroke()});
+  mapCtx.globalAlpha=1;
+
+  // Surrounding geography
+  mapCtx.globalAlpha=0.06;mapCtx.font=`${scale*0.025}px sans-serif`;mapCtx.textAlign='center';
+  mapCtx.fillText('中亚 · Central Asia',cx-scale*0.88,cy-scale*0.12);
+  mapCtx.fillText('俄罗斯 · Russia',cx+scale*0.10,cy-scale*0.26);
+  mapCtx.fillText('蒙古 · Mongolia',cx+scale*0.38,cy-scale*0.18);
+  mapCtx.fillText('朝鲜半岛',cx+scale*0.84,cy+scale*0.12);
+  mapCtx.fillText('日本 · Japan',cx+scale*0.90,cy+scale*0.28);
+  mapCtx.fillText('东南亚',cx+scale*0.50,cy+scale*0.52);
+  mapCtx.fillText('南亚 · South Asia',cx-scale*0.32,cy+scale*0.46);
+  mapCtx.fillText('喜马拉雅',cx-scale*0.42,cy+scale*0.18);
+  mapCtx.textAlign='start';mapCtx.globalAlpha=1;
+
+  // ===== 3-LEVEL CITY MARKERS =====
+  const ac=getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+  const txtCol=getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim();
+  const stage=STAGES[currentStage];
+  const stageProjects=PROJECTS.filter(p=>p.stage===currentStage);
+  const selectedP=PROJECTS.find(p=>p.id===selectedProjectId);
+
+  // Helper: collect unique cities from project locations
+  const citySet=new Map();
+  stageProjects.forEach(p=>{const k=p.lat.toFixed(2)+','+p.lng.toFixed(2);if(!citySet.has(k))citySet.set(k,{lat:p.lat,lng:p.lng,name:p.location.split(' · ')[0]});});
+
+  // Level 1 — stage primary city (largest, anchor)
+  if(stage.primaryLat){
+    const p1=lonLatToXY(stage.primaryLat,stage.primaryLng);
+    const mx=cx+p1.x*scale, my=cy+p1.y*scale;
+    mapCtx.fillStyle=ac;mapCtx.globalAlpha=0.8;
+    mapCtx.beginPath();mapCtx.arc(mx,my,4,0,Math.PI*2);mapCtx.fill();
+    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.3;mapCtx.lineWidth=1.5;
+    mapCtx.beginPath();mapCtx.arc(mx,my,8,0,Math.PI*2);mapCtx.stroke();
+    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.55;mapCtx.font=`bold ${scale*0.024}px sans-serif`;
+    const primaryName=stage.experiences?.[0]?.text?.split(' ')[0]||stage.title.split('｜')[0]||'';
+    mapCtx.fillText(primaryName,mx+10,my+4);
+    mapCtx.globalAlpha=1;
+  }
+
+  // Level 2 — project location cities (medium)
+  citySet.forEach((c,k)=>{
+    if(selectedP&&Math.abs(c.lat-selectedP.lat)<0.01&&Math.abs(c.lng-selectedP.lng)<0.01)return; // skip selected
+    const p2=lonLatToXY(c.lat,c.lng);
+    const mx=cx+p2.x*scale, my=cy+p2.y*scale;
+    mapCtx.fillStyle=ac;mapCtx.globalAlpha=0.55;
+    mapCtx.beginPath();mapCtx.arc(mx,my,2.5,0,Math.PI*2);mapCtx.fill();
+    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.2;mapCtx.lineWidth=1;
+    mapCtx.beginPath();mapCtx.arc(mx,my,5,0,Math.PI*2);mapCtx.stroke();
+    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.35;mapCtx.font=`${scale*0.018}px sans-serif`;
+    mapCtx.fillText(c.name||'',mx+6,my+3);
+    mapCtx.globalAlpha=1;
+  });
+
+  // Level 3 — currently selected project city (highlighted, pulsing)
+  if(selectedP){
+    const p3=lonLatToXY(selectedP.lat,selectedP.lng);
+    const mx=cx+p3.x*scale, my=cy+p3.y*scale;
+    const pulse=1+0.15*Math.sin(Date.now()/600);
+    mapCtx.fillStyle=ac;mapCtx.globalAlpha=1;
+    mapCtx.beginPath();mapCtx.arc(mx,my,3.5*pulse,0,Math.PI*2);mapCtx.fill();
+    mapCtx.strokeStyle=ac;mapCtx.globalAlpha=0.5;mapCtx.lineWidth=2;
+    mapCtx.beginPath();mapCtx.arc(mx,my,7*pulse,0,Math.PI*2);mapCtx.stroke();
+    mapCtx.fillStyle=txtCol;mapCtx.globalAlpha=0.7;mapCtx.font=`bold ${scale*0.02}px sans-serif`;
+    const cityName=selectedP.location.split(' · ')[0];
+    mapCtx.fillText(cityName,mx+8,my+4);
+    mapCtx.globalAlpha=1;
+  }
+
+  // "中 国" centered label
+  mapCtx.globalAlpha=0.12;mapCtx.font=`300 ${scale*0.07}px serif`;mapCtx.textAlign='center';
+  mapCtx.fillText('中  国',cx,cy-scale*0.03);mapCtx.textAlign='start';mapCtx.globalAlpha=1;
+}
+
+// Mouse tracking
+mapCanvas.addEventListener('mousemove',e=>{
+  if(!mapParams.scale)return;
+  const x=(e.clientX-mapParams.cx)/mapParams.scale;
+  const y=(e.clientY-mapParams.cy)/mapParams.scale;
+  const ll=XYToLonLat(x,y);
+  const coords=document.getElementById('mouse-coords');
+  coords.textContent=ll.lat.toFixed(2)+'°N, '+ll.lng.toFixed(2)+'°E';
+  coords.classList.add('visible');
+});
+mapCanvas.addEventListener('mouseleave',()=>{
+  document.getElementById('mouse-coords').classList.remove('visible');
+});
+
+// Continuous map redraw for pulsing effect
+let mapAnimId;
+function startMapAnimation(){if(!mapAnimId)mapAnimId=setInterval(drawMap,60);}
+startMapAnimation();
+
+// ============================================================
+// PANELS
+// ============================================================
+function renderConsolePanel(stage){
+  const projects=PROJECTS.filter(p=>p.stage===stage);
+  const list=document.getElementById('console-list');
+  if(!projects.length){
+    list.innerHTML='<div style="text-align:center;opacity:0.4;padding:20px;font-size:13px">—— 内容预留 ——<br><span style="font-size:11px">等待未来书写</span></div>';
+    showEmptyDisplay();
+    return;
+  }
+  list.innerHTML=projects.map(p=>`
+    <div class="console-item${selectedProjectId===p.id?' active':''}" data-id="${p.id}">
+      <div class="ci-title">${p.title}</div>
+      <div class="ci-meta">📍 ${p.location}</div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.console-item').forEach(el=>el.addEventListener('click',()=>selectProject(el.dataset.id)));
+  if(!selectedProjectId||!projects.find(p=>p.id===selectedProjectId)){
+    selectProject(projects[0].id);
+  }
+}
+
+function selectProject(id){
+  selectedProjectId=id;
+  const p=PROJECTS.find(x=>x.id===id);
+  if(!p)return showEmptyDisplay();
+  const dc=document.getElementById('display-content');
+  dc.innerHTML=`
+    <img class="display-image" src="${p.image}" alt="${p.title}" loading="lazy" onerror="this.style.background='var(--color-tag-bg)';this.style.minHeight='200px'">
+    <div class="display-body">
+      <div class="display-category">${p.category||''}</div>
+      <div class="display-title">${p.title}</div>
+      <div class="display-subtitle">📍 ${p.location}</div>
+      <div class="display-divider"></div>
+      <div class="display-desc">${p.desc}</div>
+      <div class="display-divider"></div>
+      <div class="display-section-label">🏷 技 术 栈</div>
+      <div class="display-tags">${p.tags.map(t=>`<span class="display-tag">${t}</span>`).join('')}</div>
+      ${p.link?`<a class="display-link" href="${p.link}" target="_blank">→ 查看项目链接</a>`:''}
+      ${p.outcome?`<div class="display-divider"></div><div class="display-section-label">📊 成 果</div><div class="display-outcome">${p.outcome}</div>`:''}
+    </div>
+  `;
+  document.querySelectorAll('.console-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  drawMap(); // redraw map with highlighted city
+}
+
+// ===== BOTTOM-RIGHT EXPERIENCE TIMELINE (all stages, depth-of-field) =====
+let allExps=[]; // flat array of {year,text,stage} built once
+function buildAllExperiences(){
+  allExps=[];
+  for(const sid of ['garden','code','ai']){
+    (STAGES[sid].experiences||[]).forEach(e=>allExps.push({...e,stage:sid}));
+  }
+  allExps.sort((a,b)=>a.year-b.year);
+  renderAllExperiences();
+}
+
+function renderAllExperiences(){
+  const ct=document.getElementById('stage-timeline');
+  if(!allExps.length){ct.innerHTML='';return}
+  ct.innerHTML=allExps.map((e,i)=>`
+    <div class="st-entry out-of-focus" data-exp-idx="${i}" data-stage="${e.stage}">
+      <div class="st-dot-wrap">
+        <div class="st-dot"></div>
+        <div class="st-line"></div>
+      </div>
+      <div class="st-body">
+        <div class="st-year">${fmtYear(e.year)}</div>
+        <div class="st-text">${e.text}</div>
+      </div>
+    </div>
+  `).join('');
+  applyFocus(currentStage);
+}
+
+function applyFocus(stageId){
+  const entries=document.querySelectorAll('#stage-timeline .st-entry');
+  const target=document.querySelector(`#stage-timeline .st-entry[data-stage="${stageId}"]`);
+  entries.forEach(e=>{
+    const inStage=e.dataset.stage===stageId;
+    e.classList.toggle('in-focus',inStage);
+    e.classList.toggle('out-of-focus',!inStage);
+  });
+  // Scroll to first entry of this stage
+  if(target){
+    target.parentElement.scrollTo({top:target.offsetTop-target.parentElement.offsetTop-20,behavior:'smooth'});
+  }
+  // Highlight closest entry to slider
+  highlightClosestExp(yearFromRatio(parseFloat(slider.style.left)/100||0));
+}
+
+function highlightClosestExp(year){
+  const entries=document.querySelectorAll('#stage-timeline .st-entry');
+  entries.forEach(e=>e.classList.remove('active'));
+  if(!isFinite(year))return;
+  let closest=-1,closestDist=Infinity;
+  allExps.forEach((e,i)=>{const d=Math.abs(e.year-year);if(d<closestDist){closestDist=d;closest=i}});
+  if(closest>=0)entries[closest]?.classList.add('active');
+}
+
+function showEmptyDisplay(){
+  selectedProjectId=null;
+  document.getElementById('display-content').innerHTML=
+    currentStage==='future'
+      ?'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-muted);font-size:13px;opacity:0.35">—— 未来尚未书写 ——</div>'
+      :'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-muted);font-size:13px;opacity:0.35">选择右侧项目查看详情</div>';
+}
+
+// ============================================================
+// MOBILE FLOW (future NOT shown)
+// ============================================================
+function renderMobileFlow(stage){
+  if(stage==='future'){document.getElementById('project-flow-mobile').innerHTML='';return}
+  const projects=PROJECTS.filter(p=>p.stage===stage);
+  const c=document.getElementById('project-flow-mobile');
+  c.innerHTML=projects.map(p=>`
+    <div class="project-card-mobile" data-id="${p.id}">
+      <img class="card-image-mobile" src="${p.mobileImage}" alt="${p.title}" loading="lazy" onerror="this.style.background='var(--color-tag-bg)';this.style.minHeight='170px'">
+      <div class="card-content-mobile">
+        <div class="card-title-mobile">${p.title}</div>
+        <div class="card-desc-mobile">${p.desc}</div>
+        <div class="card-tags-mobile">${p.tags.map(t=>`<span class="card-tag-mobile">${t}</span>`).join('')}</div>
+        <div class="card-location-mobile">📍 ${p.location}</div>
+      </div>
+    </div>
+  `).join('');
+  c.querySelectorAll('.project-card-mobile').forEach(el=>{
+    el.addEventListener('click',()=>{const p=PROJECTS.find(x=>x.id===el.dataset.id);if(p)openModal(p)});
+  });
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function setTheme(theme){
+  currentStage=theme;
+  const s=STAGES[theme];
+  document.documentElement.setAttribute('data-theme',s.theme);
+  document.getElementById('stage-desc').textContent=s.description;
+  document.querySelectorAll('.panel-theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.theme===theme));
+  drawMap();drawTicks();updateBoundaries();
+  renderConsolePanel(theme);renderMobileFlow(theme);applyFocus(theme);
+}
+
+function detectStage(year){
+  if(year<STAGES.code.yearStart)return'garden';
+  if(year<STAGES.ai.yearStart)return'code';
+  if(year<STAGES.future.yearStart)return'ai';
+  return'future';
+}
+
+// ============================================================
+// CALIPER TICKS
+// ============================================================
+const ticksCanvas=document.getElementById('ticks-canvas');
+const ticksCtx=ticksCanvas.getContext('2d');
+
+function drawTicks(){
+  const wrap=document.getElementById('caliper-ticks');
+  const w=wrap.clientWidth, h=wrap.clientHeight;
+  ticksCanvas.width=w;ticksCanvas.height=h;ticksCtx.clearRect(0,0,w,h);
+
+  const totalYears=YEAR_END-YEAR_START;
+  const tickCol=getComputedStyle(document.documentElement).getPropertyValue('--caliper-tick').trim();
+  const labelCol=getComputedStyle(document.documentElement).getPropertyValue('--caliper-label').trim();
+  const boundaryCol=getComputedStyle(document.documentElement).getPropertyValue('--stage-boundary').trim();
+
+  // Year major ticks (full height)
+  for(let y=2017;y<=2026;y++){
+    const ratio=(y-YEAR_START)/totalYears, x=ratio*w;
+    ticksCtx.strokeStyle=tickCol;ticksCtx.lineWidth=1;
+    ticksCtx.beginPath();ticksCtx.moveTo(x,0);ticksCtx.lineTo(x,h);ticksCtx.stroke();
+    ticksCtx.fillStyle=labelCol;ticksCtx.font='9px sans-serif';ticksCtx.textAlign='center';
+    ticksCtx.fillText(y,x,h-2);ticksCtx.textAlign='start';
+    // Month minor ticks (lower 1/3 only)
+    for(let m=1;m<=11;m++){
+      const my=y+m/12;if(my>YEAR_END)break;
+      ticksCtx.beginPath();ticksCtx.moveTo((my-YEAR_START)/totalYears*w, h*0.67);ticksCtx.lineTo((my-YEAR_START)/totalYears*w, h);ticksCtx.stroke();
+    }
+  }
+
+  // "2026.12" end label
+  ticksCtx.fillStyle=labelCol;ticksCtx.font='9px sans-serif';ticksCtx.textAlign='center';
+  ticksCtx.fillText('2026.12',(YEAR_END-YEAR_START)/totalYears*w,h-2);ticksCtx.textAlign='start';
+
+  // Future zone tint (subtle)
+  const futureRatio=(STAGES.future.yearStart-YEAR_START)/totalYears;
+  ticksCtx.fillStyle='rgba(255,255,255,0.03)';
+  ticksCtx.fillRect(futureRatio*w,0,w-futureRatio*w,h);
+
+  // Stage boundaries on ticks
+  [STAGES.code.yearStart,STAGES.ai.yearStart,STAGES.future.yearStart].forEach(by=>{
+    const bx=(by-YEAR_START)/totalYears*w;
+    ticksCtx.strokeStyle=boundaryCol;ticksCtx.lineWidth=2;
+    ticksCtx.beginPath();ticksCtx.moveTo(bx,0);ticksCtx.lineTo(bx,h);ticksCtx.stroke();
+  });
+}
+
+// ============================================================
+// STAGE BOUNDARIES ON TRACK
+// ============================================================
+function updateBoundaries(){
+  const totalYears=YEAR_END-YEAR_START;
+  const trackW=document.getElementById('caliper-track-wrap').clientWidth;
+
+  function place(id,label,year,labelText){
+    const pct=(year-YEAR_START)/totalYears*100;
+    const el=document.getElementById(id);if(el)el.style.left=pct+'%';
+    const lbl=document.getElementById(label);if(lbl)lbl.style.left=pct+'%',lbl.textContent=labelText;
+  }
+  place('boundary-code','boundary-code-label',STAGES.code.yearStart,'街机');
+  place('boundary-ai','boundary-ai-label',STAGES.ai.yearStart,'AI');
+  place('boundary-future','boundary-future-label',STAGES.future.yearStart,'未来');
+}
+
+// ============================================================
+// SLIDER
+// ============================================================
+const slider=document.getElementById('caliper-slider');
+const trackWrap=document.getElementById('caliper-track-wrap');
+const yearDisplay=document.getElementById('year-display');
+
+function yearFromRatio(r){return YEAR_START+r*(YEAR_END-YEAR_START)}
+function ratioFromYear(y){return (y-YEAR_START)/(YEAR_END-YEAR_START)}
+function fmtYear(y){const yr=Math.floor(y);const mo=Math.round((y-yr)*12)+1;return yr+'.'+mo}
+
+function moveSlider(clientX){
+  const rect=trackWrap.getBoundingClientRect();
+  let r=(clientX-rect.left)/rect.width;r=Math.max(0,Math.min(1,r));
+  slider.style.left=(r*100)+'%';
+  const year=yearFromRatio(r);yearDisplay.textContent=fmtYear(year);
+  return year;
+}
+
+slider.addEventListener('pointerdown',e=>{e.preventDefault();isDragging=true;slider.classList.add('dragging');slider.setPointerCapture(e.pointerId)});
+slider.addEventListener('pointermove',e=>{if(!isDragging)return;const year=moveSlider(e.clientX);const st=detectStage(year);if(st!==currentStage)setTheme(st);else highlightClosestExp(year)});
+slider.addEventListener('pointerup',()=>{isDragging=false;slider.classList.remove('dragging')});
+slider.addEventListener('pointerleave',()=>{if(isDragging){isDragging=false;slider.classList.remove('dragging')}});
+
+trackWrap.addEventListener('pointerdown',e=>{if(e.target===slider||slider.contains(e.target))return;const year=moveSlider(e.clientX);const st=detectStage(year);if(st!==currentStage)setTheme(st);else highlightClosestExp(year)});
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(p){
+  document.getElementById('modal-img').src=p.image;
+  document.getElementById('modal-title').textContent=p.title;
+  document.getElementById('modal-desc').textContent=p.desc;
+  document.getElementById('modal-tags').innerHTML=p.tags.map(t=>`<span class="display-tag">${t}</span>`).join('');
+  document.getElementById('modal-location').textContent='📍 '+p.location;
+  document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('active');document.body.style.overflow=''}
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  buildAllExperiences();
+  resizeMap();window.addEventListener('resize',()=>{resizeMap();drawTicks();updateBoundaries()});
+  drawTicks();updateBoundaries();renderConsolePanel('garden');renderMobileFlow('garden');applyFocus('garden');
+  slider.style.left=(ratioFromYear(YEAR_START)*100)+'%';yearDisplay.textContent=fmtYear(YEAR_START);
+}
+init();
+</script>
+
+</body>
+</html>

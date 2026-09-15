@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="garden">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人履历 — 风景园林 × 软件工程 × AI工程</title>
+<style>
+/* ============================================================
+   GLOBAL RESET & CSS VARIABLES (地基层)
+   ============================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --blur-amount: 10px;
+  --touch-target: 48px;
+  --fs-title: clamp(2rem, 8vw, 4.5rem);
+  --header-h: 15vh;
+  --content-h: 70vh;
+  --timeline-h: 15vh;
+
+  /* fallback values */
+  --color-bg: #F5F0E6;
+  --color-text: #3C3228;
+  --color-accent: #92A87C;
+  --color-header-bg: #ffffff;
+  --color-header-border: #e0e0e0;
+  --color-card-bg: rgba(255,255,255,0.95);
+  --color-card-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  --color-tag-bg: #E8E3D9;
+  --color-tag-text: #5a5a5a;
+  --color-muted: #999;
+  --color-timeline-bg: #ffffff;
+  --color-timeline-track: #e0e0e0;
+  --color-stage-active: #3C3228;
+  --cursor-bg: #92A87C;
+  --cursor-shadow: 0 4px 12px rgba(146,168,124,0.3);
+  --transition-theme: 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ============================================================
+   THEME 1: 南法园林 [data-theme="garden"]
+   ============================================================ */
+[data-theme="garden"] {
+  --color-bg: #F5F0E6;
+  --color-text: #3C3228;
+  --color-accent: #92A87C;
+  --color-header-bg: #ffffff;
+  --color-header-border: #d4cfc4;
+  --color-card-bg: rgba(255,255,255,0.95);
+  --color-card-shadow: 0 4px 16px rgba(92,72,52,0.12);
+  --color-tag-bg: #E8E3D9;
+  --color-tag-text: #5a5a5a;
+  --color-muted: #999;
+  --color-timeline-bg: #ffffff;
+  --color-timeline-track: #e0e0e0;
+  --color-stage-active: #3C3228;
+  --color-stage-inactive: #bbb;
+  --cursor-bg: #92A87C;
+  --cursor-shadow: 0 4px 12px rgba(146,168,124,0.3);
+}
+
+/* ============================================================
+   THEME 2: 千禧街机 [data-theme="code"]
+   ============================================================ */
+[data-theme="code"] {
+  --color-bg: #1a1a2e;
+  --color-text: #EAEAEA;
+  --color-accent: #00ffcc;
+  --color-header-bg: #16213e;
+  --color-header-border: #00ffcc33;
+  --color-card-bg: #16213e;
+  --color-card-shadow: 0 4px 16px rgba(0,255,204,0.15);
+  --color-tag-bg: #0f3460;
+  --color-tag-text: #00ffcc;
+  --color-muted: #7a7a8a;
+  --color-timeline-bg: #16213e;
+  --color-timeline-track: #0f3460;
+  --color-stage-active: #00ffcc;
+  --color-stage-inactive: #555;
+  --cursor-bg: #00ffcc;
+  --cursor-shadow: 0 4px 16px rgba(0,255,204,0.4);
+}
+
+/* ============================================================
+   THEME 3: AI未来 [data-theme="ai"]
+   ============================================================ */
+[data-theme="ai"] {
+  --color-bg: #0a0a0a;
+  --color-text: #E0E0E0;
+  --color-accent: #00d9ff;
+  --color-header-bg: #111111;
+  --color-header-border: #00d9ff33;
+  --color-card-bg: #1a1a1a;
+  --color-card-shadow: 0 4px 16px rgba(0,217,255,0.15);
+  --color-tag-bg: #1a1a2e;
+  --color-tag-text: #00d9ff;
+  --color-muted: #666;
+  --color-timeline-bg: #111111;
+  --color-timeline-track: #1a1a2e;
+  --color-stage-active: #00d9ff;
+  --color-stage-inactive: #444;
+  --cursor-bg: #00d9ff;
+  --cursor-shadow: 0 4px 20px rgba(0,217,255,0.5);
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================ */
+@media (min-width:1201px) {
+  :root { --blur-amount:10px; }
+}
+@media (min-width:769px) and (max-width:1200px) {
+  :root { --blur-amount:5px; }
+}
+@media (max-width:768px) {
+  :root {
+    --blur-amount:0px;
+    --header-h:12vh;
+    --content-h:auto;
+    --timeline-h:15vh;
+    --touch-target:48px;
+  }
+}
+
+/* ============================================================
+   LAYOUT (骨架层)
+   ============================================================ */
+body {
+  font-family: 'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+  height: 100vh;
+  transition: background var(--transition-theme), color var(--transition-theme);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* HEADER */
+.header-section {
+  height: var(--header-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-header-border);
+  padding: 20px;
+  text-align: center;
+  transition: background var(--transition-theme), border-color var(--transition-theme), height var(--transition-theme);
+  flex-shrink: 0;
+}
+.stage-badge {
+  display: inline-block;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  transition: background var(--transition-theme);
+}
+.stage-description {
+  font-size: clamp(16px, 2.5vw, 24px);
+  font-weight: 400;
+  color: var(--color-text);
+  max-width: 800px;
+  line-height: 1.6;
+  transition: color var(--transition-theme);
+}
+
+/* CONTENT */
+.content-section {
+  height: var(--content-h);
+  position: relative;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background var(--transition-theme);
+}
+.china-map-container {
+  width: min(90%, 1000px);
+  height: 90%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-header-bg), var(--color-bg));
+  box-shadow: var(--color-card-shadow);
+  transition: all var(--transition-theme);
+  outline: 1px solid var(--color-header-border);
+}
+.china-map-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* MAP MARKERS */
+.map-marker {
+  cursor: pointer;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.map-marker:hover {
+  transform: scale(1.3);
+}
+.city-label {
+  font-size: 12px;
+  fill: var(--color-text);
+  pointer-events: none;
+  font-weight: 500;
+}
+
+/* PROJECT OVERLAY (desktop cards) */
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.project-card-overlay {
+  position: absolute;
+  max-width: 260px;
+  background: var(--color-card-bg);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--color-card-shadow);
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%,-50%);
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background var(--transition-theme);
+  border: 1px solid var(--color-header-border);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+}
+.project-card-overlay:hover {
+  transform: translate(-50%,-50%) translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  z-index: 20;
+}
+.project-card-overlay:active {
+  transform: translate(-50%,-50%) scale(0.98);
+}
+.card-image {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--color-tag-bg);
+}
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+.card-desc {
+  font-size: 12px;
+  color: var(--color-muted);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.card-tag {
+  background: var(--color-tag-bg);
+  color: var(--color-tag-text);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  transition: background var(--transition-theme), color var(--transition-theme);
+}
+.card-location {
+  font-size: 11px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* PROJECT FLOW (mobile info stream) */
+.project-flow {
+  display: none;
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  height: 100%;
+}
+.project-card-mobile {
+  background: var(--color-card-bg);
+  border-radius: 12px;
+  box-shadow: var(--color-card-shadow);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid var(--color-header-border);
+  cursor: pointer;
+}
+.project-card-mobile:active {
+  transform: scale(0.98);
+}
+.card-image-mobile {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: var(--color-tag-bg);
+}
+.card-content-mobile {
+  padding: 14px;
+}
+.card-title-mobile {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+.card-desc-mobile {
+  font-size: 13px;
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.card-tags-mobile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.card-tag-mobile {
+  background: var(--color-tag-bg);
+  color: var(--color-tag-text);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+}
+.card-location-mobile {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-content {
+  background: var(--color-card-bg);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  border: 1px solid var(--color-header-border);
+  color: var(--color-text);
+}
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--color-tag-bg);
+  color: var(--color-text);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: var(--color-accent); color: #fff; }
+.modal-image { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 16px; background: var(--color-tag-bg); }
+.modal-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.modal-desc { font-size: 15px; color: var(--color-muted); line-height: 1.7; margin-bottom: 16px; }
+
+/* TIMELINE */
+.timeline-section {
+  height: var(--timeline-h);
+  background: var(--color-timeline-bg);
+  border-top: 1px solid var(--color-header-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition-theme), border-color var(--transition-theme);
+  position: relative;
+}
+.timeline-track {
+  position: relative;
+  width: 80%;
+  height: 6px;
+  background: var(--color-timeline-track);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background var(--transition-theme);
+}
+.stage-backgrounds {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.stage-bg { flex:1; transition: background var(--transition-theme); }
+.stage-bg.garden { background: rgba(146,168,124,0.25); }
+.stage-bg.code   { background: rgba(0,255,204,0.15); }
+.stage-bg.ai     { background: rgba(0,217,255,0.15); }
+
+.drag-cursor {
+  position: absolute;
+  top: 50%;
+  left: 16.67%;
+  transform: translate(-50%,-50%);
+  width: 44px;
+  height: 44px;
+  background: var(--cursor-bg);
+  border-radius: 50%;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--cursor-shadow);
+  transition: background var(--transition-theme), box-shadow 0.2s, transform 0.1s;
+  z-index: 10;
+  user-select: none;
+  touch-action: none;
+}
+.drag-cursor:hover { transform: translate(-50%,-50%) scale(1.12); }
+.drag-cursor.dragging {
+  cursor: grabbing;
+  transform: translate(-50%,-50%) scale(1.2);
+  box-shadow: 0 8px 24px var(--color-accent);
+}
+
+.stage-markers {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin-top: 8px;
+}
+.stage-marker {
+  font-size: 13px;
+  color: var(--color-stage-inactive);
+  cursor: pointer;
+  text-align: center;
+  padding: 4px 12px;
+  border-radius: 8px;
+  transition: color var(--transition-theme), background 0.2s;
+  min-width: 72px;
+}
+.stage-marker:hover { background: var(--color-tag-bg); }
+.stage-marker.active {
+  color: var(--color-stage-active);
+  font-weight: 700;
+}
+.stage-marker-number {
+  display: block;
+  font-size: 10px;
+  margin-bottom: 2px;
+  opacity: 0.6;
+}
+
+/* THEME SWITCHER */
+.theme-switcher {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 150;
+  display: flex;
+  gap: 6px;
+}
+.theme-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.theme-dot:hover { transform: scale(1.15); }
+.theme-dot.active { border-color: #fff; transform: scale(1.1); }
+.theme-dot.garden { background: #92A87C; }
+.theme-dot.code   { background: #00ffcc; }
+.theme-dot.ai     { background: #00d9ff; }
+
+/* ============================================================
+   RESPONSIVE (适配层)
+   ============================================================ */
+@media (max-width:768px) {
+  body { overflow-y: auto; overflow-x: hidden; }
+  .app-container { height: auto; min-height: 100vh; }
+
+  .header-section {
+    position: fixed;
+    top:0; left:0; right:0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .stage-badge { font-size: 11px; padding: 3px 10px; }
+  .stage-description { font-size: 15px; max-width: 90%; }
+
+  .content-section {
+    margin-top: var(--header-h);
+    margin-bottom: var(--timeline-h);
+    height: auto;
+    min-height: calc(100vh - var(--header-h) - var(--timeline-h));
+    overflow-y: visible;
+    background: var(--color-bg);
+  }
+  .china-map-container { display: none; }
+  .project-flow { display: flex; }
+
+  .timeline-section {
+    position: fixed;
+    bottom:0; left:0; right:0;
+    z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    flex-direction: column;
+  }
+  .timeline-track { width: 280px; min-width: 280px; }
+  .stage-markers { width: 280px; min-width: 280px; gap: 8px; }
+  .stage-marker { font-size: 11px; min-width: 56px; padding: 4px 6px; }
+  .drag-cursor { width: 48px; height: 48px; }
+
+  .theme-switcher { top: auto; bottom: calc(var(--timeline-h) + 12px); right: 12px; }
+  .modal-content { width: 95%; padding: 20px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .project-card-overlay,
+  .drag-cursor,
+  .modal-content { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- THEME SWITCHER -->
+<div class="theme-switcher">
+  <button class="theme-dot garden active" data-theme="garden" title="南法园林" onclick="setTheme('garden')"></button>
+  <button class="theme-dot code" data-theme="code" title="千禧街机" onclick="setTheme('code')"></button>
+  <button class="theme-dot ai" data-theme="ai" title="AI未来" onclick="setTheme('ai')"></button>
+</div>
+
+<div class="app-container">
+
+  <!-- HEADER -->
+  <header class="header-section">
+    <div class="stage-badge">阶段 01</div>
+    <h1 class="stage-description">读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动</h1>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content-section">
+
+    <!-- DESKTOP: Map + Cards -->
+    <div class="china-map-container">
+      <svg class="china-map-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <!-- Map outline -->
+        <path d="M150,100 C200,80 300,70 400,90 C500,110 600,100 700,95 C800,90 880,85 930,100
+                 L950,150 C930,200 940,280 930,350 C900,380 850,410 820,430
+                 C780,450 720,460 680,470 C620,480 560,475 500,460
+                 C440,445 380,430 340,420 C280,410 230,400 180,390
+                 C150,380 130,350 120,300 C110,250 115,180 130,140 Z"
+              fill="var(--color-tag-bg)" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.6"/>
+        <!-- Province lines -->
+        <g stroke="var(--color-accent)" stroke-width="0.8" opacity="0.15">
+          <path d="M180,160 C250,150 350,155 450,160 C550,165 650,150 750,155" fill="none"/>
+          <path d="M160,230 C250,220 380,225 500,230 C620,235 750,225 830,230" fill="none"/>
+          <path d="M140,300 C230,290 360,295 500,300 C640,305 780,295 850,300" fill="none"/>
+          <path d="M150,370 C240,365 370,370 500,375 C630,380 760,370 830,375" fill="none"/>
+        </g>
+        <!-- City dots -->
+        <g id="city-markers">
+          <circle cx="340" cy="240" r="7" class="map-marker" fill="var(--color-accent)" stroke="#fff" stroke-width="2" data-city="xian"/>
+          <text x="355" y="235" class="city-label" fill="var(--color-text)" font-size="11">西安</text>
+
+          <circle cx="730" cy="340" r="7" class="map-marker" fill="var(--color-accent)" stroke="#fff" stroke-width="2" data-city="shenzhen"/>
+          <text x="745" y="335" class="city-label" fill="var(--color-text)" font-size="11">深圳</text>
+
+          <circle cx="650" cy="180" r="6" class="map-marker" fill="var(--color-accent)" stroke="#fff" stroke-width="2" data-city="beijing"/>
+          <text x="665" y="175" class="city-label" fill="var(--color-text)" font-size="11">北京</text>
+
+          <circle cx="440" cy="380" r="6" class="map-marker" fill="var(--color-accent)" stroke="#fff" stroke-width="2" data-city="shanghai"/>
+          <text x="455" y="375" class="city-label" fill="var(--color-text)" font-size="11">上海</text>
+
+          <circle cx="540" cy="280" r="6" class="map-marker" fill="var(--color-accent)" stroke="#fff" stroke-width="2" data-city="chengdu"/>
+          <text x="555" y="275" class="city-label" fill="var(--color-text)" font-size="11">成都</text>
+        </g>
+      </svg>
+      <!-- CARDS OVERLAY -->
+      <div class="project-overlay" id="desktop-cards"></div>
+    </div>
+
+    <!-- MOBILE: Project Flow -->
+    <div class="project-flow" id="mobile-cards"></div>
+
+  </main>
+
+  <!-- TIMELINE -->
+  <footer class="timeline-section">
+    <div class="timeline-track" id="timeline-track">
+      <div class="stage-backgrounds">
+        <div class="stage-bg garden"></div>
+        <div class="stage-bg code"></div>
+        <div class="stage-bg ai"></div>
+      </div>
+      <div class="drag-cursor" id="drag-cursor">🌱</div>
+    </div>
+    <div class="stage-markers">
+      <div class="stage-marker active" data-stage="garden">
+        <span class="stage-marker-number">01</span>风景园林
+      </div>
+      <div class="stage-marker" data-stage="code">
+        <span class="stage-marker-number">02</span>千禧街机
+      </div>
+      <div class="stage-marker" data-stage="ai">
+        <span class="stage-marker-number">03</span>AI未来
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-content" style="position:relative;">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <img class="modal-image" id="modal-img" src="" alt="">
+    <h2 class="modal-title" id="modal-title"></h2>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="card-tags" id="modal-tags"></div>
+    <div class="card-location" style="margin-top:12px;" id="modal-location"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const STAGES = {
+  garden: {
+    id:'garden', theme:'garden',
+    title:'阶段一｜风景园林学习',
+    description:'读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动',
+    badge:'阶段 01',
+    cursor:'🌱',
+    icon:'👨‍🌾',
+    position: 16.67
+  },
+  code: {
+    id:'code', theme:'code',
+    title:'阶段二｜千禧街机 · 软件工程',
+    description:'读懂逻辑，读懂代码，用键盘敲击凌晨三点半程序的运行',
+    badge:'阶段 02',
+    cursor:'🎮',
+    icon:'👨‍💻',
+    position: 50
+  },
+  ai: {
+    id:'ai', theme:'ai',
+    title:'阶段三｜AI未来 · 人工智能',
+    description:'读懂数据，读懂智能，用算法模拟未来三秒钟世界的重构',
+    badge:'阶段 03',
+    cursor:'🤖',
+    icon:'🤖',
+    position: 83.33
+  }
+};
+
+const PROJECTS = [
+  { id:'g1', title:'乡村花境方案设计', desc:'以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。', tags:['手绘','场地规划','植物配置'], location:'西安 · 2020-03', image:'https://picsum.photos/seed/garden1/520/200', mobileImage:'https://picsum.photos/seed/garden1-m/640/360', city:'xian', stage:'garden', top:28, left:28 },
+  { id:'g2', title:'庭院改造设计', desc:'城市中的私密空间设计，注重光影变化与四季植物选择。', tags:['庭院设计','光影','植物'], location:'兰州 · 2020-08', image:'https://picsum.photos/seed/garden2/520/200', mobileImage:'https://picsum.photos/seed/garden2-m/640/360', city:'xian', stage:'garden', top:42, left:32 },
+  { id:'c1', title:'城市公园生态改造', desc:'深圳某城市公园的生态化改造，融合现代设计理念与传统园林美学。', tags:['城市设计','生态修复','公共空间'], location:'深圳 · 2021-06', image:'https://picsum.photos/seed/code1/520/200', mobileImage:'https://picsum.photos/seed/code1-m/640/360', city:'shenzhen', stage:'code', top:62, left:55 },
+  { id:'c2', title:'社区花园营造', desc:'与居民共同参与的社区花园项目，强调互动性与可持续性设计理念。', tags:['社区参与','可持续','花园'], location:'杭州 · 2021-11', image:'https://picsum.photos/seed/code2/520/200', mobileImage:'https://picsum.photos/seed/code2-m/640/360', city:'shenzhen', stage:'code', top:72, left:52 },
+  { id:'c3', title:'全栈开发者工具链', desc:'自研前端构建工具与组件库，从编译器原理到工程化实践的全链路探索。', tags:['TypeScript','AST','构建工具'], location:'北京 · 2023-03', image:'https://picsum.photos/seed/code3/520/200', mobileImage:'https://picsum.photos/seed/code3-m/640/360', city:'beijing', stage:'code', top:25, left:58 },
+  { id:'a1', title:'AI多模态内容生成', desc:'基于大语言模型与扩散模型的创意内容生成平台，融合视觉与文本理解。', tags:['LLM','Diffusion','多模态'], location:'上海 · 2024-09', image:'https://picsum.photos/seed/ai1/520/200', mobileImage:'https://picsum.photos/seed/ai1-m/640/360', city:'shanghai', stage:'ai', top:50, left:45 },
+  { id:'a2', title:'智能城市数据可视化', desc:'结合实时数据流的城市运行态势感知系统，三维GIS与大屏交互展示。', tags:['GIS','实时数据','3D可视化'], location:'成都 · 2025-01', image:'https://picsum.photos/seed/ai2/520/200', mobileImage:'https://picsum.photos/seed/ai2-m/640/360', city:'chengdu', stage:'ai', top:38, left:50 },
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentStage = 'garden';
+let isDragging = false;
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderCards(stage) {
+  const projects = PROJECTS.filter(p => p.stage === stage);
+  const desktop = document.getElementById('desktop-cards');
+  const mobile = document.getElementById('mobile-cards');
+
+  // Desktop overlay cards
+  desktop.innerHTML = projects.map(p => `
+    <div class="project-card-overlay" style="top:${p.top}%;left:${p.left}%;" data-id="${p.id}">
+      <img class="card-image" src="${p.image}" alt="${p.title}" loading="lazy" onerror="this.style.background='var(--color-tag-bg)';this.style.display='block'">
+      <div class="card-title">${p.title}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-tags">${p.tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>
+      <div class="card-location">📍 ${p.location}</div>
+    </div>
+  `).join('');
+
+  // Mobile flow cards
+  mobile.innerHTML = projects.map(p => `
+    <div class="project-card-mobile" data-id="${p.id}">
+      <img class="card-image-mobile" src="${p.mobileImage}" alt="${p.title}" loading="lazy" onerror="this.style.background='var(--color-tag-bg)';this.style.display='block';this.style.minHeight='180px'">
+      <div class="card-content-mobile">
+        <div class="card-title-mobile">${p.title}</div>
+        <div class="card-desc-mobile">${p.desc}</div>
+        <div class="card-tags-mobile">${p.tags.map(t=>`<span class="card-tag-mobile">${t}</span>`).join('')}</div>
+        <div class="card-location-mobile">📍 ${p.location}</div>
+      </div>
+    </div>
+  `).join('');
+
+  bindCardClicks(projects);
+}
+
+function bindCardClicks(projects) {
+  document.querySelectorAll('.project-card-overlay, .project-card-mobile').forEach(el => {
+    el.addEventListener('pointerup', (e) => {
+      const id = el.dataset.id;
+      const p = projects.find(x => x.id === id) || PROJECTS.find(x => x.id === id);
+      if (p) openModal(p);
+    });
+  });
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(p) {
+  document.getElementById('modal-img').src = p.image;
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-desc').textContent = p.desc;
+  document.getElementById('modal-tags').innerHTML = p.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+  document.getElementById('modal-location').textContent = '📍 ' + p.location;
+  document.getElementById('modal-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ============================================================
+   THEME SWITCHING
+   ============================================================ */
+function setTheme(theme) {
+  currentStage = theme;
+  const s = STAGES[theme];
+  document.documentElement.setAttribute('data-theme', theme);
+
+  // Update header
+  document.querySelector('.stage-badge').textContent = s.badge;
+  document.querySelector('.stage-description').textContent = s.description;
+
+  // Update cursor
+  const cursor = document.getElementById('drag-cursor');
+  cursor.textContent = s.cursor;
+  cursor.style.left = s.position + '%';
+
+  // Update active marker
+  document.querySelectorAll('.stage-marker').forEach(m => m.classList.remove('active'));
+  document.querySelector(`.stage-marker[data-stage="${theme}"]`).classList.add('active');
+
+  // Update theme dots
+  document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+  document.querySelector(`.theme-dot[data-theme="${theme}"]`).classList.add('active');
+
+  // Re-render cards
+  renderCards(theme);
+}
+
+/* ============================================================
+   TIMELINE DRAG (Interaction Layer)
+   ============================================================ */
+const track = document.getElementById('timeline-track');
+const cursor = document.getElementById('drag-cursor');
+
+function stageFromX(ratio) {
+  if (ratio < 0.333) return 'garden';
+  if (ratio < 0.666) return 'code';
+  return 'ai';
+}
+function positionForStage(stage) {
+  return STAGES[stage].position;
+}
+
+function moveCursor(clientX) {
+  const rect = track.getBoundingClientRect();
+  let ratio = (clientX - rect.left) / rect.width;
+  ratio = Math.max(0, Math.min(1, ratio));
+  const pct = ratio * 100;
+  cursor.style.left = pct + '%';
+  return ratio;
+}
+
+function snapCursor(ratio) {
+  const stage = stageFromX(ratio);
+  const pos = positionForStage(stage);
+  cursor.style.left = pos + '%';
+  if (currentStage !== stage) setTheme(stage);
+}
+
+// Pointer Events
+cursor.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  isDragging = true;
+  cursor.classList.add('dragging');
+  cursor.setPointerCapture(e.pointerId);
+});
+
+cursor.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  moveCursor(e.clientX);
+});
+
+cursor.addEventListener('pointerup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  cursor.classList.remove('dragging');
+  const rect = track.getBoundingClientRect();
+  const ratio = (parseFloat(cursor.style.left) || 16.67) / 100;
+  snapCursor(ratio);
+});
+
+// Click on track
+track.addEventListener('pointerdown', (e) => {
+  if (e.target === cursor || cursor.contains(e.target)) return;
+  const ratio = moveCursor(e.clientX);
+  snapCursor(ratio);
+});
+
+// Stage marker clicks
+document.querySelectorAll('.stage-marker').forEach(marker => {
+  marker.addEventListener('pointerdown', (e) => {
+    const stage = marker.dataset.stage;
+    cursor.style.left = positionForStage(stage) + '%';
+    setTheme(stage);
+  });
+});
+
+/* ============================================================
+   RESPONSIVE HANDLING
+   ============================================================ */
+function handleResize() {
+  const width = window.innerWidth;
+  const mobile = width <= 768;
+  document.body.style.overflow = mobile ? 'auto' : 'hidden';
+}
+
+window.addEventListener('resize', handleResize);
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  renderCards('garden');
+  handleResize();
+}
+init();
+</script>
+
+</body>
+</html>

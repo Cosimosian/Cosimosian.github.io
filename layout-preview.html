@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人履历网站 - 布局预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 主容器 */
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部区域 - 15% */
+        .header-section {
+            height: 15vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 桌面端头部 */
+        @media (min-width: 769px) {
+            .header-section {
+                position: static;
+                height: 15vh;
+            }
+        }
+
+        /* 移动端头部 - 固定定位 */
+        @media (max-width: 768px) {
+            .header-section {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 12vh;
+                z-index: 1000;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .stage-description {
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* 内容区域 - 70% */
+        .content-section {
+            height: 70vh;
+            position: relative;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 桌面端内容 */
+        @media (min-width: 769px) {
+            .content-section {
+                height: 70vh;
+                overflow: hidden;
+            }
+        }
+
+        /* 移动端内容 - 可滚动 */
+        @media (max-width: 768px) {
+            .content-section {
+                margin-top: 12vh;
+                margin-bottom: 15vh;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* 地图容器 */
+        .china-map-container {
+            width: 90%;
+            height: 90%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        /* SVG地图样式 */
+        .china-map-svg {
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+            max-height: 600px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .china-map {
+            fill: var(--map-primary);
+            stroke: var(--map-border);
+            stroke-width: 1;
+            transition: all 0.3s ease;
+        }
+
+        .china-map:hover {
+            fill: var(--map-secondary);
+            cursor: pointer;
+        }
+
+        .provinces {
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .china-map-container:hover .provinces {
+            opacity: 0.5;
+        }
+
+        .map-marker {
+            fill: var(--map-marker);
+            stroke: white;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-marker:hover {
+            r: 12;
+            fill: var(--map-marker-hover);
+        }
+
+        /* 主题变量 */
+        :root {
+            --map-primary: #ff6b6b;
+            --map-secondary: #00ffcc;
+            --map-tertiary: #00d9ff;
+            --map-border: #333;
+            --map-marker: #ff6b6b;
+            --map-marker-hover: #ff8787;
+        }
+
+        /* 园林主题 */
+        [data-theme="garden"] {
+            --map-primary: #ff6b6b;
+            --map-secondary: #4ecdc4;
+            --map-tertiary: #45b7d1;
+            --map-border: #3c3228;
+            --map-marker: #ff6b6b;
+            --map-marker-hover: #ff8787;
+        }
+
+        /* 街机主题 */
+        [data-theme="code"] {
+            --map-primary: #1a1a2e;
+            --map-secondary: #00ffcc;
+            --map-tertiary: #16213e;
+            --map-border: #00ffcc;
+            --map-marker: #00ffcc;
+            --map-marker-hover: #00ff88;
+        }
+
+        /* AI主题 */
+        [data-theme="ai"] {
+            --map-primary: #0a0a0a;
+            --map-secondary: #00d9ff;
+            --map-tertiary: #1a1a1a;
+            --map-border: #00d9ff;
+            --map-marker: #00d9ff;
+            --map-marker-hover: #00f0ff;
+        }
+
+        /* 定位点 */
+        .location-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .location-marker:hover {
+            transform: scale(1.1);
+        }
+
+        .marker-xian {
+            top: 35%;
+            left: 35%;
+        }
+
+        .marker-shenzhen {
+            top: 60%;
+            right: 30%;
+        }
+
+        /* 项目卡片叠加层 - 桌面端 */
+        .project-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .project-card-overlay {
+            position: absolute;
+            width: 280px;
+            height: 120px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            padding: 12px;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .project-card-overlay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .project-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .tag {
+            background: #e0e0e0;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+
+        .project-location {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* 移动端项目信息流 */
+        .project-flow {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 桌面端隐藏信息流 */
+        @media (min-width: 769px) {
+            .project-flow {
+                display: none;
+            }
+        }
+
+        /* 移动端显示信息流 */
+        @media (max-width: 768px) {
+            .china-map-container {
+                display: none;
+            }
+            
+            .project-flow {
+                display: block;
+            }
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .project-image-mobile {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 16px;
+        }
+
+        .project-title-mobile {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .project-desc-mobile {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .project-tags-mobile {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tag-mobile {
+            background: #e0e0e0;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        .project-location-mobile {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+
+        /* 滚动按钮样式 */
+        .scroll-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-btn:hover {
+            background: #555;
+            transform: scale(1.1);
+        }
+
+        .scroll-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 移动端滚动优化 */
+        @media (max-width: 768px) {
+            .content-section {
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .project-card {
+                touch-action: pan-y;
+            }
+        }
+
+        /* 移动端滚动按钮显示 */
+        @media (max-width: 768px) {
+            .scroll-btn {
+                display: block;
+            }
+        }
+
+        .project-card-overlay {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 280px;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s;
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        .project-card-overlay:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            opacity: 1;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .project-card-overlay .project-image {
+            width: 100%;
+            height: 120px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            background: #f0f0f0;
+        }
+
+        .project-card-overlay .project-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .project-card-overlay .project-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .project-card-overlay .project-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .project-card-overlay .tag {
+            background: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .project-card-overlay .project-location {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 项目卡片位置 */
+        .project-card-xian {
+            top: 30%;
+            left: 35%;
+        }
+
+        .project-card-shenzhen {
+            top: 65%;
+            right: 28%;
+        }
+
+        /* 城市tooltip */
+        .city-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .map-marker:hover + .city-tooltip,
+        .map-marker.tooltip-visible {
+            opacity: 1;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* 项目卡片 */
+        .project-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .project-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .project-card-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .project-card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e0e0e0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .project-card-location {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+/* 时间轴区域 - 8% */
+        .timeline-section {
+            height: 8vh;
+            background: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        /* 轨道 */
+        .timeline-track {
+            position: relative;
+            width: 80%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        /* 分区背景 */
+        .stage-backgrounds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+
+        .stage-bg {
+            flex: 1;
+            height: 100%;
+        }
+
+        .stage-bg.garden {
+            background: rgba(146, 168, 124, 0.2);
+        }
+
+        .stage-bg.code {
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .stage-bg.ai {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        /* 阶段标记 */
+        .stage-markers {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10%;
+        }
+
+        .stage-marker {
+            font-size: 14px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+            text-align: center;
+        }
+
+        .stage-marker.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .stage-marker-number {
+            display: block;
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .stage-marker.active .stage-marker-number {
+            color: #666;
+        }
+
+        /* 游标 */
+        .drag-cursor {
+            position: absolute;
+            top: 50%;
+            left: 16.67%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 10;
+        }
+
+        .drag-cursor:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .drag-cursor:active {
+            cursor: grabbing;
+        }
+
+        /* 连接线（波浪线） */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,107,107,0.5), rgba(255,107,107,0.2));
+            z-index: 5;
+        }
+
+        .connection-line-left {
+            top: 30%;
+            left: 35%;
+            width: 60px;
+            transform: rotate(-30deg);
+        }
+
+        .connection-line-right {
+            top: 60%;
+            right: 30%;
+            width: 60px;
+            transform: rotate(30deg);
+        }
+
+        /* 主题切换按钮（用于预览） */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .theme-switcher h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .theme-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .theme-btn.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        /* 时间轴区域 - 15% */
+        .timeline-section {
+            height: 15vh;
+            background: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        /* 桌面端时间轴 */
+        @media (min-width: 769px) {
+            .timeline-section {
+                position: static;
+                height: 15vh;
+            }
+        }
+
+        /* 移动端时间轴 - 固定定位 */
+        @media (max-width: 768px) {
+            .timeline-section {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 15vh;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* 时间轴轨道 */
+        .timeline-track {
+            position: relative;
+            width: 80%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        /* 移动端时间轴轨道 */
+        @media (max-width: 768px) {
+            .timeline-track {
+                width: 300px;
+                height: 60%;
+                min-width: 300px;
+            }
+        }
+
+        /* 分区背景 */
+        .stage-backgrounds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+
+        .stage-bg {
+            flex: 1;
+            height: 100%;
+        }
+
+        .stage-bg.garden {
+            background: rgba(146, 168, 124, 0.2);
+        }
+
+        .stage-bg.code {
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .stage-bg.ai {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        /* 阶段标记 */
+        .stage-markers {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10%;
+        }
+
+        /* 桌面端阶段标记 */
+        @media (min-width: 769px) {
+            .stage-markers {
+                position: absolute;
+                bottom: 30px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: space-around;
+                padding: 0 10%;
+            }
+        }
+
+        /* 移动端阶段标记 */
+        @media (max-width: 768px) {
+            .stage-markers {
+                position: static;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                width: 100%;
+                padding: 0 20px;
+                margin-top: 10px;
+            }
+        }
+
+        .stage-marker {
+            font-size: 14px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+            text-align: center;
+        }
+
+        .stage-marker:hover {
+            color: #333;
+        }
+
+        .stage-marker.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .stage-marker-number {
+            display: block;
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .stage-marker.active .stage-marker-number {
+            color: #666;
+        }
+
+        /* 移动端阶段标记样式 */
+        @media (max-width: 768px) {
+            .stage-marker {
+                font-size: 12px;
+                min-width: 60px;
+                text-align: center;
+                padding: 8px;
+                border-radius: 50%;
+                transition: all 0.3s;
+            }
+
+            .stage-marker:hover {
+                background: #f0f0f0;
+            }
+
+            .stage-marker-number {
+                font-size: 10px;
+            }
+        }
+
+        /* 游标 */
+        .drag-cursor {
+            position: absolute;
+            top: 50%;
+            left: 16.67%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 10;
+        }
+
+        /* 移动端游标样式 */
+        @media (max-width: 768px) {
+            .drag-cursor {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+
+        .drag-cursor:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .drag-cursor:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        /* 移动端信息流布局 */
+        .project-flow {
+            display: none;
+            padding: 20px 15px;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .china-map-container {
+                display: none;
+            }
+            
+            .project-flow {
+                display: flex;
+            }
+        }
+
+        .project-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-image-mobile {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .project-content {
+            padding: 16px;
+        }
+
+        .project-title-mobile {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .project-desc-mobile {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .project-tags-mobile {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tag-mobile {
+            background: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .project-location-mobile {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 滚动条样式 */
+        .content-section::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .content-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .content-section::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 2px;
+        }
+
+        .timeline-section::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .timeline-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .timeline-section::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 2px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .content-section {
+                margin-top: 12vh;
+                margin-bottom: 15vh;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .stage-description {
+                font-size: 18px;
+                max-width: 90%;
+            }
+
+            .project-flow {
+                gap: 16px;
+                padding: 15px;
+            }
+
+            .project-card {
+                border-radius: 8px;
+            }
+
+            .project-image-mobile {
+                height: 180px;
+            }
+
+            .project-content {
+                padding: 12px;
+            }
+
+            .project-title-mobile {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+
+            .project-desc-mobile {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主题切换器（预览用） -->
+    <div class="theme-switcher">
+        <h4>主题预览</h4>
+        <button class="theme-btn active" onclick="switchTheme('garden')">园林主题</button>
+        <button class="theme-btn" onclick="switchTheme('code')">街机主题</button>
+        <button class="theme-btn" onclick="switchTheme('ai')">AI主题</button>
+    </div>
+
+    <div class="app-container" data-theme="garden">
+        <!-- 头部区域 - 15% -->
+        <header class="header-section">
+            <div class="stage-badge">阶段01</div>
+            <h2 class="stage-description">读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动</h2>
+        </header>
+
+        <!-- 内容区域 - 70% -->
+        <main class="content-section">
+            <!-- 中国地图容器 - 桌面端 -->
+            <div class="china-map-container">
+                <!-- SVG中国地图 -->
+                <svg class="china-map-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 中国地图轮廓 -->
+                    <g class="china-map">
+                        <!-- 中国大陆轮廓（简化版） -->
+                        <path d="M200,150 C250,120 300,100 350,120 C400,140 450,160 500,150 C550,140 600,130 650,140 C700,150 750,160 800,150 C850,140 900,130 950,140 L950,450 C900,440 850,430 800,440 C750,450 700,460 650,450 C600,440 550,430 500,440 C450,450 400,460 350,450 C300,440 250,430 200,440 Z" 
+                              fill="var(--map-primary)" stroke="var(--map-border)" stroke-width="2"/>
+                        
+                        <!-- 主要城市标记点 -->
+                        <circle cx="350" cy="250" r="8" fill="var(--map-marker)" class="map-marker" data-city="xian" title="西安"/>
+                        <circle cx="750" cy="350" r="8" fill="var(--map-marker)" class="map-marker" data-city="shenzhen" title="深圳"/>
+                        <circle cx="650" cy="200" r="8" fill="var(--map-marker)" class="map-marker" data-city="beijing" title="北京"/>
+                        <circle cx="450" cy="400" r="8" fill="var(--map-marker)" class="map-marker" data-city="shanghai" title="上海"/>
+                        <circle cx="550" cy="300" r="8" fill="var(--map-marker)" class="map-marker" data-city="chengdu" title="成都"/>
+                    </g>
+                    
+                    <!-- 省份轮廓（简化版） -->
+                    <g class="provinces">
+                        <path d="M250,180 C300,170 350,180 400,170 C450,160 500,170 550,180" 
+                              fill="none" stroke="var(--map-secondary)" stroke-width="2"/>
+                        <path d="M350,250 C400,240 450,250 500,240 C550,230 600,240 650,250" 
+                              fill="none" stroke="var(--map-tertiary)" stroke-width="2"/>
+                        <path d="M450,350 C500,340 550,350 600,340 C650,330 700,340 750,350" 
+                              fill="none" stroke="var(--map-primary)" stroke-width="2"/>
+                    </g>
+                </svg>
+                
+                <!-- 项目卡片叠加层 - 桌面端 -->
+                <div class="project-overlay">
+                    <div class="project-card-overlay project-card-xian">
+                        <img class="project-image" src="https://picsum.photos/seed/xian-garden/280/120.jpg" alt="乡村花境方案设计">
+                        <div class="project-title">乡村花境方案设计</div>
+                        <div class="project-desc">以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。</div>
+                        <div class="project-tags">
+                            <span class="tag">手绘</span>
+                            <span class="tag">场地规划</span>
+                            <span class="tag">植物配置</span>
+                        </div>
+                        <div class="project-location">📍 西安 · 2020-03</div>
+                    </div>
+                    
+                    <div class="project-card-overlay project-card-xian" style="top: 45%; left: 40%;">
+                        <img class="project-image" src="https://picsum.photos/seed/lanzhou-courtyard/280/120.jpg" alt="庭院改造设计">
+                        <div class="project-title">庭院改造设计</div>
+                        <div class="project-desc">城市中的私密空间设计，注重光影变化与四季植物选择。</div>
+                        <div class="project-tags">
+                            <span class="tag">庭院设计</span>
+                            <span class="tag">光影</span>
+                        </div>
+                        <div class="project-location">📍 兰州 · 2020-08</div>
+                    </div>
+                    
+                    <div class="project-card-overlay project-card-shenzhen">
+                        <img class="project-image" src="https://picsum.photos/seed/shenzhen-park/280/120.jpg" alt="城市公园改造">
+                        <div class="project-title">城市公园改造</div>
+                        <div class="project-desc">深圳某城市公园的生态化改造，融合现代设计理念与传统园林美学。</div>
+                        <div class="project-tags">
+                            <span class="tag">城市设计</span>
+                            <span class="tag">生态修复</span>
+                            <span class="tag">公共空间</span>
+                        </div>
+                        <div class="project-location">📍 深圳 · 2021-06</div>
+                    </div>
+                    
+                    <div class="project-card-overlay project-card-shenzhen" style="top: 75%; right: 25%;">
+                        <img class="project-image" src="https://picsum.photos/seed/hangzhou-community/280/120.jpg" alt="社区花园营造">
+                        <div class="project-title">社区花园营造</div>
+                        <div class="project-desc">与居民共同参与的社区花园项目，强调互动性与可持续性。</div>
+                        <div class="project-tags">
+                            <span class="tag">社区参与</span>
+                            <span class="tag">可持续</span>
+                        </div>
+                        <div class="project-location">📍 杭州 · 2021-11</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 项目信息流 - 移动端 -->
+            <div class="project-flow">
+                <div class="project-card">
+                    <img class="project-image-mobile" src="https://picsum.photos/seed/xian-garden-mobile/320/200.jpg" alt="乡村花境方案设计">
+                    <div class="project-content">
+                        <div class="project-title-mobile">乡村花境方案设计</div>
+                        <div class="project-desc-mobile">以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。</div>
+                        <div class="project-tags-mobile">
+                            <span class="tag-mobile">手绘</span>
+                            <span class="tag-mobile">场地规划</span>
+                            <span class="tag-mobile">植物配置</span>
+                        </div>
+                        <div class="project-location-mobile">📍 西安 · 2020-03</div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img class="project-image-mobile" src="https://picsum.photos/seed/lanzhou-courtyard-mobile/320/200.jpg" alt="庭院改造设计">
+                    <div class="project-content">
+                        <div class="project-title-mobile">庭院改造设计</div>
+                        <div class="project-desc-mobile">城市中的私密空间设计，注重光影变化与四季植物选择。</div>
+                        <div class="project-tags-mobile">
+                            <span class="tag-mobile">庭院设计</span>
+                            <span class="tag-mobile">光影</span>
+                        </div>
+                        <div class="project-location-mobile">📍 兰州 · 2020-08</div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img class="project-image-mobile" src="https://picsum.photos/seed/shenzhen-park-mobile/320/200.jpg" alt="城市公园改造">
+                    <div class="project-content">
+                        <div class="project-title-mobile">城市公园改造</div>
+                        <div class="project-desc-mobile">深圳某城市公园的生态化改造，融合现代设计理念与传统园林美学。</div>
+                        <div class="project-tags-mobile">
+                            <span class="tag-mobile">城市设计</span>
+                            <span class="tag-mobile">生态修复</span>
+                            <span class="tag-mobile">公共空间</span>
+                        </div>
+                        <div class="project-location-mobile">📍 深圳 · 2021-06</div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img class="project-image-mobile" src="https://picsum.photos/seed/hangzhou-community-mobile/320/200.jpg" alt="社区花园营造">
+                    <div class="project-content">
+                        <div class="project-title-mobile">社区花园营造</div>
+                        <div class="project-desc-mobile">与居民共同参与的社区花园项目，强调互动性与可持续性。</div>
+                        <div class="project-tags-mobile">
+                            <span class="tag-mobile">社区参与</span>
+                            <span class="tag-mobile">可持续</span>
+                        </div>
+                        <div class="project-location-mobile">📍 杭州 · 2021-11</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 时间轴区域 - 15% -->
+        <footer class="timeline-section">
+            <div class="timeline-track">
+                <!-- 分区背景 -->
+                <div class="stage-backgrounds">
+                    <div class="stage-bg garden"></div>
+                    <div class="stage-bg code"></div>
+                    <div class="stage-bg ai"></div>
+                </div>
+                <!-- 游标 -->
+                <div class="drag-cursor" title="拖拽切换阶段">👨‍🌾</div>
+            </div>
+            <!-- 阶段标记 -->
+            <div class="stage-markers">
+                <div class="stage-marker active">
+                    <span class="stage-marker-number">01</span>
+                    风景园林
+                </div>
+                <div class="stage-marker">
+                    <span class="stage-marker-number">02</span>
+                    千禧街机
+                </div>
+                <div class="stage-marker">
+                    <span class="stage-marker-number">03</span>
+                    AI未来
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 主题切换预览
+        const themes = {
+            garden: {
+                headerBg: '#ffffff',
+                stageDesc: '读懂季节，读懂种子，用线条描摹下午三点钟阴影的移动',
+                cursor: '👨‍🌾',
+                activeMarkerColor: '#3c3228'
+            },
+            code: {
+                headerBg: '#1a1a2e',
+                stageDesc: '读懂逻辑，读懂代码，用键盘敲击凌晨三点半程序的运行',
+                cursor: '👨‍💻',
+                activeMarkerColor: '#00ffcc'
+            },
+            ai: {
+                headerBg: '#0a0a0a',
+                stageDesc: '读懂数据，读懂智能，用算法模拟未来三秒钟世界的重构',
+                cursor: '🤖',
+                activeMarkerColor: '#00d9ff'
+            }
+        };
+
+        function switchTheme(theme) {
+            const config = themes[theme];
+            const container = document.querySelector('.app-container');
+            const header = document.querySelector('.header-section');
+            const stageDesc = document.querySelector('.stage-description');
+            const cursor = document.querySelector('.drag-cursor');
+            const activeMarker = document.querySelector('.stage-marker.active');
+            const cards = document.querySelectorAll('.project-card');
+
+            // 更新容器主题
+            container.setAttribute('data-theme', theme);
+
+            // 更新头部
+            header.style.background = config.headerBg;
+            if (theme !== 'garden') {
+                stageDesc.style.color = '#eaeaea';
+            } else {
+                stageDesc.style.color = '#333';
+            }
+
+            // 更新阶段描述
+            stageDesc.textContent = config.stageDesc;
+
+            // 更新游标
+            cursor.textContent = config.cursor;
+            cursor.style.background = config.activeMarkerColor;
+
+            // 更新激活标记颜色
+            activeMarker.style.color = config.activeMarkerColor;
+
+            // 更新卡片样式
+            cards.forEach(card => {
+                if (theme !== 'garden') {
+                    card.style.background = theme === 'code' ? '#16213e' : '#1a1a1a';
+                    card.querySelector('.project-card-title').style.color = '#eaeaea';
+                    card.querySelector('.project-card-desc').style.color = '#aaa';
+                } else {
+                    card.style.background = '#ffffff';
+                    card.querySelector('.project-card-title').style.color = '#333';
+                    card.querySelector('.project-card-desc').style.color = '#666';
+                }
+            });
+
+            // 更新按钮状态
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // 交互功能
+        // 统一的数据结构
+        const projectData = [
+            {
+                id: '001',
+                title: '乡村花境方案设计',
+                description: '以南法乡村庭院为基底，运用自然曲线构图，训练空间叙事与材质搭配思维。',
+                tags: ['手绘', '场地规划', '植物配置'],
+                location: '西安 · 2020-03',
+                image: 'https://picsum.photos/seed/xian-garden/280/120.jpg',
+                mobileImage: 'https://picsum.photos/seed/xian-garden-mobile/320/200.jpg',
+                city: 'xian',
+                stage: 'garden'
+            },
+            {
+                id: '002',
+                title: '庭院改造设计',
+                description: '城市中的私密空间设计，注重光影变化与四季植物选择。',
+                tags: ['庭院设计', '光影'],
+                location: '兰州 · 2020-08',
+                image: 'https://picsum.photos/seed/lanzhou-courtyard/280/120.jpg',
+                mobileImage: 'https://picsum.photos/seed/lanzhou-courtyard-mobile/320/200.jpg',
+                city: 'xian',
+                stage: 'garden'
+            },
+            {
+                id: '003',
+                title: '城市公园改造',
+                description: '深圳某城市公园的生态化改造，融合现代设计理念与传统园林美学。',
+                tags: ['城市设计', '生态修复', '公共空间'],
+                location: '深圳 · 2021-06',
+                image: 'https://picsum.photos/seed/shenzhen-park/280/120.jpg',
+                mobileImage: 'https://picsum.photos/seed/shenzhen-park-mobile/320/200.jpg',
+                city: 'shenzhen',
+                stage: 'code'
+            },
+            {
+                id: '004',
+                title: '社区花园营造',
+                description: '与居民共同参与的社区花园项目，强调互动性与可持续性。',
+                tags: ['社区参与', '可持续'],
+                location: '杭州 · 2021-11',
+                image: 'https://picsum.photos/seed/hangzhou-community/280/120.jpg',
+                mobileImage: 'https://picsum.photos/seed/hangzhou-community-mobile/320/200.jpg',
+                city: 'shenzhen',
+                stage: 'code'
+            }
+        ];
+
+        const timelineData = [
+            {
+                id: '01',
+                name: '风景园林',
+                icon: '👨‍🌾',
+                projects: ['001', '002'],
+                theme: 'garden',
+                color: '#4CAF50'
+            },
+            {
+                id: '02',
+                name: '千禧街机',
+                icon: '🎮',
+                projects: ['003', '004'],
+                theme: 'code',
+                color: '#2196F3'
+            },
+            {
+                id: '03',
+                name: 'AI未来',
+                icon: '🤖',
+                projects: [],
+                theme: 'ai',
+                color: '#9C27B0'
+            }
+        ];
+
+        // 项目卡片统一渲染器
+        class ProjectRenderer {
+            constructor() {
+                this.deviceType = this.detectDeviceType();
+                this.config = this.getConfig();
+            }
+            
+            detectDeviceType() {
+                const width = window.innerWidth;
+                return width <= 768 ? 'mobile' : 'desktop';
+            }
+            
+            getConfig() {
+                return {
+                    mobile: {
+                        cardClass: 'project-card',
+                        imageClass: 'project-image-mobile',
+                        titleClass: 'project-title-mobile',
+                        descClass: 'project-desc-mobile',
+                        tagsClass: 'project-tags-mobile',
+                        tagClass: 'tag-mobile',
+                        locationClass: 'project-location-mobile'
+                    },
+                    desktop: {
+                        cardClass: 'project-card-overlay',
+                        imageClass: 'project-image',
+                        titleClass: 'project-title',
+                        descClass: 'project-desc',
+                        tagsClass: 'project-tags',
+                        tagClass: 'tag',
+                        locationClass: 'project-location'
+                    }
+                };
+            }
+            
+            renderProject(project, container) {
+                const isMobile = this.deviceType === 'mobile';
+                const config = this.config[isMobile ? 'mobile' : 'desktop'];
+                
+                const card = document.createElement('div');
+                card.className = config.cardClass;
+                card.setAttribute('data-project-id', project.id);
+                card.setAttribute('data-city', project.city);
+                card.setAttribute('data-stage', project.stage);
+                
+                card.innerHTML = `
+                    <img class="${config.imageClass}" src="${isMobile ? project.mobileImage : project.image}" alt="${project.title}">
+                    <div class="project-content">
+                        <div class="${config.titleClass}">${project.title}</div>
+                        <div class="${config.descClass}">${project.description}</div>
+                        <div class="${config.tagsClass}">
+                            ${project.tags.map(tag => `<span class="${config.tagClass}">${tag}</span>`).join('')}
+                        </div>
+                        <div class="${config.locationClass}">📍 ${project.location}</div>
+                    </div>
+                `;
+                
+                // 添加交互事件
+                this.addProjectInteractions(card, project);
+                
+                container.appendChild(card);
+                return card;
+            }
+            
+            renderAllProjects() {
+                const desktopContainer = document.querySelector('.project-overlay');
+                const mobileContainer = document.querySelector('.project-flow');
+                
+                // 清空容器
+                if (desktopContainer) desktopContainer.innerHTML = '';
+                if (mobileContainer) mobileContainer.innerHTML = '';
+                
+                // 根据设备类型渲染项目
+                projectData.forEach(project => {
+                    if (this.deviceType === 'desktop') {
+                        this.renderProject(project, desktopContainer);
+                    } else {
+                        this.renderProject(project, mobileContainer);
+                    }
+                });
+            }
+            
+            addProjectInteractions(card, project) {
+                const isMobile = this.deviceType === 'mobile';
+                
+                card.addEventListener('pointerdown', (e) => {
+                    card.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('pointerup', (e) => {
+                    card.style.transform = '';
+                    
+                    if (isMobile) {
+                        console.log('Mobile project clicked:', project.title);
+                    } else {
+                        // 桌面端高亮对应城市
+                        this.highlightCity(project.city);
+                    }
+                });
+                
+                card.addEventListener('pointerleave', (e) => {
+                    card.style.transform = '';
+                });
+            }
+            
+            highlightCity(city) {
+                // 移除所有高亮
+                document.querySelectorAll('.map-marker, .project-card-overlay').forEach(el => {
+                    el.style.opacity = '0.5';
+                });
+                
+                // 高亮对应城市
+                const cityMap = {
+                    'xian': '.map-marker[data-city="xian"], .project-card-overlay[data-city="xian"]',
+                    'shenzhen': '.map-marker[data-city="shenzhen"], .project-card-overlay[data-city="shenzhen"]',
+                    'beijing': '.map-marker[data-city="beijing"]',
+                    'shanghai': '.map-marker[data-city="shanghai"]',
+                    'chengdu': '.map-marker[data-city="chengdu"]'
+                };
+                
+                if (cityMap[city]) {
+                    document.querySelectorAll(cityMap[city]).forEach(el => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'scale(1.2)';
+                    });
+                }
+            }
+            
+            updateProject(projectId, updates) {
+                const projectIndex = projectData.findIndex(p => p.id === projectId);
+                if (projectIndex === -1) return false;
+                
+                // 更新数据源
+                projectData[projectIndex] = { ...projectData[projectIndex], ...updates };
+                
+                // 重新渲染项目
+                this.renderAllProjects();
+                
+                return true;
+            }
+        }
+
+        // 时间轴统一渲染器
+        class TimelineRenderer {
+            constructor() {
+                this.deviceType = this.detectDeviceType();
+                this.currentStage = '01';
+            }
+            
+            detectDeviceType() {
+                const width = window.innerWidth;
+                return width <= 768 ? 'mobile' : 'desktop';
+            }
+            
+            renderTimeline() {
+                const stageMarkers = document.querySelector('.stage-markers');
+                if (!stageMarkers) return;
+                
+                stageMarkers.innerHTML = '';
+                
+                timelineData.forEach(stage => {
+                    const marker = document.createElement('div');
+                    marker.className = `stage-marker ${stage.id === this.currentStage ? 'active' : ''}`;
+                    marker.setAttribute('data-stage-id', stage.id);
+                    
+                    marker.innerHTML = `
+                        <span class="stage-marker-number">${stage.id}</span>
+                        ${stage.name}
+                    `;
+                    
+                    // 添加交互事件
+                    marker.addEventListener('pointerdown', (e) => {
+                        marker.style.transform = 'scale(0.95)';
+                    });
+                    
+                    marker.addEventListener('pointerup', (e) => {
+                        marker.style.transform = '';
+                        this.switchStage(stage.id);
+                    });
+                    
+                    stageMarkers.appendChild(marker);
+                });
+                
+                this.updateDragCursor();
+            }
+            
+            switchStage(stageId) {
+                this.currentStage = stageId;
+                
+                // 更新阶段标记
+                document.querySelectorAll('.stage-marker').forEach(marker => {
+                    marker.classList.remove('active');
+                    if (marker.getAttribute('data-stage-id') === stageId) {
+                        marker.classList.add('active');
+                    }
+                });
+                
+                // 更新拖拽游标位置
+                this.updateDragCursor();
+                
+                // 触发阶段切换事件
+                const stage = timelineData.find(s => s.id === stageId);
+                console.log('Stage switched to:', stage.name);
+                
+                // 更新主题
+                if (stage) {
+                    document.documentElement.setAttribute('data-theme', stage.theme);
+                }
+            }
+            
+            updateDragCursor() {
+                const dragCursor = document.querySelector('.drag-cursor');
+                if (!dragCursor) return;
+                
+                const stageIndex = timelineData.findIndex(s => s.id === this.currentStage);
+                const position = ((stageIndex + 0.5) / timelineData.length) * 100;
+                
+                dragCursor.style.left = `${position}%`;
+            }
+        }
+
+        // 内容管理器
+        class ContentManager {
+            constructor() {
+                this.projectRenderer = new ProjectRenderer();
+                this.timelineRenderer = new TimelineRenderer();
+                this.init();
+            }
+            
+            init() {
+                // 初始化渲染
+                this.projectRenderer.renderAllProjects();
+                this.timelineRenderer.renderTimeline();
+                
+                // 监听窗口大小变化
+                window.addEventListener('resize', () => {
+                    this.handleResize();
+                });
+                
+                // 监听设备方向变化
+                window.addEventListener('orientationchange', () => {
+                    this.handleResize();
+                });
+            }
+            
+            handleResize() {
+                // 重新检测设备类型
+                const newDeviceType = this.projectRenderer.detectDeviceType();
+                
+                // 如果设备类型发生变化，重新渲染
+                if (newDeviceType !== this.projectRenderer.deviceType) {
+                    this.projectRenderer.deviceType = newDeviceType;
+                    this.projectRenderer.renderAllProjects();
+                    this.timelineRenderer.renderTimeline();
+                }
+            }
+            
+            // 更新项目内容
+            updateProject(projectId, updates) {
+                return this.projectRenderer.updateProject(projectId, updates);
+            }
+            
+            // 添加新项目
+            addProject(newProject) {
+                const projectId = `project-${Date.now()}`;
+                const project = {
+                    id: projectId,
+                    ...newProject
+                };
+                
+                projectData.push(project);
+                
+                // 重新渲染项目
+                this.projectRenderer.renderAllProjects();
+                
+                return projectId;
+            }
+            
+            // 删除项目
+            removeProject(projectId) {
+                const projectIndex = projectData.findIndex(p => p.id === projectId);
+                if (projectIndex === -1) return false;
+                
+                // 从数据源中删除
+                projectData.splice(projectIndex, 1);
+                
+                // 从时间轴数据中移除引用
+                timelineData.forEach(stage => {
+                    stage.projects = stage.projects.filter(id => id !== projectId);
+                });
+                
+                // 重新渲染
+                this.projectRenderer.renderAllProjects();
+                this.timelineRenderer.renderTimeline();
+                
+                return true;
+            }
+            
+            // 更新时间轴
+            updateTimeline(stageId, updates) {
+                const stageIndex = timelineData.findIndex(s => s.id === stageId);
+                if (stageIndex === -1) return false;
+                
+                // 更新数据源
+                timelineData[stageIndex] = { ...timelineData[stageIndex], ...updates };
+                
+                // 重新渲染时间轴
+                this.timelineRenderer.renderTimeline();
+                
+                return true;
+            }
+            
+            // 导出内容数据
+            exportData() {
+                return {
+                    projects: [...projectData],
+                    timeline: [...timelineData],
+                    timestamp: new Date().toISOString()
+                };
+            }
+        }
+
+        // 初始化内容管理器
+        const contentManager = new ContentManager();
+
+        // 交互功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapMarkers = document.querySelectorAll('.map-marker');
+            const stageMarkers = document.querySelectorAll('.stage-marker');
+            const dragCursor = document.querySelector('.drag-cursor');
+            
+            // 地图标记点击事件
+            mapMarkers.forEach(marker => {
+                marker.addEventListener('click', function() {
+                    const city = this.getAttribute('data-city');
+                    contentManager.projectRenderer.highlightCity(city);
+                });
+                
+                marker.addEventListener('mouseenter', function() {
+                    const city = this.getAttribute('data-city');
+                    showCityTooltip(city, this);
+                });
+                
+                marker.addEventListener('mouseleave', function() {
+                    hideCityTooltip();
+                });
+            });
+            
+            // 拖拽游标交互
+            if (dragCursor) {
+                let isDragging = false;
+                let startX = 0;
+                let currentX = 0;
+                
+                dragCursor.addEventListener('pointerdown', function(e) {
+                    isDragging = true;
+                    startX = e.clientX;
+                    dragCursor.style.cursor = 'grabbing';
+                });
+                
+                document.addEventListener('pointermove', function(e) {
+                    if (!isDragging) return;
+                    
+                    currentX = e.clientX;
+                    const deltaX = currentX - startX;
+                    const timeline = document.querySelector('.timeline-track');
+                    const cursor = document.querySelector('.drag-cursor');
+                    
+                    // 计算新位置
+                    const newPosition = 16.67 + (deltaX / timeline.offsetWidth) * 100;
+                    const clampedPosition = Math.max(0, Math.min(100, newPosition));
+                    
+                    cursor.style.left = clampedPosition + '%';
+                    
+                    // 更新阶段标记
+                    updateStagePosition(clampedPosition);
+                });
+                
+                document.addEventListener('pointerup', function(e) {
+                    isDragging = false;
+                    dragCursor.style.cursor = 'grab';
+                });
+            }
+            
+            // 滚动到顶部/底部按钮（移动端）
+            if (window.innerWidth <= 768) {
+                setupScrollButtons();
+            }
+            
+            // 快捷键：Ctrl+M 打开管理面板（预留）
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'm') {
+                    console.log('Content management panel (Ctrl+M pressed)');
+                }
+            });
+        });
+
+        // 更新阶段位置
+        function updateStagePosition(position) {
+            const stageMarkers = document.querySelectorAll('.stage-marker');
+            const stageWidth = 100 / stageMarkers.length;
+            
+            stageMarkers.forEach((marker, index) => {
+                const markerPosition = (index + 0.5) * stageWidth;
+                const distance = Math.abs(position - markerPosition);
+                
+                if (distance < stageWidth / 2) {
+                    stageMarkers.forEach(m => m.classList.remove('active'));
+                    marker.classList.add('active');
+                    
+                    // 更新当前阶段
+                    const stageId = marker.getAttribute('data-stage-id');
+                    contentManager.timelineRenderer.switchStage(stageId);
+                }
+            });
+        }
+
+        // 设置滚动按钮
+        function setupScrollButtons() {
+            // 添加滚动到顶部按钮
+            const scrollTopBtn = document.createElement('button');
+            scrollTopBtn.className = 'scroll-btn scroll-top';
+            scrollTopBtn.innerHTML = '↑';
+            scrollTopBtn.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #333;
+                color: white;
+                border: none;
+                cursor: pointer;
+                z-index: 1001;
+                display: none;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            `;
+            
+            // 添加滚动到底部按钮
+            const scrollBottomBtn = document.createElement('button');
+            scrollBottomBtn.className = 'scroll-btn scroll-bottom';
+            scrollBottomBtn.innerHTML = '↓';
+            scrollBottomBtn.style.cssText = `
+                position: fixed;
+                bottom: 160px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #333;
+                color: white;
+                border: none;
+                cursor: pointer;
+                z-index: 1001;
+                display: none;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            `;
+            
+            document.body.appendChild(scrollTopBtn);
+            document.body.appendChild(scrollBottomBtn);
+            
+            // 监听滚动事件
+            const contentSection = document.querySelector('.content-section');
+            contentSection.addEventListener('scroll', function() {
+                const scrollTop = this.scrollTop;
+                const scrollHeight = this.scrollHeight;
+                const clientHeight = this.clientHeight;
+                
+                // 显示/隐藏滚动按钮
+                if (scrollTop > 100) {
+                    scrollTopBtn.style.display = 'block';
+                } else {
+                    scrollTopBtn.style.display = 'none';
+                }
+                
+                if (scrollTop + clientHeight < scrollHeight - 100) {
+                    scrollBottomBtn.style.display = 'block';
+                } else {
+                    scrollBottomBtn.style.display = 'none';
+                }
+            });
+            
+            // 滚动事件监听
+            scrollTopBtn.addEventListener('pointerdown', function() {
+                const contentSection = document.querySelector('.content-section');
+                contentSection.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            scrollBottomBtn.addEventListener('pointerdown', function() {
+                const contentSection = document.querySelector('.content-section');
+                contentSection.scrollTo({
+                    top: contentSection.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        function showCityTooltip(city, element) {
+            // 创建 tooltip
+            let tooltip = document.createElement('div');
+            tooltip.className = 'city-tooltip';
+            tooltip.textContent = city === 'xian' ? '西安' : 
+                               city === 'shenzhen' ? '深圳' :
+                               city === 'beijing' ? '北京' :
+                               city === 'shanghai' ? '上海' : '成都';
+            
+            tooltip.style.position = 'absolute';
+            tooltip.style.background = 'rgba(0,0,0,0.8)';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '4px 8px';
+            tooltip.style.borderRadius = '4px';
+            tooltip.style.fontSize = '12px';
+            tooltip.style.zIndex = '1000';
+            
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = rect.left + rect.width / 2 - 20 + 'px';
+            tooltip.style.top = rect.top - 30 + 'px';
+            
+            document.body.appendChild(tooltip);
+            
+            // 存储 tooltip 引用
+            element.tooltip = tooltip;
+        }
+
+        function hideCityTooltip() {
+            document.querySelectorAll('.city-tooltip').forEach(tooltip => {
+                tooltip.remove();
+            });
+        }
+    </script>
+</body>
+</html>
