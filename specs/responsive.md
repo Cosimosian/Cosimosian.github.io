@@ -32,11 +32,10 @@
 │  [透明叠底头部]                                │
 │  阶段01｜读懂季节，读懂种子...                   │
 │                                              │
-│  ┌──左面板──────┐  ┌──右面板─────────────┐   │
-│  │ 控制台(28%)  │  │ 展示面板(48%)       │   │
-│  │ - 项目列表   │  │ - 选中项目图片       │   │
-│  │ - 点击切换   │  │ - 项目详情          │   │
-│  └──────────────┘  └────────────────────┘   │
+│  ┌──左展示面板──┐        ┌──右导航面板──┐   │
+│  │ 项目卡片(28vw)│        │ 项目列表(18vw)│   │
+│  │ 详情/标签     │        │ 主题按钮/时间轴│   │
+│  └──────────────┘        └──────────────┘   │
 │                                              │
 │  ┌──────────────────────────────────────┐   │
 │  │  卡尺时间轴（7vh）                     │   │
@@ -51,9 +50,17 @@
 |------|------|------|
 | 地图背景 | `position: fixed; inset: 0; z-index: 0` | 100vw × 100vh |
 | 头部 | `position: absolute; top: 0; left: 0; right: 0` | 自动高度（透明浮动） |
-| 左控制台面板 | `position: absolute; left: 2vw; top: 18vh` | `width: 28%; max-height: 55vh` |
-| 右展示面板 | `position: absolute; right: 2vw; top: 18vh` | `width: 48%; max-height: 55vh` |
-| 卡尺时间轴 | `position: absolute; bottom: 0; left: 0; right: 0` | `height: 7vh` |
+| 左展示面板 | `position: absolute; left: 3vw; top: 0; bottom: 0` | `width: 28vw`（撑满内容区） |
+| 右导航面板 | `position: absolute; right: 3vw; top: 0` | `width: 18vw; max-height: 100%` |
+| 右下经历时间轴 | `position: absolute; right: 3vw; bottom: 7vh+72px` | `width: 18vw; max-height: 30vh` |
+| 右下经纬度 | `position: absolute; right: 3vw; bottom: 7vh+46px` | 自动尺寸 |
+| 卡尺时间轴 | `position: absolute; bottom: 0; left: 0; right: 0` | `height: 7vh`，轨道宽 88% |
+| 地图投影 | 中心 `0.38w × 0.38h` | `scale = min(min(w,h)×0.85, 900)` |
+
+> **🔒 尺寸锁定规则（2026-08 确立）**：上表为已确认尺寸，任何调整必须：
+> 1. 先修改本表并说明原因；
+> 2. 经用户明确批准后才能改动代码；
+> 3. 禁止在功能开发中"顺手"调整已定尺寸（曾发生 `min(18vw,280px)` 未批准改动导致导航面板变窄的问题）。
 
 ---
 

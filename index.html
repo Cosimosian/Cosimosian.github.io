@@ -510,8 +510,8 @@ body{
   </div>
 </div>
 
-<script src="assets/data/china-geo-data.js"></script>
-<script src="assets/data/map-style-data.js"></script>
+<script src="assets/data/china-geo-data.js?v=20260807"></script>
+<script src="assets/data/map-style-data.js?v=20260807"></script>
 <script>
 // ============================================================
 // CONFIG
@@ -526,8 +526,8 @@ const STAGES = {
     badge:'阶段 01',
     primaryLat:34.28, primaryLng:108.07,
     experiences:[
-      {year:2016.75,type:'教育',text:'西北农林科技大学 风景园林学士（获保研资格）'},
-      {year:2020.33,type:'工作',text:'中国建筑设计研究院 建筑景观设计'}
+      {year:2016.75,yearEnd:2020.42,type:'教育',text:'西北农林科技大学 风景园林学士（获保研资格）',lat:34.28,lng:108.07},
+      {year:2020.33,yearEnd:2021.58,type:'工作',text:'中国建筑设计研究院 建筑景观设计',lat:34.34,lng:108.94}
     ]},
   code: { id:'code', theme:'code', yearStart:2021.75, yearEnd:2024.5,
     title:'2021‑2024｜软件工程 · 初探技术与商业系统',
@@ -535,10 +535,10 @@ const STAGES = {
     badge:'阶段 02',
     primaryLat:34.34, primaryLng:108.94,
     experiences:[
-      {year:2021.75,type:'教育',text:'西安电子科技大学 软件工程学士（西电青岛研究院）'},
-      {year:2022.5,type:'实习',text:'招商银行 数据分析'},
-      {year:2023.08,type:'实习',text:'西门子 前端开发'},
-      {year:2023.83,type:'工作',text:'德勤 网络安全风险咨询'}
+      {year:2021.75,yearEnd:2023.42,type:'教育',text:'西安电子科技大学 软件工程学士（西电青岛研究院）',lat:34.34,lng:108.94,extra:[{lat:36.07,lng:120.38}]},
+      {year:2022.5,yearEnd:2022.58,type:'实习',text:'招商银行 数据分析',lat:34.34,lng:108.94},
+      {year:2023.08,yearEnd:2023.33,type:'实习',text:'西门子 前端开发',lat:31.30,lng:120.62},
+      {year:2023.83,yearEnd:2024.42,type:'工作',text:'德勤 网络安全风险咨询',lat:22.54,lng:114.06}
     ]},
   ai: { id:'ai', theme:'ai', yearStart:2024.5, yearEnd:2026.58,
     title:'2024‑2026｜显示软件开发 · 工程训练和AI探索',
@@ -546,7 +546,7 @@ const STAGES = {
     badge:'阶段 03',
     primaryLat:34.34, primaryLng:108.94,
     experiences:[
-      {year:2024.83,type:'工作',text:'华为 显示软件开发'}
+      {year:2024.83,yearEnd:2026.58,type:'工作',text:'华为 显示软件开发',lat:34.34,lng:108.94}
     ]},
   future: { id:'future', theme:'future', yearStart:2026.58, yearEnd:2027.0,
     title:'未来 · Future',
@@ -564,7 +564,7 @@ const PROJECTS = [
   {id:'c2',title:'产品设计 | 微软 Edge 挑战者开发大赛-桌面猫猫计时器',category:'校外竞赛（入围20强）',desc:'微软 Edge 挑战者开发大赛参赛项目，前端开发与网页应用实现。',tags:['前端开发','Web应用'],location:'西安',image:'https://picsum.photos/seed/code2/600/260',mobileImage:'https://picsum.photos/seed/code2-m/640/340',stage:'code',year:2022.75,outcome:'',link:'',lat:34.34,lng:108.94},
   {id:'c3',title:'前端开发 | AI客服问答系统首页',category:'开发实习',desc:'校园互助服务平台，负责产品规划、需求管理与功能迭代。',tags:['产品经理','需求分析'],location:'西安',image:'https://picsum.photos/seed/code1/600/260',mobileImage:'https://picsum.photos/seed/code1-m/640/340',stage:'code',year:2022.25,outcome:'',link:'',lat:34.34,lng:108.94}, 
   {id:'c4',title:'RAG项目 | 网络安全审计存档问答系统',category:'AI探索',desc:'德勤工作期间的 chatBI 数据分析项目，基于对话式商业智能的数据分析实践。',tags:['数据分析','商业智能'],location:'深圳',image:'https://picsum.photos/seed/code6/600/260',mobileImage:'https://picsum.photos/seed/code6-m/640/340',stage:'code',year:2024.25,outcome:'',link:'',lat:22.54,lng:114.06},
-  {id:'a1',title:'面部识别和人眼检测 | 终端智能护眼特性',category:'软件工程（市场发布）',desc:'华为显示软件开发期间的智能护眼项目，负责AI模型训练与数据处理。',tags:['模型训练','数据处理','护眼'],location:'西安',image:'https://picsum.photos/seed/ai1/600/260',mobileImage:'https://picsum.photos/seed/ai1-m/640/340',stage:'ai',year:2025.0,outcome:'',link:'',lat:34.34,lng:108.94},
+  {id:'a1',title:'眨眼检测 | 终端智能护眼特性',category:'软件工程（市场发布）',desc:'华为显示软件开发期间的智能护眼项目，负责AI模型训练与数据处理。',tags:['模型训练','数据处理','护眼'],location:'西安',image:'https://picsum.photos/seed/ai1/600/260',mobileImage:'https://picsum.photos/seed/ai1-m/640/340',stage:'ai',year:2025.0,outcome:'',link:'',lat:34.34,lng:108.94},
   {id:'a2',title:'多模态 | 图像显示异常检测',category:'软件工程（内部提效）',desc:'华为显示软件开发期间的多模态显示异常检测项目。',tags:['多模态','异常检测','显示'],location:'西安',image:'https://picsum.photos/seed/ai2/600/260',mobileImage:'https://picsum.photos/seed/ai2-m/640/340',stage:'ai',year:2025.5,outcome:'',link:'',lat:34.34,lng:108.94},
   {id:'a3',title:'多agent协同 | 短剧生成工作流',category:'AI探索',desc:'华为显示软件开发期间的工作流项目，短剧生成工作流的设计与实现。',tags:['工作流','内容生成','AIGC'],location:'西安',image:'https://picsum.photos/seed/ai3/600/260',mobileImage:'https://picsum.photos/seed/ai3-m/640/340',stage:'ai',year:2026.0,outcome:'',link:'',lat:34.34,lng:108.94},
   {id:'a4',title:'chatBI | 个人衣物管理app',category:'AI探索',desc:'衣物管理。',tags:['app','衣物识别','AIGC'],location:'西安',image:'https://picsum.photos/seed/ai3/600/260',mobileImage:'https://picsum.photos/seed/ai3-m/640/340',stage:'ai',year:2026.0,outcome:'',link:'',lat:34.34,lng:108.94},
@@ -576,6 +576,7 @@ const PROJECTS = [
 let currentStage = 'garden';
 let selectedProjectId = null;
 let isDragging = false;
+let currentYear = YEAR_START; // 游标当前年月（驱动地图 L3 项目城市放大）
 
 // ============================================================
 // MAP CANVAS — with lon/lat projection & 3-level city markers
@@ -620,7 +621,7 @@ function ensureStaticLayer(){
   const s=staticLayer.getContext('2d');
   const tok=styleTokens(STAGES[currentStage].theme);
   const geo=window.CHINA_GEO_DATA;
-  const cx=w/2,cy=h*0.44,scale=Math.min(w,h)*0.44;
+  const cx=w*0.38,cy=h*0.38,scale=Math.min(Math.min(w,h)*0.85,900);
   mapParams={cx,cy,scale};
   const px=p=>{const q=lonLatToXY(p[0],p[1]);return[cx+q.x*scale,cy+q.y*scale]};
 
@@ -673,6 +674,28 @@ function ensureStaticLayer(){
     s.beginPath();geo.lakes.forEach(r=>tracePath(r));s.closePath();s.fill('evenodd');s.globalAlpha=1;
   }
 
+  // 当前阶段时间线（经历）所在省份高亮（随阶段缓存重建，含联动城市）
+  const expCities=(STAGES[currentStage].experiences||[]).filter(e=>e.lat)
+    .flatMap(e=>[[e.lng,e.lat],...(e.extra||[]).map(x=>[x.lng,x.lat])]);
+  if(expCities.length&&geo.provinces){
+    const inRing=(ring,p)=>{
+      let inside=false;
+      for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+        const xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+        if(((yi>p[1])!==(yj>p[1]))&&(p[0]<(xj-xi)*(p[1]-yi)/(yj-yi)+xi))inside=!inside;
+      }
+      return inside;
+    };
+    const hit=new Set();
+    expCities.forEach(c=>geo.provinces.forEach((ring,idx)=>{if(inRing(ring,c))hit.add(idx)}));
+    if(hit.size){
+      const ac=(tok.marker&&tok.marker['circle-color'])||'#92A87C';
+      s.fillStyle=ac;s.globalAlpha=0.14;
+      hit.forEach(idx=>{s.beginPath();tracePath(geo.provinces[idx]);s.closePath();s.fill()});
+      s.globalAlpha=1;
+    }
+  }
+
   // 周边地理标注
   const st=tok.surrounding||{};
   const sc=st['text-color']||'#3C3228';
@@ -694,7 +717,8 @@ function ensureStaticLayer(){
   s.textAlign='center';s.fillText('中  国',cx,cy-scale*0.03);s.textAlign='start';s.globalAlpha=1;
 }
 
-// ---- 动态图层：三级城市标记（每帧重绘，主题化 shape） ----
+// ---- 动态图层：三级城市标记（每帧重绘） ----
+// L1 阶段主城（主题化形状） / L2 时间线经历城市水滴+缓慢跳动 / L3 游标所在月份经历城市放大
 function drawMarkers(s){
   const tok=styleTokens(STAGES[currentStage].theme);
   const m=tok.marker||{};
@@ -703,12 +727,25 @@ function drawMarkers(s){
   const shape=m['marker-shape']||'dot';
   const {cx,cy,scale}=mapParams;
   if(!scale)return;
-  const stage=STAGES[currentStage];
-  const stageProjects=PROJECTS.filter(p=>p.stage===currentStage);
-  const selectedP=PROJECTS.find(p=>p.id===selectedProjectId);
-  const citySet=new Map();
-  stageProjects.forEach(p=>{const k=p.lat.toFixed(2)+','+p.lng.toFixed(2);if(!citySet.has(k))citySet.set(k,{lat:p.lat,lng:p.lng,name:p.location.split(' · ')[0]});});
 
+  // ---- 防线1：标记越界守卫（坐标错误时立即在控制台暴露，而非静默消失）----
+  const guard=(mx,my,name)=>{
+    if(!Number.isFinite(mx)||!Number.isFinite(my)||mx<-100||my<-100||mx>mapCanvas.width+100||my>mapCanvas.height+100){
+      console.warn('[map-guard] 标记越界:',name||'?','@',Math.round(mx),Math.round(my),'canvas=',mapCanvas.width+'x'+mapCanvas.height);
+    }
+  };
+
+  const stage=STAGES[currentStage];
+  const exps=(stage.experiences||[]).filter(e=>e.lat);
+  const citySet=new Map();
+  exps.forEach(e=>{
+    [[e.lat,e.lng],...(e.extra||[]).map(x=>[x.lat,x.lng])].forEach(([la,ln])=>{
+      const k=la.toFixed(2)+','+ln.toFixed(2);
+      if(!citySet.has(k))citySet.set(k,{lat:la,lng:ln});
+    });
+  });
+
+  // 主题形状（L1 主城用）
   const drawShape=(mx,my,r,alpha,haloR,haloAlpha,fontW,name)=>{
     s.fillStyle=ac;s.globalAlpha=alpha;
     if(shape==='square'){s.fillRect(mx-r,my-r,r*2,r*2);}
@@ -730,25 +767,68 @@ function drawMarkers(s){
     s.globalAlpha=1;
   };
 
+  // 水滴坐标点（尖端精确落在城市坐标 (mx,my)，主体向上延展，白色描边增强对比）
+  const drawDrop=(mx,my,r,alpha)=>{
+    s.fillStyle=ac;s.globalAlpha=alpha;
+    s.beginPath();
+    s.moveTo(mx,my);
+    s.bezierCurveTo(mx+r*1.15,my-r*0.25,mx+r,my-r*1.4,mx,my-r*1.4);
+    s.bezierCurveTo(mx-r,my-r*1.4,mx-r*1.15,my-r*0.25,mx,my);
+    s.closePath();s.fill();
+    s.strokeStyle='rgba(255,255,255,0.85)';s.lineWidth=1.2;s.stroke();
+    s.globalAlpha=1;
+  };
+
+  // 缓慢跳动（~3.1s 周期，±5%）
+  const slowPulse=1+0.05*Math.sin(Date.now()/500);
+  // 游标所在月份对应的经历（起止区间内，支持重叠时段多经历同时点亮），含联动城市点集
+  const nearEs=exps.filter(e=>currentYear>=(e.year-1/24)&&currentYear<=(e.yearEnd||e.year)+1/24);
+  nearEs.forEach(e=>e.allPts=[[e.lat,e.lng],...(e.extra||[]).map(x=>[x.lat,x.lng])]);
+
+  // 一次性诊断输出（排查标记不可见）
+  if(!drawMarkers._diag){
+    drawMarkers._diag=true;
+    const firstCity=[...citySet.values()][0];
+    let firstPos=null;
+    if(firstCity){const fp=lonLatToXY(firstCity.lng,firstCity.lat);firstPos={x:Math.round(cx+fp.x*scale),y:Math.round(cy+fp.y*scale)};}
+    console.log('[map-diagnose]',JSON.stringify({
+      stage:currentStage, scale:Math.round(scale), cx:Math.round(cx), cy:Math.round(cy),
+      cities:[...citySet.values()].map(c=>c.name),
+      firstMarkerPos:firstPos,
+      canvasSize:mapCanvas.width+'x'+mapCanvas.height,
+      styleVals:{sr:m['secondary-radius'],so:m['secondary-opacity'],shape},
+      near:nearEs.map(e=>e.text), currentYear:currentYear
+    }));
+  }
+
   // L1 阶段主城
   if(stage.primaryLat){
-    const p1=lonLatToXY(stage.primaryLat,stage.primaryLng);
-    const primaryName=stage.experiences?.[0]?.text?.split(' ')[0]||stage.title.split('｜')[0]||'';
-    drawShape(cx+p1.x*scale,cy+p1.y*scale,m['primary-radius']||4,m['primary-opacity']||0.8,m['primary-halo']||8,m['primary-halo-opacity']||0.3,true,primaryName);
+    const p1=lonLatToXY(stage.primaryLng,stage.primaryLat);
+    const mx1=cx+p1.x*scale,my1=cy+p1.y*scale;
+    guard(mx1,my1,'主城');
+    drawShape(mx1,my1,m['primary-radius']||4,m['primary-opacity']||0.8,m['primary-halo']||8,m['primary-halo-opacity']||0.3,false,null);
   }
-  // L2 项目城市
+  // L2 时间线经历城市：水滴 + 缓慢跳动
+  const litPts=nearEs.flatMap(e=>e.allPts);
   citySet.forEach(c=>{
-    if(selectedP&&Math.abs(c.lat-selectedP.lat)<0.01&&Math.abs(c.lng-selectedP.lng)<0.01)return;
-    const p2=lonLatToXY(c.lat,c.lng);
-    drawShape(cx+p2.x*scale,cy+p2.y*scale,m['secondary-radius']||2.5,m['secondary-opacity']||0.55,m['secondary-halo']||5,m['secondary-halo-opacity']||0.2,false,c.name||'');
+    if(litPts.some(q=>Math.abs(q[0]-c.lat)<0.01&&Math.abs(q[1]-c.lng)<0.01))return; // 由 L3 放大绘制
+    const p2=lonLatToXY(c.lng,c.lat);
+    const r=(m['secondary-radius']||5)*slowPulse;
+    const mx=cx+p2.x*scale,my=cy+p2.y*scale;
+    guard(mx,my,'水滴');
+    drawDrop(mx,my,r,m['secondary-opacity']||0.85);
   });
-  // L3 选中项目（脉冲）
-  if(selectedP){
-    const p3=lonLatToXY(selectedP.lat,selectedP.lng);
-    const pulse=1+0.15*Math.sin(Date.now()/600);
+  // L3 游标所在月份经历城市：放大水滴 + 光晕（重叠时段多经历同时点亮，联动所有关联城市）
+  litPts.forEach(([la,ln])=>{
+    const p3=lonLatToXY(ln,la);
     const mx=cx+p3.x*scale,my=cy+p3.y*scale;
-    drawShape(mx,my,(m['selected-radius']||3.5)*pulse,m['selected-opacity']||1,m['primary-halo']*pulse||8,0.5,true,selectedP.location.split(' · ')[0]);
-  }
+    guard(mx,my,'放大');
+    const r=(m['selected-radius']||7.5)*slowPulse;
+    drawDrop(mx,my,r,1);
+    s.strokeStyle=ac;s.globalAlpha=0.45;s.lineWidth=2;
+    s.beginPath();s.arc(mx,my,r*1.5,0,Math.PI*2);s.stroke();
+  });
+  s.globalAlpha=1;
 }
 
 function drawMap(){
@@ -848,7 +928,7 @@ function renderAllExperiences(){
         <div class="st-line"></div>
       </div>
       <div class="st-body">
-        <div class="st-year">${fmtYear(e.year)}${e.type?' · '+e.type:''}</div>
+        <div class="st-year">${fmtYear(e.year)} — ${e.yearEnd?fmtYear(e.yearEnd):'至今'}${e.type?' · '+e.type:''}</div>
         <div class="st-text">${e.text}</div>
       </div>
     </div>
@@ -876,9 +956,22 @@ function highlightClosestExp(year){
   const entries=document.querySelectorAll('#stage-timeline .st-entry');
   entries.forEach(e=>e.classList.remove('active'));
   if(!isFinite(year))return;
-  let closest=-1,closestDist=Infinity;
-  allExps.forEach((e,i)=>{const d=Math.abs(e.year-year);if(d<closestDist){closestDist=d;closest=i}});
-  if(closest>=0)entries[closest]?.classList.add('active');
+  // 区间内的经历全部点亮（重叠时段多条目同时亮）；无命中则取最近一条
+  let inRange=-1,closest=-1,closestDist=Infinity;
+  allExps.forEach((e,i)=>{
+    const s=e.year,t=e.yearEnd||e.year;
+    const d=(year>=s&&year<=t)?0:Math.min(Math.abs(s-year),Math.abs(t-year));
+    if(d===0&&inRange<0)inRange=i;
+    if(d<closestDist){closestDist=d;closest=i}
+  });
+  if(closestDist===0){
+    allExps.forEach((e,i)=>{
+      const s=e.year,t=e.yearEnd||e.year;
+      if(year>=s&&year<=t)entries[i]?.classList.add('active');
+    });
+  }else if(closest>=0){
+    entries[closest]?.classList.add('active');
+  }
 }
 
 function showEmptyDisplay(){
@@ -990,6 +1083,7 @@ function moveSlider(clientX){
   let r=(clientX-rect.left)/rect.width;r=Math.max(0,Math.min(1,r));
   slider.style.left=(r*100)+'%';
   const year=yearFromRatio(r);yearDisplay.textContent=fmtYear(year);
+  currentYear=year;
   return year;
 }
 
