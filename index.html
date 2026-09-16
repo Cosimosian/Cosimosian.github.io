@@ -132,12 +132,16 @@ body{
 /* LEFT DISPLAY PANEL */
 .display-panel{
   position:absolute;left:3vw;top:0;bottom:0;width:28vw;
-  overflow-y:auto;pointer-events:auto;
+  overflow-y:auto;pointer-events:auto;cursor:pointer;
   background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
   backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
   padding:0;color:var(--color-text);text-shadow:var(--panel-text-shadow);
-  transition:background var(--transition-theme),border-color 0.8s;
+  transition:background var(--transition-theme),border-color 0.8s,transform 0.25s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s;
   box-shadow:0 0 30px rgba(0,0,0,0.08);
+}
+.display-panel:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 18px var(--color-accent),0 0 44px rgba(0,0,0,0.18);
 }
 .display-panel::-webkit-scrollbar{width:2px}
 .display-panel::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:1px;opacity:0.4}
@@ -238,6 +242,16 @@ body{
   opacity:0;transition:opacity 0.25s;
 }
 .mouse-coords.visible{opacity:1}
+.map-tooltip{
+  position:fixed;z-index:150;pointer-events:none;
+  background:var(--panel-bg);border:var(--panel-border);
+  border-radius:6px;padding:5px 10px;font-size:11px;color:var(--color-text);
+  text-shadow:var(--panel-text-shadow);white-space:nowrap;
+  backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
+  opacity:0;transition:opacity 0.15s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+.map-tooltip.visible{opacity:1}
 
 /* RIGHT CONSOLE PANEL */
 .console-panel{
@@ -367,6 +381,7 @@ body{
 .modal-image{width:100%;height:190px;object-fit:cover;border-radius:8px;margin-bottom:14px;background:var(--color-tag-bg)}
 .modal-title{font-size:21px;font-weight:700;margin-bottom:8px}
 .modal-desc{font-size:14px;color:var(--color-muted);line-height:1.7;margin-bottom:14px}
+.modal-detail{font-size:13px;color:var(--color-muted);line-height:1.7;margin-bottom:14px;padding:12px 14px;background:var(--color-tag-bg);border-radius:8px;border-left:3px solid var(--color-accent)}
 
 /* ============================================================
    MOBILE GATE — desktop only (code theme styled)
@@ -495,6 +510,7 @@ body{
   <!-- BOTTOM-RIGHT CORNER -->
   <div class="stage-timeline" id="stage-timeline"></div>
   <div class="mouse-coords" id="mouse-coords">0.00°N, 0.00°E</div>
+  <div class="map-tooltip" id="map-tooltip"></div>
 
 </div>
 
@@ -505,8 +521,10 @@ body{
     <img class="modal-image" id="modal-img" src="" alt="">
     <h2 class="modal-title" id="modal-title"></h2>
     <p class="modal-desc" id="modal-desc"></p>
+    <p class="modal-detail" id="modal-detail"></p>
     <div class="display-tags" id="modal-tags"></div>
     <div class="display-location" style="margin-top:10px" id="modal-location"></div>
+    <div class="display-location" id="modal-outcome" style="margin-top:10px"></div>
   </div>
 </div>
 
@@ -840,6 +858,24 @@ function drawMap(){
 }
 
 // Mouse tracking
+function buildHoverTargets(){
+  const t=[];
+  const {cx,cy,scale}=mapParams;
+  if(!scale)return t;
+  const stage=STAGES[currentStage];
+  if(stage.primaryLat){
+    const p=lonLatToXY(stage.primaryLng,stage.primaryLat);
+    t.push({x:cx+p.x*scale,y:cy+p.y*scale,label:(stage.experiences?.[0]?.text?.split(' ')[0]||'')});
+  }
+  (stage.experiences||[]).filter(e=>e.lat).forEach(e=>{
+    [[e.lat,e.lng],...(e.extra||[]).map(x=>[x.lat,x.lng])].forEach(([la,ln])=>{
+      const p=lonLatToXY(ln,la);
+      t.push({x:cx+p.x*scale,y:cy+p.y*scale,label:e.text.split(' ')[0]});
+    });
+  });
+  return t;
+}
+
 mapCanvas.addEventListener('mousemove',e=>{
   if(!mapParams.scale)return;
   const x=(e.clientX-mapParams.cx)/mapParams.scale;
@@ -848,9 +884,24 @@ mapCanvas.addEventListener('mousemove',e=>{
   const coords=document.getElementById('mouse-coords');
   coords.textContent=ll.lat.toFixed(2)+'°N, '+ll.lng.toFixed(2)+'°E';
   coords.classList.add('visible');
+
+  // 悬浮命中检测：鼠标贴近坐标点时显示对应经历名称
+  const tip=document.getElementById('map-tooltip');
+  const hit=buildHoverTargets().find(h=>Math.hypot(e.clientX-h.x,e.clientY-h.y)<=18);
+  if(hit){
+    tip.textContent=hit.label;
+    tip.style.left=(e.clientX+14)+'px';
+    tip.style.top=(e.clientY+14)+'px';
+    tip.classList.add('visible');
+    mapCanvas.style.cursor='pointer';
+  }else{
+    tip.classList.remove('visible');
+    mapCanvas.style.cursor='default';
+  }
 });
 mapCanvas.addEventListener('mouseleave',()=>{
   document.getElementById('mouse-coords').classList.remove('visible');
+  document.getElementById('map-tooltip').classList.remove('visible');
 });
 
 // Continuous map redraw for pulsing effect
@@ -1097,17 +1148,41 @@ trackWrap.addEventListener('pointerdown',e=>{if(e.target===slider||slider.contai
 // ============================================================
 // MODAL
 // ============================================================
+// 弹窗假数据兜底（仅用于弹出窗口，PROJECTS 保持线上原样）
+const MODAL_DETAIL_FALLBACK={
+  g1:{detailDesc:'课程设计历时一学期，完成从用户调研、草图推敲到三维建模与模型制作的完整流程，方案已申请实用新型专利。',outcome:'“博世杯”一等奖'},
+  g2:{detailDesc:'面向公众科普偏好开展问卷调研与深度访谈，样本覆盖多个年龄段，输出科普内容设计建议报告，作为毕业设计答辩材料。',outcome:''},
+  g3:{detailDesc:'负责场地分析与景观方案设计，涵盖入口广场、屋顶花园与周边绿地，项目已建成并投入使用。',outcome:'项目已建成使用'},
+  g4:{detailDesc:'参与博物馆前区景观与停车场绿化设计，强调文化符号与地域植物的结合，项目已建成。',outcome:'项目已建成使用'},
+  c1:{detailDesc:'基于对话式BI平台搭建全客群AUM分析看板，实现资产规模分层与自动化归因分析，支撑业务例会决策。',outcome:''},
+  c2:{detailDesc:'基于浏览器扩展开发桌面猫猫计时器，覆盖任务提醒与专注统计功能，入围微软Edge挑战者大赛20强。',outcome:'入围20强'},
+  c3:{detailDesc:'负责AI客服问答系统首页的产品规划与需求管理，梳理知识库结构与交互流程，推动多轮功能迭代上线。',outcome:''},
+  c4:{detailDesc:'构建审计文档向量库与检索链路，验证检索质量与答案溯源，探索安全审计场景下的RAG落地。',outcome:'内部验证中'},
+  a1:{detailDesc:'负责护眼特性的AI模型训练与数据处理，完成眨眼检测与人眼状态识别的数据清洗、标注与模型调优，特性已随产品发布。',outcome:'特性已随终端产品发布'},
+  a2:{detailDesc:'面向显示产线构建多模态异常检测流程，融合图像与日志数据自动识别显示异常，用于内部提效。',outcome:'内部使用中'},
+  a3:{detailDesc:'设计多agent协同的短剧生成工作流，覆盖剧本、分镜与画面生成环节的编排与调度。',outcome:''},
+  a4:{detailDesc:'通过对话式交互管理个人衣物档案，结合图像识别自动归档衣物，并基于天气与场合给出搭配建议，探索AIGC在生活场景的落地。',outcome:''}
+};
+
 function openModal(p){
+  const fb=MODAL_DETAIL_FALLBACK[p.id]||{};
   document.getElementById('modal-img').src=p.image;
   document.getElementById('modal-title').textContent=p.title;
   document.getElementById('modal-desc').textContent=p.desc;
+  document.getElementById('modal-detail').textContent=p.detailDesc||fb.detailDesc||'';
   document.getElementById('modal-tags').innerHTML=p.tags.map(t=>`<span class="display-tag">${t}</span>`).join('');
   document.getElementById('modal-location').textContent='📍 '+p.location;
+  document.getElementById('modal-outcome').textContent=(p.outcome||fb.outcome)?'🏆 '+(p.outcome||fb.outcome):'';
   document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
 }
 function closeModal(){document.getElementById('modal-overlay').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+// 点击左侧项目面板 → 弹出当前项目详情窗口
+document.getElementById('display-panel').addEventListener('click',()=>{
+  const p=PROJECTS.find(x=>x.id===selectedProjectId);
+  if(p)openModal(p);
+});
 
 // ============================================================
 // INIT
