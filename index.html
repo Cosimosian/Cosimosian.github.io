@@ -184,14 +184,17 @@ body{
   position:absolute;bottom:calc(var(--timeline-h) + 72px);right:3vw;
   width:18vw;max-height:30vh;overflow-y:auto;
   pointer-events:auto;z-index:5;
-  background:var(--panel-bg);border:var(--panel-border);
-  border-radius:10px;padding:10px 0;
-  backdrop-filter:blur(var(--blur-amount));
-  -webkit-backdrop-filter:blur(var(--blur-amount));
+  background:transparent;border:none;
+  border-radius:0;padding:0;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   transition:background var(--transition-theme),border-color 0.8s;
+  scrollbar-width:none;-ms-overflow-style:none;
 }
-.stage-timeline::-webkit-scrollbar{width:2px}
-.stage-timeline::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:1px;opacity:0.3}
+.stage-timeline::-webkit-scrollbar{display:none;width:0;height:0}
+.stage-timeline::-webkit-scrollbar-thumb{display:none}
+/* 上下半视口垫片：保证首/尾条目也能滚动到视口正中（计入滚动高度，不计入可视高度） */
+.stage-timeline::before,.stage-timeline::after{content:'';display:block;height:15vh;flex-shrink:0}
 .stage-timeline .st-entry{
   display:flex;align-items:flex-start;gap:10px;padding:5px 14px;
   cursor:default;
@@ -987,6 +990,24 @@ function renderAllExperiences(){
   applyFocus(currentStage);
 }
 
+// 丝滑缓动滚动（rAF + easeInOutCubic，可被打断，新滚动取代旧动画）
+let timelineScrollAnim=0;
+function smoothScrollTo(c,targetTop,duration=900){
+  const id=++timelineScrollAnim;
+  const start=c.scrollTop;
+  const end=Math.max(0,targetTop);
+  if(Math.abs(end-start)<1){c.scrollTop=end;return}
+  const t0=performance.now();
+  const ease=t=>t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const step=now=>{
+    if(id!==timelineScrollAnim)return;
+    const p=Math.min(1,(now-t0)/duration);
+    c.scrollTop=start+(end-start)*ease(p);
+    if(p<1)requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 function applyFocus(stageId){
   const entries=document.querySelectorAll('#stage-timeline .st-entry');
   const target=document.querySelector(`#stage-timeline .st-entry[data-stage="${stageId}"]`);
@@ -995,9 +1016,14 @@ function applyFocus(stageId){
     e.classList.toggle('in-focus',inStage);
     e.classList.toggle('out-of-focus',!inStage);
   });
-  // Scroll to first entry of this stage
+  // 同阶段经历视作一个块：整块滚动到面板垂直居中（阶段内不再滚动）
   if(target){
-    target.parentElement.scrollTo({top:target.offsetTop-target.parentElement.offsetTop-20,behavior:'smooth'});
+    const stageEntries=[...entries].filter(e=>e.dataset.stage===stageId);
+    const blockTop=stageEntries[0].offsetTop;
+    const lastEl=stageEntries[stageEntries.length-1];
+    const blockBottom=lastEl.offsetTop+lastEl.offsetHeight;
+    const c=target.parentElement;
+    smoothScrollTo(c,(blockTop+blockBottom)/2-c.clientHeight/2);
   }
   // Highlight closest entry to slider
   highlightClosestExp(yearFromRatio(parseFloat(slider.style.left)/100||0));
@@ -1178,6 +1204,8 @@ function openModal(p){
 function closeModal(){document.getElementById('modal-overlay').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+// 禁止滚轮/触摸板上下滚动时间线内容（滚动仅由游标跨阶段驱动）
+document.getElementById('stage-timeline').addEventListener('wheel',e=>e.preventDefault(),{passive:false});
 // 点击左侧项目面板 → 弹出当前项目详情窗口
 document.getElementById('display-panel').addEventListener('click',()=>{
   const p=PROJECTS.find(x=>x.id===selectedProjectId);
