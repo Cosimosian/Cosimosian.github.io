@@ -1,0 +1,77 @@
+/* 移动端提示页 + 减弱动效 */
+
+/* ============================================================
+   MOBILE GATE — desktop only (code theme styled)
+   ============================================================ */
+.mobile-gate{
+    --gate-bg:#1a1a2e;--gate-accent:#00ffcc;--gate-text:#EAEAEA;--gate-muted:#9aa0b8;--gate-hint:#5a5f7a;display:none}
+
+@media(max-width:768px){
+  html,body{
+    height:100%;
+    overflow:hidden;
+    position:fixed;
+    inset:0;
+    width:100%;
+    overscroll-behavior:none;
+    touch-action:none;
+  }
+  #china-map-bg,#ui-overlay{display:none!important}
+
+  .mobile-gate{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:fixed;inset:0;z-index:999;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    background:var(--gate-bg);color:var(--gate-text);
+    padding:calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+    text-align:center;
+    overflow:hidden;
+    box-sizing:border-box;
+  }
+  /* CRT scanlines */
+  .mobile-gate::before{
+    content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0.22) 0px,rgba(0,0,0,0.22) 1px,transparent 1px,transparent 3px);
+  }
+  .mobile-gate::after{
+    content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:radial-gradient(ellipse at center,rgba(0,255,204,0.07) 0%,rgba(0,0,0,0.5) 100%);
+  }
+  .mobile-gate .gate-icon{
+    font-size:clamp(36px,12vw,64px);line-height:1;margin-bottom:18px;
+    text-shadow:0 0 24px rgba(0,255,204,0.6);
+    animation:gate-flicker 3.2s infinite;
+  }
+  .mobile-gate .gate-title{
+    font-size:clamp(16px,5vw,22px);font-weight:700;color:var(--gate-accent);
+    letter-spacing:2px;margin-bottom:10px;
+    text-shadow:0 0 14px rgba(0,255,204,0.55);
+  }
+  .mobile-gate .gate-sub{
+    font-size:clamp(12px,3.6vw,14px);color:var(--gate-muted);line-height:1.7;
+    max-width:320px;margin:0 auto 22px;
+  }
+  .mobile-gate .gate-hint{
+    font-size:clamp(10px,3vw,12px);color:var(--gate-hint);letter-spacing:1px;
+    font-family:'SF Mono','Cascadia Code','Consolas',monospace;
+    animation:gate-blink 1.6s steps(2) infinite;
+  }
+  @keyframes gate-blink{0%,55%{opacity:1}56%,100%{opacity:0.25}}
+  @keyframes gate-flicker{
+    0%,97%,100%{opacity:1}98%{opacity:0.6}99%{opacity:0.9}
+  }
+  /* 超低高度（横屏手机等）压缩间距，保证不溢出 */
+  @media(max-height:420px){
+    .mobile-gate .gate-icon{font-size:28px;margin-bottom:8px}
+    .mobile-gate .gate-title{font-size:14px;margin-bottom:6px;letter-spacing:1px}
+    .mobile-gate .gate-sub{font-size:11px;margin-bottom:10px;line-height:1.5}
+    .mobile-gate .gate-hint{font-size:9px}
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .caliper-slider,.modal-content{transition:none!important}
+  .mobile-gate .gate-icon,.mobile-gate .gate-hint{animation:none!important}
+}

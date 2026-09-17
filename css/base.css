@@ -1,0 +1,35 @@
+/* 基础布局：body / 画布 / 覆盖层 / 头部 / 内容区 */
+
+/* ============================================================
+   BODY & LAYOUT
+   ============================================================ */
+body{
+  font-family:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--color-bg);color:var(--color-text);
+  overflow:hidden;height:100vh;
+  transition:background var(--transition-theme),color var(--transition-theme);
+}
+
+/* --- MAP CANVAS --- */
+#china-map-bg{position:fixed;inset:0;z-index:0;width:100vw;height:100vh}
+
+/* --- UI OVERLAY --- */
+#ui-overlay{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* --- HEADER --- */
+.header-section{
+  position:absolute;top:0;left:0;right:0;padding:14px 32px 10px;
+  pointer-events:auto;text-align:center;background:transparent;
+}
+.stage-description{
+  font-size:clamp(14px,2vw,20px);font-weight:400;color:var(--color-text);
+  max-width:640px;margin:0 auto;line-height:1.5;
+  text-shadow:0 1px 4px rgba(0,0,0,0.35);
+  transition:color var(--transition-theme);
+}
+
+/* --- CONTENT --- */
+.content-section{
+  position:absolute;top:10vh;left:0;right:0;bottom:calc(var(--timeline-h) + 4px);
+  pointer-events:none;
+}

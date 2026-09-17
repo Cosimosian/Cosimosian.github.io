@@ -1,0 +1,131 @@
+// ============================================================
+// 装配入口（js/main.js）
+// 职责：持有单一状态（阶段/游标年月/选中项目），创建各模块并接线回调，绑定页面级事件（模态窗/主题按钮）
+// 依赖：全部模块（单向：main → 各模块；模块间互不直接调用）
+// 接口：init() / destroy()（页面级单例，销毁接口供未来扩展）
+// ============================================================
+(function(global){
+'use strict';
+
+const { YEAR_START, STAGES, PROJECTS } = global.RESUME;
+const { tagsHtml } = global.Utils;
+const { loadProjectDoc } = global.ProjectDoc;
+
+// ---- 单一状态（游标位置由 currentChapter + year 驱动） ----
+const state = { stage:'garden', year:YEAR_START, selectedProjectId:null };
+
+// ---- 经历时间线 ----
+const experiences = new global.ExperienceTimeline({
+  container: document.getElementById('stage-timeline')
+});
+
+// ---- 主题管理（章节 = 主题阶段） ----
+const themeManager = new global.ThemeManager({
+  onStageChange: (stage, snapped) => {
+    state.stage = stage;
+    if(snapped){
+      state.year = STAGES[stage].yearStart;
+      timeline.moveToYear(state.year);
+    }
+    map.draw();
+    timeline.drawTicks();
+    timeline.updateBoundaries();
+    panels.renderConsolePanel(stage);
+    experiences.applyFocus(stage, state.year);
+  }
+});
+
+// ---- 卡尺时间轴 ----
+const timeline = new global.CaliperTimeline({
+  getStage: () => state.stage,
+  onYearChange: year => { state.year = year; experiences.highlightClosestExp(year); },
+  onStageCross: stageId => themeManager.setTheme(stageId)
+});
+
+// ---- 中国地图 ----
+const map = new global.ChinaMap(document.getElementById('china-map-bg'), {
+  getStage: () => state.stage,
+  getYear: () => state.year
+});
+
+// ---- 项目面板 ----
+const panels = new global.Panels({
+  getSelectedId: () => state.selectedProjectId,
+  setSelectedId: id => { state.selectedProjectId = id; },
+  getStage: () => state.stage
+});
+
+// ============================================================
+// MODAL（图文详情：基础信息来自 PROJECTS，详细介绍来自 data/projects/<id>.md）
+// ============================================================
+async function openModal(p){
+  document.getElementById('modal-img').src=p.image;
+  document.getElementById('modal-title').textContent=p.title;
+  document.getElementById('modal-desc').textContent=p.desc;
+  document.getElementById('modal-tags').innerHTML=tagsHtml(p.tags);
+  document.getElementById('modal-location').textContent='📍 '+p.location;
+  document.getElementById('modal-outcome').textContent=p.outcome?'🏆 '+p.outcome:'';
+  document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
+
+  // 加载独立 md 详情文档（缓存于 projectDoc.js）
+  const article=document.getElementById('modal-article');
+  article.innerHTML='<p style="opacity:0.5">详情加载中…</p>';
+  try{
+    const doc=await loadProjectDoc(p.id);
+    article.innerHTML=doc.bodyHtml;
+    const oc=doc.meta.outcome||p.outcome;
+    document.getElementById('modal-outcome').textContent=oc?'🏆 '+oc:'';
+    if(doc.meta.image)document.getElementById('modal-img').src=doc.meta.image;
+  }catch(err){
+    article.innerHTML='';
+  }
+}
+
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('active'); document.body.style.overflow=''; }
+
+const modalOverlay = document.getElementById('modal-overlay');
+const onOverlayClick = e => { if(e.target===e.currentTarget) closeModal(); };
+const onEscape = e => { if(e.key==='Escape') closeModal(); };
+const onDisplayPanelClick = () => {
+  const p = PROJECTS.find(x=>x.id===state.selectedProjectId);
+  if(p) openModal(p);
+};
+const onThemeDotClick = e => themeManager.setTheme(e.currentTarget.dataset.theme, true);
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  experiences.init();
+  map.init();
+  window.addEventListener('resize', onResize);
+  timeline.init();
+  panels.renderConsolePanel('garden');
+  experiences.applyFocus('garden', state.year);
+
+  modalOverlay.addEventListener('click', onOverlayClick);
+  document.addEventListener('keydown', onEscape);
+  document.querySelector('.modal-close').addEventListener('click', closeModal);
+  document.getElementById('display-panel').addEventListener('click', onDisplayPanelClick);
+  document.querySelectorAll('.panel-theme-dot').forEach(d=>d.addEventListener('click', onThemeDotClick));
+}
+
+function onResize(){ map.resize(); timeline.drawTicks(); timeline.updateBoundaries(); }
+
+function destroy(){
+  window.removeEventListener('resize', onResize);
+  modalOverlay.removeEventListener('click', onOverlayClick);
+  document.removeEventListener('keydown', onEscape);
+  document.querySelector('.modal-close').removeEventListener('click', closeModal);
+  document.getElementById('display-panel').removeEventListener('click', onDisplayPanelClick);
+  document.querySelectorAll('.panel-theme-dot').forEach(d=>d.removeEventListener('click', onThemeDotClick));
+  timeline.destroy();
+  map.destroy();
+  experiences.destroy();
+}
+
+init();
+
+global.ResumeApp = { init, destroy, openModal, closeModal };
+
+})(window);

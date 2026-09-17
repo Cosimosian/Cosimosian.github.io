@@ -1,0 +1,94 @@
+/* 设计令牌：reset + :root 变量 + 四主题 + 响应式变量 */
+/* 章节 CSS 只引用变量、不重定义（章节专属变量除外） */
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* ============================================================
+   CSS VARIABLES — GARDEN (default)
+   ============================================================ */
+:root{
+  --blur-amount:10px;
+  --touch-target:48px;
+  --fs-title:clamp(2rem,8vw,4.5rem);
+  --timeline-h:7vh;
+  --panel-bg:rgba(255,255,255,0.18);
+  --panel-border:1px solid rgba(255,255,255,0.45);
+  --panel-text-shadow:0 1px 3px rgba(0,0,0,0.35);
+  --color-bg:#F5F0E6;
+  --color-text:#3C3228;
+  --color-accent:#92A87C;
+  --color-muted:rgba(60,50,40,0.65);
+  --color-tag-bg:rgba(146,168,124,0.25);
+  --color-tag-text:#3C3228;
+  --color-border:rgba(255,255,255,0.45);
+  --map-bg:#F5F0E6;
+  --map-stroke:#92A87C;
+  --map-marker-fill:#92A87C;
+  --caliper-track:rgba(146,168,124,0.35);
+  --caliper-tick:rgba(146,168,124,0.45);
+  --caliper-label:rgba(60,50,40,0.75);
+  --caliper-slider-bg:#92A87C;
+  --caliper-slider-border:#6b8a5a;
+  --stage-boundary:rgba(146,168,124,0.7);
+  --transition-theme:0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ============================================================
+   THEME: CODE
+   ============================================================ */
+[data-theme="code"]{
+  --panel-bg:rgba(22,33,62,0.15);
+  --panel-border:1px solid rgba(0,255,204,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,255,204,0.25);
+  --color-bg:#1a1a2e;--color-text:#EAEAEA;--color-accent:#00ffcc;
+  --color-muted:rgba(200,200,210,0.6);--color-tag-bg:rgba(0,255,204,0.12);
+  --color-tag-text:#00ffcc;--color-border:rgba(0,255,204,0.45);
+  --map-bg:#1a1a2e;--map-stroke:#00ffcc;--map-marker-fill:#00ffcc;
+  --caliper-track:rgba(0,255,204,0.25);--caliper-tick:rgba(0,255,204,0.35);
+  --caliper-label:rgba(0,255,204,0.65);--caliper-slider-bg:#00ffcc;
+  --caliper-slider-border:#00aa88;--stage-boundary:rgba(0,255,204,0.6);
+}
+
+/* ============================================================
+   THEME: AI
+   ============================================================ */
+[data-theme="ai"]{
+  --panel-bg:rgba(10,10,10,0.15);
+  --panel-border:1px solid rgba(0,217,255,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,217,255,0.25);
+  --color-bg:#0a0a0a;--color-text:#E0E0E0;--color-accent:#00d9ff;
+  --color-muted:rgba(200,200,210,0.55);--color-tag-bg:rgba(0,217,255,0.10);
+  --color-tag-text:#00d9ff;--color-border:rgba(0,217,255,0.45);
+  --map-bg:#0a0a0a;--map-stroke:#00d9ff;--map-marker-fill:#00d9ff;
+  --caliper-track:rgba(0,217,255,0.25);--caliper-tick:rgba(0,217,255,0.35);
+  --caliper-label:rgba(0,217,255,0.65);--caliper-slider-bg:#00d9ff;
+  --caliper-slider-border:#0099bb;--stage-boundary:rgba(0,217,255,0.6);
+}
+
+/* ============================================================
+   THEME: FUTURE (inherits AI palette)
+   ============================================================ */
+[data-theme="future"]{
+  --panel-bg:rgba(8,8,8,0.12);
+  --panel-border:1px solid rgba(180,180,190,0.35);
+  --panel-text-shadow:0 0 8px rgba(180,180,190,0.2);
+  --color-bg:#060606;--color-text:#C0C0C0;--color-accent:#888;
+  --color-muted:rgba(180,180,190,0.5);--color-tag-bg:rgba(255,255,255,0.06);
+  --color-tag-text:#999;--color-border:rgba(180,180,190,0.35);
+  --map-bg:#060606;--map-stroke:rgba(180,180,190,0.3);--map-marker-fill:#888;
+  --caliper-track:rgba(180,180,190,0.2);--caliper-tick:rgba(180,180,190,0.25);
+  --caliper-label:rgba(180,180,190,0.5);--caliper-slider-bg:#999;
+  --caliper-slider-border:#666;--stage-boundary:rgba(180,180,190,0.4);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:768px){
+  :root{--blur-amount:0px;--timeline-h:15vh;--panel-bg:rgba(255,255,255,0.9);--panel-border:1px solid #ddd;--panel-text-shadow:none}
+}
+
+/* =======================================================
