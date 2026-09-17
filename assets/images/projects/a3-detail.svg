@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00d9ff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#00d9ff" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#g)"/>
+  <rect x="1" y="1" width="798" height="398" fill="none" stroke="#00d9ff" stroke-opacity="0.35" stroke-width="2" rx="10"/>
+  <text x="400" y="190" font-family="sans-serif" font-size="34" fill="#00d9ff" text-anchor="middle">短剧生成工作流</text>
+  <text x="400" y="236" font-family="sans-serif" font-size="15" fill="#00d9ff" fill-opacity="0.65" text-anchor="middle">图片待补充 · 替换本文件或修改 md 中的图片地址</text>
+</svg>

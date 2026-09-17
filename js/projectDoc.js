@@ -50,7 +50,7 @@ function renderMarkdown(md){
     if(!t){ flush(); continue; }
 
     const img = /^!\[([^\]]*)\]\(([^)\s]+)\)/.exec(t);
-    if(img){ flush(); html += `<img class="modal-article-img" src="${esc(img[2])}" alt="${esc(img[1])}" loading="lazy">`; continue; }
+    if(img){ flush(); html += `<img class="modal-article-img" src="${esc(img[2])}" alt="${esc(img[1])}" loading="lazy" onerror="window.ProjectDoc.imgFallback(this)">`; continue; }
 
     const h = /^(#{1,3})\s+(.*)$/.exec(t);
     if(h){ flush(); html += `<h${h[1].length+2} class="modal-article-h">${inline(h[2])}</h${h[1].length+2}>`; continue; }
@@ -80,5 +80,13 @@ async function loadProjectDoc(id){
 }
 
 global.ProjectDoc = { parseProjectDoc, loadProjectDoc };
+
+// 图片加载失败兜底：替换为带 alt 文案的占位块（外网图片不可达时布局不塌）
+global.ProjectDoc.imgFallback = function(el){
+  const d = document.createElement('div');
+  d.className = 'modal-article-img-fallback';
+  d.textContent = el.alt || '图片加载失败';
+  el.replaceWith(d);
+};
 
 })(window);
