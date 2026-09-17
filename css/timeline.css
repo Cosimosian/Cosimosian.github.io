@@ -27,8 +27,8 @@
 .stage-timeline .st-entry.out-of-focus .st-dot{
   width:3px;height:3px;background:var(--color-muted);
 }
-.stage-timeline .st-entry.out-of-focus .st-text{font-size:9px}
-.stage-timeline .st-entry.out-of-focus .st-year{font-size:7px}
+.stage-timeline .st-entry.out-of-focus .st-text{font-size:var(--fs-2xs)}
+.stage-timeline .st-entry.out-of-focus .st-year{font-size:calc(var(--fs-2xs) * 0.8)}
 .stage-timeline .st-entry.in-focus{
   opacity:1;transform:scale(1);
 }
@@ -49,11 +49,11 @@
 .stage-timeline .st-entry:last-child .st-line{background:transparent}
 .stage-timeline .st-body{flex:1;min-width:0}
 .stage-timeline .st-text{
-  font-size:11px;color:var(--color-text);text-shadow:var(--panel-text-shadow);
+  font-size:var(--fs-sm);color:var(--color-text);text-shadow:var(--panel-text-shadow);
   line-height:1.4;transition:color var(--transition-theme);
 }
 .stage-timeline .st-year{
-  font-size:9px;color:var(--color-accent);margin-bottom:2px;
+  font-size:var(--fs-2xs);color:var(--color-accent);margin-bottom:2px;
   font-family:'SF Mono','Consolas',monospace;
 }
 

@@ -43,6 +43,31 @@
   --exp-timeline-maxh:30vh;
   --modal-head-img-h:130px;
   --ui-container-max:2200px;
+
+  /* 字体族令牌（主题可覆盖 --font-heading 实现风格化，见各主题块） */
+  /* 园林风格化（themes.md 提案）：如需衬线标题，将下行取消注释：
+     --font-heading:'Playfair Display','Noto Serif SC','思源宋体',serif; */
+  --font-body:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-heading:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+
+  /* 强风格化预留（202609）：视觉大小/字距修正，主题块内覆盖，字号层级 --fs-* 永不改动 */
+  /* --fs-adjust：字体 x-height 修正（font-size-adjust），换字体时按比例填数值，
+     例：像素风大字面字体填 0.5~0.7 视觉缩小；衬线小字面字体填 0.55~0.65 视觉放大 */
+  --fs-adjust:from-font;
+  /* --ls-heading/--ls-body：标题/正文字距（像素风 +2px、科技风 -0.5px、衬线 +0.5px 等） */
+  --ls-heading:normal;
+  --ls-body:normal;
+
+  /* 字号阶梯（202609，modular scale 1.2 就近取整；内嵌 --fs-scale 实现分档缩放） */
+  --fs-2xs:calc(9px * var(--fs-scale));    /* 画布外最小辅助：年份/坐标 */
+  --fs-xs:calc(10px * var(--fs-scale));    /* 徽章/分类/小节标签 */
+  --fs-sm:calc(12px * var(--fs-scale));    /* 标签/经历文本/成果 */
+  --fs-md:calc(13px * var(--fs-scale));    /* 正文/导航项/弹窗简介 */
+  --fs-lg:calc(15px * var(--fs-scale));    /* 弹窗正文/文章 */
+  --fs-h4:calc(14px * var(--fs-scale));    /* 文章四级标题 */
+  --fs-h3:calc(16px * var(--fs-scale));    /* 文章三级标题 */
+  --fs-xl:calc(20px * var(--fs-scale));    /* 标题：面板/弹窗 */
+  --fs-headline:clamp(14px,2vw,20px);      /* 头部阶段描述（流式） */
 }
 
 /* ============================================================
@@ -59,6 +84,11 @@
   --caliper-track:rgba(0,255,204,0.25);--caliper-tick:rgba(0,255,204,0.35);
   --caliper-label:rgba(0,255,204,0.65);--caliper-slider-bg:#00ffcc;
   --caliper-slider-border:#00aa88;--stage-boundary:rgba(0,255,204,0.6);
+  /* 风格化：千禧街机用几何无衬线标题（与正文同族） */
+  --font-heading:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  /* 强风格预留示例（像素风启用时按需填入）：
+     --font-body:'Press Start 2P','Zpix',monospace;
+     --fs-adjust:0.62; --ls-body:1px; --ls-heading:2px; */
 }
 
 /* ============================================================
