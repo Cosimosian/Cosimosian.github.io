@@ -310,6 +310,12 @@ body{
   background:var(--caliper-slider-bg);border:1px solid var(--caliper-slider-border);
   border-radius:2px;transform:translateX(-50%);cursor:grab;z-index:10;
   transition:box-shadow 0.15s;
+  touch-action:none;
+}
+/* 隐形热区：扩大可拖动范围（视觉 4px，热区 28×~50px） */
+.caliper-slider::after{
+  content:'';position:absolute;left:50%;top:-14px;bottom:-14px;
+  width:28px;transform:translateX(-50%);
 }
 .caliper-slider::before{
   content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);
@@ -481,10 +487,10 @@ body{
     <!-- RIGHT CONSOLE + THEME -->
     <div class="console-panel" id="console-panel">
       <div class="panel-theme-dots" id="panel-theme-dots">
-        <button class="panel-theme-dot garden active" data-theme="garden" onclick="setTheme('garden')" title="风景园林 · 落地景观与产品设计"></button>
-        <button class="panel-theme-dot code" data-theme="code" onclick="setTheme('code')" title="软件工程 · 初探技术与商业系统"></button>
-        <button class="panel-theme-dot ai" data-theme="ai" onclick="setTheme('ai')" title="显示软件开发 · 工程训练和AI探索"></button>
-        <button class="panel-theme-dot future" data-theme="future" onclick="setTheme('future')" title="未来"></button>
+        <button class="panel-theme-dot garden active" data-theme="garden" onclick="setTheme('garden',true)" title="风景园林 · 落地景观与产品设计"></button>
+        <button class="panel-theme-dot code" data-theme="code" onclick="setTheme('code',true)" title="软件工程 · 初探技术与商业系统"></button>
+        <button class="panel-theme-dot ai" data-theme="ai" onclick="setTheme('ai',true)" title="显示软件开发 · 工程训练和AI探索"></button>
+        <button class="panel-theme-dot future" data-theme="future" onclick="setTheme('future',true)" title="未来"></button>
       </div>
       <div class="section-label">项目导航</div>
       <div id="console-list"></div>
@@ -1063,12 +1069,18 @@ function showEmptyDisplay(){
 // ============================================================
 // THEME
 // ============================================================
-function setTheme(theme){
+function setTheme(theme, snapToStageStart){
   currentStage=theme;
   const s=STAGES[theme];
   document.documentElement.setAttribute('data-theme',s.theme);
   document.getElementById('stage-desc').textContent=s.description;
   document.querySelectorAll('.panel-theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.theme===theme));
+  // 面板切换阶段 → 游标跳到该阶段起点（拖动游标跨阶段时不触发，保持即停位置）
+  if(snapToStageStart){
+    currentYear=s.yearStart;
+    slider.style.left=(ratioFromYear(s.yearStart)*100)+'%';
+    yearDisplay.textContent=fmtYear(s.yearStart);
+  }
   drawMap();drawTicks();updateBoundaries();
   renderConsolePanel(theme);applyFocus(theme);
 }
