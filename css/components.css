@@ -73,7 +73,10 @@
 
 /* RIGHT CONSOLE PANEL */
 .console-panel{
-  position:absolute;right:3vw;top:0;width:clamp(var(--panel-console-min),var(--panel-console-w),var(--panel-console-max));max-height:100%;
+  position:absolute;right:3vw;top:0;width:clamp(var(--panel-console-min),var(--panel-console-w),var(--panel-console-max));
+  /* 高度让位：为右下经历时间轴预留空间（2×时间轴高 + 时间线最大高 + 100px 边距），
+     矮屏（如 iPad 横屏 768 高）下内容滚动而非与经历时间轴重叠 */
+  max-height:min(100%, calc(100vh - 2*var(--timeline-h) - var(--exp-timeline-maxh) - 100px));
   overflow-y:auto;pointer-events:auto;
   background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
   backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
