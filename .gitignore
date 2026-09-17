@@ -1,3 +1,6 @@
 .playwright-mcp/
 map-check.png
 *.log
+
+# 部署产物子模块（本地维护，不纳入提交）
+Cosimosian.github.io/
