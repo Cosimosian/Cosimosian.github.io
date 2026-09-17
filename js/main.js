@@ -7,12 +7,12 @@
 (function(global){
 'use strict';
 
-const { YEAR_START, STAGES, PROJECTS } = global.RESUME;
+const { YEAR_START, STAGE_ORDER, STAGES, PROJECTS } = global.RESUME;
 const { tagsHtml } = global.Utils;
 const { loadProjectDoc } = global.ProjectDoc;
 
 // ---- 单一状态（游标位置由 currentChapter + year 驱动） ----
-const state = { stage:'garden', year:YEAR_START, selectedProjectId:null };
+const state = { stage: STAGE_ORDER[0], year: YEAR_START, selectedProjectId: null };
 
 // ---- 经历时间线 ----
 const experiences = new global.ExperienceTimeline({
@@ -100,8 +100,8 @@ function init(){
   map.init();
   window.addEventListener('resize', onResize);
   timeline.init();
-  panels.renderConsolePanel('garden');
-  experiences.applyFocus('garden', state.year);
+  panels.renderConsolePanel(STAGE_ORDER[0]);
+  experiences.applyFocus(STAGE_ORDER[0], state.year);
 
   modalOverlay.addEventListener('click', onOverlayClick);
   document.addEventListener('keydown', onEscape);

@@ -8,7 +8,7 @@
 (function(global){
 'use strict';
 
-const { STAGES } = global.RESUME;
+const { STAGE_ORDER, STAGES } = global.RESUME;
 const { fmtYear, expActiveAt } = global.Utils;
 
 class ExperienceTimeline{
@@ -30,7 +30,7 @@ class ExperienceTimeline{
 
   _build(){
     this._allExps = [];
-    for(const sid of ['garden','code','ai']){
+    for(const sid of STAGE_ORDER){
       (STAGES[sid].experiences||[]).forEach(e=>this._allExps.push({...e,stage:sid}));
     }
     this._allExps.sort((a,b)=>a.year-b.year);

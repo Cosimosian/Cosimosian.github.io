@@ -8,7 +8,7 @@
 (function(global){
 'use strict';
 
-const { YEAR_START, YEAR_END, STAGES } = global.RESUME;
+const { YEAR_START, YEAR_END, STAGE_ORDER, STAGES } = global.RESUME;
 const { cssVar, fmtYear } = global.Utils;
 
 // 刻度绘制参数（原散落魔数集中于此）
@@ -73,11 +73,12 @@ class CaliperTimeline{
   _yearFromRatio(r){ return YEAR_START+r*(YEAR_END-YEAR_START); }
   _ratioFromYear(y){ return (y-YEAR_START)/(YEAR_END-YEAR_START); }
 
+  // 阶段检测：遍历阶段序列表，落在哪个区间返回哪个阶段（新增阶段零改动）
   _detectStage(year){
-    if(year<STAGES.code.yearStart)return'garden';
-    if(year<STAGES.ai.yearStart)return'code';
-    if(year<STAGES.future.yearStart)return'ai';
-    return'future';
+    for(let i=1;i<STAGE_ORDER.length;i++){
+      if(year < STAGES[STAGE_ORDER[i]].yearStart) return STAGE_ORDER[i-1];
+    }
+    return STAGE_ORDER[STAGE_ORDER.length-1];
   }
 
   // 游标移动到指定年月（更新视觉与内部状态，不触发回调）
@@ -131,24 +132,34 @@ class CaliperTimeline{
     this.ticksCtx.fillStyle=TICK_CONST.FUTURE_TINT;
     this.ticksCtx.fillRect(futureRatio*w,0,w-futureRatio*w,h);
 
-    // Stage boundaries on ticks
-    [STAGES.code.yearStart,STAGES.ai.yearStart,STAGES.future.yearStart].forEach(by=>{
-      const bx=(by-YEAR_START)/totalYears*w;
+    // Stage boundaries on ticks（边界列表派生自阶段序列表）
+    STAGE_ORDER.slice(1).forEach(sid=>{
+      const bx=(STAGES[sid].yearStart-YEAR_START)/totalYears*w;
       this.ticksCtx.strokeStyle=boundaryCol;this.ticksCtx.lineWidth=TICK_CONST.BOUNDARY_W;
       this.ticksCtx.beginPath();this.ticksCtx.moveTo(bx,0);this.ticksCtx.lineTo(bx,h);this.ticksCtx.stroke();
     });
   }
 
+  // 边界标记与标签 DOM 动态生成（由阶段序列表驱动；新增阶段零改动 HTML）
+  _ensureBoundaryDom(){
+    const wrap=this.trackWrap;
+    wrap.querySelectorAll('.stage-boundary-marker,.stage-boundary-label').forEach(el=>el.remove());
+    STAGE_ORDER.slice(1).forEach(sid=>{
+      const s=STAGES[sid];
+      const m=document.createElement('div');m.className='stage-boundary-marker';m.dataset.stage=sid;
+      const l=document.createElement('div');l.className='stage-boundary-label';l.dataset.stage=sid;l.textContent=s.shortLabel||'';
+      wrap.appendChild(m);wrap.appendChild(l);
+    });
+  }
+
   updateBoundaries(){
+    this._ensureBoundaryDom();
     const totalYears=YEAR_END-YEAR_START;
-    const place=(id,label,year,labelText)=>{
-      const pct=(year-YEAR_START)/totalYears*100;
-      const el=document.getElementById(id);if(el)el.style.left=pct+'%';
-      const lbl=document.getElementById(label);if(lbl)lbl.style.left=pct+'%',lbl.textContent=labelText;
-    };
-    place('boundary-code','boundary-code-label',STAGES.code.yearStart,'软件');
-    place('boundary-ai','boundary-ai-label',STAGES.ai.yearStart,'显示');
-    place('boundary-future','boundary-future-label',STAGES.future.yearStart,'未来');
+    STAGE_ORDER.slice(1).forEach(sid=>{
+      const pct=(STAGES[sid].yearStart-YEAR_START)/totalYears*100;
+      const el=this.trackWrap.querySelector(`.stage-boundary-marker[data-stage="${sid}"]`);if(el)el.style.left=pct+'%';
+      const lbl=this.trackWrap.querySelector(`.stage-boundary-label[data-stage="${sid}"]`);if(lbl)lbl.style.left=pct+'%';
+    });
   }
 }
 

@@ -10,6 +10,9 @@
 const YEAR_START = 2016.75;  // 2016.9
 const YEAR_END   = 2027.0;   // 2026.12
 
+// 阶段序列表（键序 = 时间序；新增阶段只需在本数组与 STAGES 中加一条，逻辑层零改动）
+const STAGE_ORDER = ['garden','code','ai','future'];
+
 const STAGES = {
   garden: { id:'garden', theme:'garden', yearStart:2016.75, yearEnd:2021.75,
     title:'2016‑2021｜风景园林 · 落地景观与产品设计',
@@ -21,6 +24,7 @@ const STAGES = {
       {year:2020.33,yearEnd:2021.58,type:'工作',text:'中国建筑设计研究院 建筑景观设计',lat:34.34,lng:108.94}
     ]},
   code: { id:'code', theme:'code', yearStart:2021.75, yearEnd:2024.5,
+    shortLabel:'软件',
     title:'2021‑2024｜软件工程 · 初探技术与商业系统',
     description:'数字抽象之域 | 人造规则下的解析与建构',
     badge:'阶段 02',
@@ -32,6 +36,7 @@ const STAGES = {
       {year:2023.83,yearEnd:2024.42,type:'工作',text:'德勤 网络安全风险咨询',lat:22.54,lng:114.06}
     ]},
   ai: { id:'ai', theme:'ai', yearStart:2024.5, yearEnd:2026.58,
+    shortLabel:'显示',
     title:'2024‑2026｜显示软件开发 · 工程训练和AI探索',
     description:'系统工程之途 | 虚实渐感，巨微相循，感理互筑',
     badge:'阶段 03',
@@ -40,6 +45,7 @@ const STAGES = {
       {year:2024.83,yearEnd:2026.58,type:'工作',text:'华为 显示软件开发',lat:34.34,lng:108.94}
     ]},
   future: { id:'future', theme:'future', yearStart:2026.58, yearEnd:2027.0,
+    shortLabel:'未来',
     title:'未来 · Future',
     description:'—— 内容预留，等待书写 ——',
     badge:'未 来',
@@ -71,6 +77,6 @@ const SURROUNDING_LABELS=[
 ];
 
 // 挂载到 window（file:// 下 ES Modules 不可用，统一走命名空间）
-global.RESUME = { YEAR_START, YEAR_END, STAGES, PROJECTS, SURROUNDING_LABELS };
+global.RESUME = { YEAR_START, YEAR_END, STAGE_ORDER, STAGES, PROJECTS, SURROUNDING_LABELS };
 
 })(window);
