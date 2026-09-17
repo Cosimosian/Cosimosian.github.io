@@ -372,25 +372,41 @@ body{
 }
 .modal-overlay.active{opacity:1;pointer-events:auto}
 .modal-content{
-  background:var(--panel-bg);border-radius:16px;padding:28px;
-  max-width:480px;width:90%;max-height:80vh;overflow-y:auto;
+  background:var(--panel-bg);border-radius:14px;padding:0;
+  width:calc(100vw - 36px);height:calc(100vh - 36px);max-width:1200px;
   box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;
   transform:scale(0.9);transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);
   border:var(--panel-border);color:var(--color-text);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;overflow:hidden;
 }
 .modal-overlay.active .modal-content{transform:scale(1)}
 .modal-close{
-  position:absolute;top:12px;right:12px;width:34px;height:34px;
+  position:absolute;top:14px;right:14px;width:36px;height:36px;z-index:2;
   border:none;background:var(--color-tag-bg);color:var(--color-text);
-  border-radius:50%;cursor:pointer;font-size:15px;
+  border-radius:50%;cursor:pointer;font-size:16px;
   display:flex;align-items:center;justify-content:center;
 }
 .modal-close:hover{background:var(--color-accent);color:#fff}
-.modal-image{width:100%;height:190px;object-fit:cover;border-radius:8px;margin-bottom:14px;background:var(--color-tag-bg)}
-.modal-title{font-size:21px;font-weight:700;margin-bottom:8px}
-.modal-desc{font-size:14px;color:var(--color-muted);line-height:1.7;margin-bottom:14px}
-.modal-detail{font-size:13px;color:var(--color-muted);line-height:1.7;margin-bottom:14px;padding:12px 14px;background:var(--color-tag-bg);border-radius:8px;border-left:3px solid var(--color-accent)}
+.modal-head{padding:30px 36px 4px;flex-shrink:0}
+.modal-image{width:100%;height:210px;object-fit:cover;border-radius:10px;margin-bottom:16px;background:var(--color-tag-bg)}
+.modal-title{font-size:23px;font-weight:700;margin-bottom:8px}
+.modal-desc{font-size:14px;color:var(--color-muted);line-height:1.7;margin-bottom:12px}
+.modal-article{
+  flex:1;overflow-y:auto;padding:8px 36px 34px;
+  font-size:14px;color:var(--color-muted);line-height:1.85;
+}
+.modal-article::-webkit-scrollbar{width:3px}
+.modal-article::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:2px;opacity:0.4}
+.modal-article p{margin:0 0 16px}
+.modal-article-img{max-width:100%;max-height:430px;object-fit:cover;border-radius:10px;display:block;margin:20px auto}
+.modal-article h3{font-size:18px;color:var(--color-text);margin:26px 0 10px}
+.modal-article h4{font-size:16px;color:var(--color-text);margin:22px 0 8px}
+.modal-article h5{font-size:14px;color:var(--color-text);margin:18px 0 8px}
+.modal-article ul{padding-left:22px;margin:0 0 16px}
+.modal-article li{margin-bottom:6px}
+.modal-article a{color:var(--color-accent);text-decoration:none;border-bottom:1px solid transparent}
+.modal-article a:hover{border-bottom-color:var(--color-accent)}
 
 /* ============================================================
    MOBILE GATE — desktop only (code theme styled)
@@ -527,75 +543,32 @@ body{
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <img class="modal-image" id="modal-img" src="" alt="">
-    <h2 class="modal-title" id="modal-title"></h2>
-    <p class="modal-desc" id="modal-desc"></p>
-    <p class="modal-detail" id="modal-detail"></p>
-    <div class="display-tags" id="modal-tags"></div>
-    <div class="display-location" style="margin-top:10px" id="modal-location"></div>
-    <div class="display-location" id="modal-outcome" style="margin-top:10px"></div>
+    <div class="modal-head">
+      <img class="modal-image" id="modal-img" src="" alt="">
+      <h2 class="modal-title" id="modal-title"></h2>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="display-tags" id="modal-tags"></div>
+      <div class="display-location" id="modal-location" style="margin-top:10px"></div>
+      <div class="display-location" id="modal-outcome" style="margin-top:6px"></div>
+    </div>
+    <article class="modal-article" id="modal-article"></article>
   </div>
 </div>
 
 <script src="assets/data/china-geo-data.js?v=20260807"></script>
 <script src="assets/data/map-style-data.js?v=20260807"></script>
+<script src="data/resume.js"></script>
+<script src="shared/projection.js"></script>
+<script src="shared/utils.js"></script>
+<script src="js/projectDoc.js"></script>
 <script>
 // ============================================================
-// CONFIG
+// 命名空间解构（模块经 window.X 挂载，file:// 与 http:// 均可用）
 // ============================================================
-const YEAR_START = 2016.75;  // 2016.9
-const YEAR_END   = 2027.0;    // 2026.12
-
-const STAGES = {
-  garden: { id:'garden', theme:'garden', yearStart:2016.75, yearEnd:2021.75,
-    title:'2016‑2021｜风景园林 · 落地景观与产品设计',
-    description:'自然器物之间 | 环境美学与人的感知联结',
-    badge:'阶段 01',
-    primaryLat:34.28, primaryLng:108.07,
-    experiences:[
-      {year:2016.75,yearEnd:2020.42,type:'教育',text:'西北农林科技大学 风景园林学士（获保研资格）',lat:34.28,lng:108.07},
-      {year:2020.33,yearEnd:2021.58,type:'工作',text:'中国建筑设计研究院 建筑景观设计',lat:34.34,lng:108.94}
-    ]},
-  code: { id:'code', theme:'code', yearStart:2021.75, yearEnd:2024.5,
-    title:'2021‑2024｜软件工程 · 初探技术与商业系统',
-    description:'数字抽象之域 | 人造规则下的解析与建构',
-    badge:'阶段 02',
-    primaryLat:34.34, primaryLng:108.94,
-    experiences:[
-      {year:2021.75,yearEnd:2023.42,type:'教育',text:'西安电子科技大学 软件工程学士（西电青岛研究院）',lat:34.34,lng:108.94,extra:[{lat:36.07,lng:120.38}]},
-      {year:2022.5,yearEnd:2022.58,type:'实习',text:'招商银行 数据分析',lat:34.34,lng:108.94},
-      {year:2023.08,yearEnd:2023.33,type:'实习',text:'西门子 前端开发',lat:31.30,lng:120.62},
-      {year:2023.83,yearEnd:2024.42,type:'工作',text:'德勤 网络安全风险咨询',lat:22.54,lng:114.06}
-    ]},
-  ai: { id:'ai', theme:'ai', yearStart:2024.5, yearEnd:2026.58,
-    title:'2024‑2026｜显示软件开发 · 工程训练和AI探索',
-    description:'系统工程之途 | 虚实渐感，巨微相循，感理互筑',
-    badge:'阶段 03',
-    primaryLat:34.34, primaryLng:108.94,
-    experiences:[
-      {year:2024.83,yearEnd:2026.58,type:'工作',text:'华为 显示软件开发',lat:34.34,lng:108.94}
-    ]},
-  future: { id:'future', theme:'future', yearStart:2026.58, yearEnd:2027.0,
-    title:'未来 · Future',
-    description:'—— 内容预留，等待书写 ——',
-    badge:'未 来',
-    experiences:[] }
-};
-
-const PROJECTS = [
-  {id:'g1',title:'工业设计 | 家用厨房沥水架',category:'实用新型专利，“博世杯”工业设计与模型制作大赛一等奖',desc:'工业产品设计课程项目，从生活场景出发完成家用厨房沥水架的产品设计与方案表达。',tags:['SketchUp','0.'],location:'西安',image:'https://picsum.photos/seed/garden1/600/260',mobileImage:'https://picsum.photos/seed/garden1-m/640/340',stage:'garden',year:2017.5,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'g2',title:'用户研究 | 公众偏好的科普信息研究',category:'毕业设计',desc:'用户研究课题，围绕公众偏好的科普信息类型与科普方式展开调研分析。',tags:['用户研究','调研分析'],location:'西安',image:'https://picsum.photos/seed/garden2/600/260',mobileImage:'https://picsum.photos/seed/garden2-m/640/340',stage:'garden',year:2018.5,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'g3',title:'建筑景观 | 杨凌自贸大厦',category:'景观工程（实际建成）',desc:'中国建筑设计研究院工作期间的景观设计项目。',tags:['景观设计','公共建筑'],location:'杨凌',image:'https://picsum.photos/seed/garden3/600/260',mobileImage:'https://picsum.photos/seed/garden3-m/640/340',stage:'garden',year:2021.0,outcome:'',link:'',lat:34.28,lng:108.07},
-  {id:'g4',title:'建筑景观 | 榆林博物馆',category:'景观工程（实际建成）',desc:'中国建筑设计研究院工作期间的景观设计项目。',tags:['景观设计','文化建筑'],location:'榆林',image:'https://picsum.photos/seed/garden4/600/260',mobileImage:'https://picsum.photos/seed/garden4-m/640/340',stage:'garden',year:2021.25,outcome:'',link:'',lat:38.29,lng:109.73},
-  {id:'c1',title:'数据分析 | 基于BI平台的全客群AUM自动化分析',category:'数分实习',desc:'德勤工作期间的 chatBI 数据分析项目，基于对话式商业智能的数据分析实践。',tags:['数据分析','商业智能'],location:'深圳',image:'https://picsum.photos/seed/code6/600/260',mobileImage:'https://picsum.photos/seed/code6-m/640/340',stage:'code',year:2024.25,outcome:'',link:'',lat:22.54,lng:114.06},  
-  {id:'c2',title:'产品设计 | 微软 Edge 挑战者开发大赛-桌面猫猫计时器',category:'校外竞赛（入围20强）',desc:'微软 Edge 挑战者开发大赛参赛项目，前端开发与网页应用实现。',tags:['前端开发','Web应用'],location:'西安',image:'https://picsum.photos/seed/code2/600/260',mobileImage:'https://picsum.photos/seed/code2-m/640/340',stage:'code',year:2022.75,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'c3',title:'前端开发 | AI客服问答系统首页',category:'开发实习',desc:'校园互助服务平台，负责产品规划、需求管理与功能迭代。',tags:['产品经理','需求分析'],location:'西安',image:'https://picsum.photos/seed/code1/600/260',mobileImage:'https://picsum.photos/seed/code1-m/640/340',stage:'code',year:2022.25,outcome:'',link:'',lat:34.34,lng:108.94}, 
-  {id:'c4',title:'RAG项目 | 网络安全审计存档问答系统',category:'AI探索',desc:'德勤工作期间的 chatBI 数据分析项目，基于对话式商业智能的数据分析实践。',tags:['数据分析','商业智能'],location:'深圳',image:'https://picsum.photos/seed/code6/600/260',mobileImage:'https://picsum.photos/seed/code6-m/640/340',stage:'code',year:2024.25,outcome:'',link:'',lat:22.54,lng:114.06},
-  {id:'a1',title:'眨眼检测 | 终端智能护眼特性',category:'软件工程（市场发布）',desc:'华为显示软件开发期间的智能护眼项目，负责AI模型训练与数据处理。',tags:['模型训练','数据处理','护眼'],location:'西安',image:'https://picsum.photos/seed/ai1/600/260',mobileImage:'https://picsum.photos/seed/ai1-m/640/340',stage:'ai',year:2025.0,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'a2',title:'多模态 | 图像显示异常检测',category:'软件工程（内部提效）',desc:'华为显示软件开发期间的多模态显示异常检测项目。',tags:['多模态','异常检测','显示'],location:'西安',image:'https://picsum.photos/seed/ai2/600/260',mobileImage:'https://picsum.photos/seed/ai2-m/640/340',stage:'ai',year:2025.5,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'a3',title:'多agent协同 | 短剧生成工作流',category:'AI探索',desc:'华为显示软件开发期间的工作流项目，短剧生成工作流的设计与实现。',tags:['工作流','内容生成','AIGC'],location:'西安',image:'https://picsum.photos/seed/ai3/600/260',mobileImage:'https://picsum.photos/seed/ai3-m/640/340',stage:'ai',year:2026.0,outcome:'',link:'',lat:34.34,lng:108.94},
-  {id:'a4',title:'chatBI | 个人衣物管理app',category:'AI探索',desc:'衣物管理。',tags:['app','衣物识别','AIGC'],location:'西安',image:'https://picsum.photos/seed/ai3/600/260',mobileImage:'https://picsum.photos/seed/ai3-m/640/340',stage:'ai',year:2026.0,outcome:'',link:'',lat:34.34,lng:108.94},
-];
+const {YEAR_START,YEAR_END,STAGES,PROJECTS,SURROUNDING_LABELS}=window.RESUME;
+const {lonLatToXY,XYToLonLat,toScreen}=window.Projection;
+const {cssVar,fmtYear}=window.Utils;
+const {loadProjectDoc}=window.ProjectDoc;
 
 // ============================================================
 // STATE
@@ -611,19 +584,6 @@ let currentYear = YEAR_START; // 游标当前年月（驱动地图 L3 项目城�
 const mapCanvas = document.getElementById('china-map-bg');
 const mapCtx = mapCanvas.getContext('2d');
 let mapParams = { cx:0, cy:0, scale:0 }; // updated on resize
-
-// Coordinate projection (simple cylindrical — China bounding box)
-const LON_MIN=73, LON_MAX=135, LAT_MIN=18, LAT_MAX=54;
-function lonLatToXY(lon,lat){
-  const x=(lon-LON_MIN)/(LON_MAX-LON_MIN)*0.96-0.05;
-  const y=0.44-(lat-LAT_MIN)/(LAT_MAX-LAT_MIN)*0.70;
-  return{x,y};
-}
-function XYToLonLat(x,y){
-  const lon=LON_MIN+(x+0.05)/0.96*(LON_MAX-LON_MIN);
-  const lat=LAT_MIN+(0.44-y)/0.70*(LAT_MAX-LAT_MIN);
-  return{lat,lng:lon};
-}
 
 function resizeMap(){ mapCanvas.width=window.innerWidth; mapCanvas.height=window.innerHeight; staticKey=''; drawMap(); }
 
@@ -729,12 +689,7 @@ function ensureStaticLayer(){
   const so=st['text-opacity']||0.08;
   const sfont=(st['text-font']||'sans-serif')==='serif'?'serif':'sans-serif';
   s.globalAlpha=so;s.font=`${scale*0.025}px ${sfont}`;s.textAlign='center';
-  const labels=[
-    ['中亚 · Central Asia',-0.88,-0.12],['俄罗斯 · Russia',0.10,-0.26],['蒙古 · Mongolia',0.38,-0.18],
-    ['朝鲜半岛',0.84,0.12],['日本 · Japan',0.90,0.28],['东南亚',0.50,0.52],
-    ['南亚 · South Asia',-0.32,0.46],['喜马拉雅',-0.42,0.18]
-  ];
-  labels.forEach(L=>s.fillText(L[0],cx+L[1]*scale,cy+L[2]*scale));
+  SURROUNDING_LABELS.forEach(L=>s.fillText(L[0],cx+L[1]*scale,cy+L[2]*scale));
   s.textAlign='start';s.globalAlpha=1;
 
   // “中 国”字样
@@ -749,8 +704,8 @@ function ensureStaticLayer(){
 function drawMarkers(s){
   const tok=styleTokens(STAGES[currentStage].theme);
   const m=tok.marker||{};
-  const ac=m['circle-color']||getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
-  const txtCol=getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim();
+  const ac=m['circle-color']||cssVar('--color-accent');
+  const txtCol=cssVar('--color-text');
   const shape=m['marker-shape']||'dot';
   const {cx,cy,scale}=mapParams;
   if(!scale)return;
@@ -1104,9 +1059,9 @@ function drawTicks(){
   ticksCanvas.width=w;ticksCanvas.height=h;ticksCtx.clearRect(0,0,w,h);
 
   const totalYears=YEAR_END-YEAR_START;
-  const tickCol=getComputedStyle(document.documentElement).getPropertyValue('--caliper-tick').trim();
-  const labelCol=getComputedStyle(document.documentElement).getPropertyValue('--caliper-label').trim();
-  const boundaryCol=getComputedStyle(document.documentElement).getPropertyValue('--stage-boundary').trim();
+  const tickCol=cssVar('--caliper-tick');
+  const labelCol=cssVar('--caliper-label');
+  const boundaryCol=cssVar('--stage-boundary');
 
   // Year major ticks (full height)
   for(let y=2017;y<=2026;y++){
@@ -1165,7 +1120,6 @@ const yearDisplay=document.getElementById('year-display');
 
 function yearFromRatio(r){return YEAR_START+r*(YEAR_END-YEAR_START)}
 function ratioFromYear(y){return (y-YEAR_START)/(YEAR_END-YEAR_START)}
-function fmtYear(y){const yr=Math.floor(y);const mo=Math.round((y-yr)*12)+1;return yr+'.'+mo}
 
 function moveSlider(clientX){
   const rect=trackWrap.getBoundingClientRect();
@@ -1184,36 +1138,34 @@ slider.addEventListener('pointerleave',()=>{if(isDragging){isDragging=false;slid
 trackWrap.addEventListener('pointerdown',e=>{if(e.target===slider||slider.contains(e.target))return;const year=moveSlider(e.clientX);const st=detectStage(year);if(st!==currentStage)setTheme(st);else highlightClosestExp(year)});
 
 // ============================================================
-// MODAL
+// MODAL（图文详情：基础信息来自 PROJECTS，详细介绍来自 data/projects/<id>.md）
 // ============================================================
-// 弹窗假数据兜底（仅用于弹出窗口，PROJECTS 保持线上原样）
-const MODAL_DETAIL_FALLBACK={
-  g1:{detailDesc:'课程设计历时一学期，完成从用户调研、草图推敲到三维建模与模型制作的完整流程，方案已申请实用新型专利。',outcome:'“博世杯”一等奖'},
-  g2:{detailDesc:'面向公众科普偏好开展问卷调研与深度访谈，样本覆盖多个年龄段，输出科普内容设计建议报告，作为毕业设计答辩材料。',outcome:''},
-  g3:{detailDesc:'负责场地分析与景观方案设计，涵盖入口广场、屋顶花园与周边绿地，项目已建成并投入使用。',outcome:'项目已建成使用'},
-  g4:{detailDesc:'参与博物馆前区景观与停车场绿化设计，强调文化符号与地域植物的结合，项目已建成。',outcome:'项目已建成使用'},
-  c1:{detailDesc:'基于对话式BI平台搭建全客群AUM分析看板，实现资产规模分层与自动化归因分析，支撑业务例会决策。',outcome:''},
-  c2:{detailDesc:'基于浏览器扩展开发桌面猫猫计时器，覆盖任务提醒与专注统计功能，入围微软Edge挑战者大赛20强。',outcome:'入围20强'},
-  c3:{detailDesc:'负责AI客服问答系统首页的产品规划与需求管理，梳理知识库结构与交互流程，推动多轮功能迭代上线。',outcome:''},
-  c4:{detailDesc:'构建审计文档向量库与检索链路，验证检索质量与答案溯源，探索安全审计场景下的RAG落地。',outcome:'内部验证中'},
-  a1:{detailDesc:'负责护眼特性的AI模型训练与数据处理，完成眨眼检测与人眼状态识别的数据清洗、标注与模型调优，特性已随产品发布。',outcome:'特性已随终端产品发布'},
-  a2:{detailDesc:'面向显示产线构建多模态异常检测流程，融合图像与日志数据自动识别显示异常，用于内部提效。',outcome:'内部使用中'},
-  a3:{detailDesc:'设计多agent协同的短剧生成工作流，覆盖剧本、分镜与画面生成环节的编排与调度。',outcome:''},
-  a4:{detailDesc:'通过对话式交互管理个人衣物档案，结合图像识别自动归档衣物，并基于天气与场合给出搭配建议，探索AIGC在生活场景的落地。',outcome:''}
-};
-
-function openModal(p){
-  const fb=MODAL_DETAIL_FALLBACK[p.id]||{};
+async function openModal(p){
   document.getElementById('modal-img').src=p.image;
   document.getElementById('modal-title').textContent=p.title;
   document.getElementById('modal-desc').textContent=p.desc;
-  document.getElementById('modal-detail').textContent=p.detailDesc||fb.detailDesc||'';
   document.getElementById('modal-tags').innerHTML=p.tags.map(t=>`<span class="display-tag">${t}</span>`).join('');
   document.getElementById('modal-location').textContent='📍 '+p.location;
-  document.getElementById('modal-outcome').textContent=(p.outcome||fb.outcome)?'🏆 '+(p.outcome||fb.outcome):'';
+  document.getElementById('modal-outcome').textContent=p.outcome?'🏆 '+p.outcome:'';
   document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
+
+  // 加载独立 md 详情文档（缓存于 projectDoc.js）
+  const article=document.getElementById('modal-article');
+  article.innerHTML='<p style="opacity:0.5">详情加载中…</p>';
+  try{
+    const doc=await loadProjectDoc(p.id);
+    article.innerHTML=doc.bodyHtml;
+    const oc=doc.meta.outcome||p.outcome;
+    document.getElementById('modal-outcome').textContent=oc?'🏆 '+oc:'';
+    if(doc.meta.image)document.getElementById('modal-img').src=doc.meta.image;
+  }catch(err){
+    article.innerHTML='';
+  }
 }
 function closeModal(){document.getElementById('modal-overlay').classList.remove('active');document.body.style.overflow=''}
+// 临时桥：HTML 内联 onclick 兼容（阶段三改为 JS 绑定后移除）
+window.closeModal=closeModal;
+window.setTheme=setTheme;
 document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 // 禁止滚轮/触摸板上下滚动时间线内容（滚动仅由游标跨阶段驱动）
