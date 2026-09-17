@@ -14,6 +14,8 @@ const { DEBUG, cssVar, expActiveAt } = global.Utils;
 // 地图绘制参数（原散落魔数集中于此）
 const MAP_CONST = {
   LAYOUT_CX: 0.38,        // 地图中心水平系数（相对画布宽）
+  LAYOUT_CX_XL: 0.44,     // XL 档（>2400px）中心系数：21:9/双屏防偏左
+  XL_WIDTH: 2401,         // XL 档触发宽度
   LAYOUT_CY: 0.38,        // 地图中心垂直系数（相对画布高）
   SCALE_RATIO: 0.85,      // 缩放系数（相对画布短边）
   SCALE_CAP: 900,         // 缩放上限
@@ -40,9 +42,11 @@ class ChinaMap{
     this._staticKey = '';
     this._animId = null;
     this._diag = false;
+    this._resizePending = false;
+    this._destroyed = false;
     this._onMouseMove = this._handleMouseMove.bind(this);
     this._onMouseLeave = this._handleMouseLeave.bind(this);
-    this._onResize = () => this.resize();
+    this._onResize = () => this._scheduleResize();
   }
 
   init(){
@@ -54,11 +58,23 @@ class ChinaMap{
   }
 
   destroy(){
+    this._destroyed = true;
+    this._resizePending = false;
     window.removeEventListener('resize', this._onResize);
     this.canvas.removeEventListener('mousemove', this._onMouseMove);
     this.canvas.removeEventListener('mouseleave', this._onMouseLeave);
     if(this._animId){ clearInterval(this._animId); this._animId = null; }
     this._staticLayer = null; // 释放离屏画布引用
+  }
+
+  // resize 节流：合并同一帧内的多次窗口事件，避免高频重投影
+  _scheduleResize(){
+    if(this._resizePending) return;
+    this._resizePending = true;
+    requestAnimationFrame(()=>{
+      this._resizePending = false;
+      if(!this._destroyed) this.resize();
+    });
   }
 
   resize(){
@@ -97,7 +113,9 @@ class ChinaMap{
     const s=layer.getContext('2d');
     const tok=this._styleTokens(STAGES[stageId].theme);
     const geo=global.CHINA_GEO_DATA;
-    const cx=w*MAP_CONST.LAYOUT_CX, cy=h*MAP_CONST.LAYOUT_CY, scale=Math.min(Math.min(w,h)*MAP_CONST.SCALE_RATIO, MAP_CONST.SCALE_CAP);
+    const cx = w * (w >= MAP_CONST.XL_WIDTH ? MAP_CONST.LAYOUT_CX_XL : MAP_CONST.LAYOUT_CX);
+    const cy = h * MAP_CONST.LAYOUT_CY;
+    const scale = Math.min(Math.min(w,h) * MAP_CONST.SCALE_RATIO, MAP_CONST.SCALE_CAP);
     this.mapParams={cx,cy,scale};
     const px=p=>{const q=lonLatToXY(p[0],p[1]);return[cx+q.x*scale,cy+q.y*scale]};
 

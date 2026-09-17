@@ -6,7 +6,7 @@
 .mobile-gate{
     --gate-bg:#1a1a2e;--gate-accent:#00ffcc;--gate-text:#EAEAEA;--gate-muted:#9aa0b8;--gate-hint:#5a5f7a;display:none}
 
-@media(max-width:768px){
+@media(max-width:640px){
   html,body{
     height:100%;
     overflow:hidden;

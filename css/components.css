@@ -2,7 +2,7 @@
 
 /* LEFT DISPLAY PANEL */
 .display-panel{
-  position:absolute;left:3vw;top:0;bottom:0;width:28vw;
+  position:absolute;left:3vw;top:0;bottom:0;width:clamp(var(--panel-display-min),var(--panel-display-w),var(--panel-display-max));
   overflow-y:auto;pointer-events:auto;cursor:pointer;
   background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
   backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
@@ -23,12 +23,12 @@
   font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
   background:var(--color-accent);color:#fff;margin-bottom:10px;
 }
-.display-title{font-size:21px;font-weight:700;margin-bottom:4px}
+.display-title{font-size:calc(21px*var(--fs-scale));font-weight:700;margin-bottom:4px}
 .display-divider{
   border:none;border-top:1px solid var(--color-border);margin:14px 0;
   opacity:0.5;
 }
-.display-desc{font-size:13px;color:var(--color-muted);line-height:1.7;margin-bottom:0}
+.display-desc{font-size:calc(13px*var(--fs-scale));color:var(--color-muted);line-height:1.7;margin-bottom:0}
 .display-section-label{
   font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
   color:var(--color-accent);opacity:0.7;margin-bottom:8px;
@@ -73,7 +73,7 @@
 
 /* RIGHT CONSOLE PANEL */
 .console-panel{
-  position:absolute;right:3vw;top:0;width:18vw;max-height:100%;
+  position:absolute;right:3vw;top:0;width:clamp(var(--panel-console-min),var(--panel-console-w),var(--panel-console-max));max-height:100%;
   overflow-y:auto;pointer-events:auto;
   background:var(--panel-bg);border:var(--panel-border);border-radius:14px;
   backdrop-filter:blur(var(--blur-amount));-webkit-backdrop-filter:blur(var(--blur-amount));
@@ -90,7 +90,7 @@
 }
 .console-item{
   padding:9px 12px;border-radius:8px;cursor:pointer;margin-bottom:5px;
-  transition:background 0.2s,color 0.2s;font-size:13px;line-height:1.35;
+  transition:background 0.2s,color 0.2s;font-size:calc(13px*var(--fs-scale));line-height:1.35;
   color:var(--color-text);text-shadow:var(--panel-text-shadow);
   border:1px solid transparent;
 }
@@ -127,15 +127,15 @@
 }
 .modal-close:hover{background:var(--color-accent);color:#fff}
 .modal-head{padding:18px 36px 2px;flex-shrink:0}
-.modal-image{width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:var(--color-tag-bg)}
-.modal-title{font-size:20px;font-weight:700;margin-bottom:6px}
-.modal-desc{font-size:13px;color:var(--color-muted);line-height:1.6;margin-bottom:8px}
+.modal-image{width:100%;height:var(--modal-head-img-h);object-fit:cover;border-radius:10px;margin-bottom:12px;background:var(--color-tag-bg)}
+.modal-title{font-size:calc(20px*var(--fs-scale));font-weight:700;margin-bottom:6px}
+.modal-desc{font-size:calc(13px*var(--fs-scale));color:var(--color-muted);line-height:1.6;margin-bottom:8px}
 .modal-head .modal-meta{margin-top:10px}
 .modal-head .modal-meta-outcome{margin-top:6px}
 .modal-article{
   
   flex:1;overflow-y:auto;padding:8px 36px 34px;
-  font-size:14px;color:var(--color-muted);line-height:1.85;
+  font-size:calc(14px*var(--fs-scale));color:var(--color-muted);line-height:1.85;
 }
 .modal-article::-webkit-scrollbar{width:3px}
 .modal-article::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:2px;opacity:0.4}
@@ -151,3 +151,6 @@
 .modal-article-img-fallback{max-width:100%;min-height:110px;display:flex;align-items:center;justify-content:center;background:var(--color-tag-bg);color:var(--color-muted);font-size:13px;border-radius:10px;margin:12px auto;padding:8px 16px;box-sizing:border-box}
 
 /* =======================================================
+
+/* H2 矮窗降级：隐藏鼠标坐标（经历时间线隐藏见 timeline.css） */
+@media(max-height:520px){.mouse-coords{display:none}}

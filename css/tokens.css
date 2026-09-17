@@ -34,6 +34,15 @@
   --caliper-slider-border:#6b8a5a;
   --stage-boundary:rgba(146,168,124,0.7);
   --transition-theme:0.6s cubic-bezier(0.22,1,0.36,1);
+
+  /* 桌面分档响应式令牌（202609，见 specs/responsive.md §9） */
+  --panel-display-w:28vw;   --panel-display-max:560px; --panel-display-min:300px;
+  --panel-console-w:18vw;   --panel-console-max:360px; --panel-console-min:240px;
+  --fs-scale:1;
+  --content-top:10vh;
+  --exp-timeline-maxh:30vh;
+  --modal-head-img-h:130px;
+  --ui-container-max:2200px;
 }
 
 /* ============================================================
@@ -87,8 +96,31 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media(max-width:768px){
+@media(max-width:640px){
   :root{--blur-amount:0px;--timeline-h:15vh;--panel-bg:rgba(255,255,255,0.9);--panel-border:1px solid #ddd;--panel-text-shadow:none}
+}
+
+/* ============================================================
+   DESKTOP TIERS（202609 桌面分档，specs/responsive.md §9）
+   ============================================================ */
+/* S 压缩档：641–1280px（平板竖屏/窄窗窗口/老笔记本；≤640 由 mobile-gate 接管） */
+@media(min-width:641px) and (max-width:1280px){
+  :root{ --fs-scale:0.9; --exp-timeline-maxh:26vh; }
+}
+
+/* XL 居中收缩档：>2400px（21:9/双屏），UI 容器收缩居中（base.css 引用） */
+@media(min-width:2401px){
+  :root{ --ui-container-max:2200px; }
+}
+
+/* H1 矮窗压缩档：高度 ≤700px（分屏上下/小窗） */
+@media(max-height:700px){
+  :root{ --content-top:8vh; --exp-timeline-maxh:22vh; --modal-head-img-h:90px; }
+}
+
+/* H2 矮窗降级档：高度 ≤520px（隐藏经历时间线与鼠标坐标） */
+@media(max-height:520px){
+  :root{ --exp-timeline-maxh:0px; }
 }
 
 /* =======================================================

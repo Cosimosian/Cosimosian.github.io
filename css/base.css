@@ -30,6 +30,11 @@ body{
 
 /* --- CONTENT --- */
 .content-section{
-  position:absolute;top:10vh;left:0;right:0;bottom:calc(var(--timeline-h) + 4px);
+  position:absolute;top:var(--content-top);left:0;right:0;bottom:calc(var(--timeline-h) + 4px);
   pointer-events:none;
+}
+
+/* XL 居中收缩档：UI 容器收缩居中（21:9/双屏防元素过散） */
+@media(min-width:2401px){
+  #ui-overlay{max-width:var(--ui-container-max);margin:0 auto}
 }

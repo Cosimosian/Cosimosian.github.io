@@ -3,7 +3,7 @@
 /* --- BOTTOM-RIGHT CORNER --- */
 .stage-timeline{
   position:absolute;bottom:calc(var(--timeline-h) + 72px);right:3vw;
-  width:18vw;max-height:30vh;overflow-y:auto;
+  width:18vw;max-height:var(--exp-timeline-maxh);overflow-y:auto;
   pointer-events:auto;z-index:5;
   background:transparent;border:none;
   border-radius:0;padding:0;
@@ -133,3 +133,6 @@
 .panel-theme-dot.code{background:#00ffcc}
 .panel-theme-dot.ai{background:#00d9ff}
 .panel-theme-dot.future{background:#888}
+
+/* H2 矮窗降级：隐藏经历时间线 */
+@media(max-height:520px){.stage-timeline{display:none}}
