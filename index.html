@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>个人履历 — 环境美学 × 数字建构 × 系统工程</title>
-<link rel="stylesheet" href="css/tokens.css?v=20260917b">
-<link rel="stylesheet" href="css/base.css?v=20260917b">
-<link rel="stylesheet" href="css/components.css?v=20260917b">
-<link rel="stylesheet" href="css/timeline.css?v=20260917b">
-<link rel="stylesheet" href="css/mobile-gate.css?v=20260917b">
+<link rel="stylesheet" href="css/tokens.css?v=20260921">
+<link rel="stylesheet" href="css/base.css?v=20260920">
+<link rel="stylesheet" href="css/components.css?v=20260920">
+<link rel="stylesheet" href="css/timeline.css?v=20260920">
+<link rel="stylesheet" href="css/mobile-gate.css?v=20260920">
 </head>
 <body>
 
@@ -41,14 +41,16 @@
 
   <!-- CALIPER TIMELINE -->
   <footer class="timeline-section" id="timeline-section">
-    <div class="caliper-ticks" id="caliper-ticks">
-      <canvas id="ticks-canvas"></canvas>
-    </div>
-    <div class="caliper-track-wrap" id="caliper-track-wrap">
-      <div class="caliper-track-line"></div>
-      <!-- 阶段分界线与标签由 js/timeline.js 按 STAGE_ORDER 动态生成 -->
-      <div class="caliper-slider" id="caliper-slider">
-        <div class="current-year-display" id="year-display">2016.9</div>
+    <div class="caliper-scroll" id="caliper-scroll">
+      <div class="caliper-ticks" id="caliper-ticks">
+        <canvas id="ticks-canvas"></canvas>
+      </div>
+      <div class="caliper-track-wrap" id="caliper-track-wrap">
+        <div class="caliper-track-line"></div>
+        <!-- 阶段分界线与标签由 js/timeline.js 按 STAGE_ORDER 动态生成 -->
+        <div class="caliper-slider" id="caliper-slider">
+          <div class="current-year-display" id="year-display">2016.9</div>
+        </div>
       </div>
     </div>
   </footer>
@@ -65,29 +67,26 @@
   <div class="modal-content">
     <button class="modal-close">&times;</button>
     <div class="modal-head">
-      <img class="modal-image" id="modal-img" src="" alt="">
       <h2 class="modal-title" id="modal-title"></h2>
-      <p class="modal-desc" id="modal-desc"></p>
       <div class="display-tags" id="modal-tags"></div>
-      <div class="display-location modal-meta" id="modal-location"></div>
       <div class="display-location modal-meta-outcome" id="modal-outcome"></div>
     </div>
     <article class="modal-article" id="modal-article"></article>
   </div>
 </div>
 
-<script src="assets/data/china-geo-data.js?v=20260807"></script>
-<script src="assets/data/map-style-data.js?v=20260807"></script>
-<script src="data/resume.js"></script>
-<script src="shared/projection.js"></script>
-<script src="shared/utils.js"></script>
-<script src="js/projectDoc.js"></script>
-<script src="js/map/chinaMap.js"></script>
-<script src="js/timeline.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/experiences.js"></script>
-<script src="js/panels.js"></script>
-<script src="js/main.js"></script>
+<script src="assets/data/china-geo-data.js?v=20260920"></script>
+<script src="assets/data/map-style-data.js?v=20260920"></script>
+<script src="data/resume.js?v=20260920"></script>
+<script src="shared/projection.js?v=20260920"></script>
+<script src="shared/utils.js?v=20260920"></script>
+<script src="js/projectDoc.js?v=20260920"></script>
+<script src="js/map/chinaMap.js?v=20260920"></script>
+<script src="js/timeline.js?v=20260920"></script>
+<script src="js/theme.js?v=20260920"></script>
+<script src="js/experiences.js?v=20260920"></script>
+<script src="js/panels.js?v=20260920"></script>
+<script src="js/main.js?v=20260920"></script>
 
 <!-- MOBILE GATE -->
 <div class="mobile-gate">

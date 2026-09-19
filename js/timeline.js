@@ -29,9 +29,19 @@ class CaliperTimeline{
     this.ticksCtx = this.ticksCanvas.getContext('2d');
     this.slider = document.getElementById('caliper-slider');
     this.trackWrap = document.getElementById('caliper-track-wrap');
+    this.scrollBox = document.getElementById('caliper-scroll');
     this.yearDisplay = document.getElementById('year-display');
     this._year = YEAR_START;
     this._isDragging = false;
+
+    // 纵向滚轮 → 横向滚动（时间线在低分辨率下可横向滚动，且无滚动条）
+    this._onWheel = e=>{
+      if(!this.scrollBox || this.scrollBox.scrollWidth <= this.scrollBox.clientWidth) return;
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+        e.preventDefault();
+        this.scrollBox.scrollLeft += e.deltaY;
+      }
+    };
 
     this._onSliderDown = e=>{ e.preventDefault(); this._isDragging=true; this.slider.classList.add('dragging'); this.slider.setPointerCapture(e.pointerId); };
     this._onSliderMove = e=>{
@@ -57,6 +67,7 @@ class CaliperTimeline{
     this.slider.addEventListener('pointerup',this._onSliderUp);
     this.slider.addEventListener('pointerleave',this._onSliderUp);
     this.trackWrap.addEventListener('pointerdown',this._onTrackDown);
+    if(this.scrollBox)this.scrollBox.addEventListener('wheel',this._onWheel,{passive:false});
     this.drawTicks();
     this.updateBoundaries();
     this.moveToYear(YEAR_START);
@@ -68,6 +79,7 @@ class CaliperTimeline{
     this.slider.removeEventListener('pointerup',this._onSliderUp);
     this.slider.removeEventListener('pointerleave',this._onSliderUp);
     this.trackWrap.removeEventListener('pointerdown',this._onTrackDown);
+    if(this.scrollBox)this.scrollBox.removeEventListener('wheel',this._onWheel);
   }
 
   _yearFromRatio(r){ return YEAR_START+r*(YEAR_END-YEAR_START); }

@@ -3,7 +3,9 @@
 /* --- BOTTOM-RIGHT CORNER --- */
 .stage-timeline{
   position:absolute;bottom:calc(var(--timeline-h) + 72px);right:3vw;
-  width:18vw;max-height:var(--exp-timeline-maxh);overflow-y:auto;
+  /* 与右导航面板同宽令牌（clamp），保证窄屏下两者左边缘对齐 */
+  width:clamp(var(--panel-console-min),var(--panel-console-w),var(--panel-console-max));
+  max-height:var(--exp-timeline-maxh);overflow-y:auto;
   pointer-events:auto;z-index:5;
   background:transparent;border:none;
   border-radius:0;padding:0;
@@ -60,17 +62,26 @@
 /* --- CALIPER TIMELINE --- */
 .timeline-section{
   position:absolute;bottom:0;left:0;right:0;height:var(--timeline-h);
-  pointer-events:auto;display:flex;flex-direction:column;align-items:center;
+  pointer-events:auto;display:flex;flex-direction:column;
   justify-content:flex-end;padding-bottom:2px;
   transition:height var(--transition-theme);
 }
 
-/* ticks canvas (top 60%) */
-.caliper-ticks{position:relative;width:88%;height:60%;margin-bottom:0}
+/* 滚动容器：左/右缘与两侧面板外缘对齐（3vw）；低分辨率横向滚动且无滚动条 */
+.caliper-scroll{
+  position:relative;margin:0 3vw;height:100%;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.caliper-scroll::-webkit-scrollbar{display:none;width:0;height:0}
+
+/* ticks canvas (top 60%) —— 最小宽 900px（≈88px/年），窄窗可横向滚动 */
+.caliper-ticks{position:relative;width:max(100%,900px);height:60%;flex-shrink:0;margin-bottom:0}
 .caliper-ticks canvas{width:100%;height:100%}
 
-/* track + slider (bottom 40%) */
-.caliper-track-wrap{position:relative;width:88%;height:28%}
+/* track + slider (bottom 40%) —— 与刻度同宽同滚动 */
+.caliper-track-wrap{position:relative;width:max(100%,900px);height:28%;flex-shrink:0}
 .caliper-track-line{
   position:absolute;top:50%;left:0;right:0;height:1px;
   background:var(--caliper-track);transform:translateY(-50%);
