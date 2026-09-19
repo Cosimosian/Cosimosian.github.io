@@ -41,8 +41,12 @@
   --fs-scale:1;
   --content-top:10vh;
   --exp-timeline-maxh:30vh;
-  --modal-head-img-h:130px;
   --ui-container-max:2200px;
+  /* 地图缩放上限（js/map/chinaMap.js 读取；XL 档放大，见下方媒体查询） */
+  --map-scale-cap:900;
+  /* 弹窗令牌：边距半径 + 宽度上限（202609 精简 head 后拓宽，方便截图阅读） */
+  --modal-edge:18px;
+  --modal-max-w:1600px;
 
   /* 字体族令牌（主题可覆盖 --font-heading 实现风格化，见各主题块） */
   /* 园林风格化（themes.md 提案）：如需衬线标题，将下行取消注释：
@@ -58,16 +62,23 @@
   --ls-heading:normal;
   --ls-body:normal;
 
-  /* 字号阶梯（202609，modular scale 1.2 就近取整；内嵌 --fs-scale 实现分档缩放） */
-  --fs-2xs:calc(9px * var(--fs-scale));    /* 画布外最小辅助：年份/坐标 */
-  --fs-xs:calc(10px * var(--fs-scale));    /* 徽章/分类/小节标签 */
-  --fs-sm:calc(12px * var(--fs-scale));    /* 标签/经历文本/成果 */
-  --fs-md:calc(13px * var(--fs-scale));    /* 正文/导航项/弹窗简介 */
-  --fs-lg:calc(15px * var(--fs-scale));    /* 弹窗正文/文章 */
-  --fs-h4:calc(14px * var(--fs-scale));    /* 文章四级标题 */
-  --fs-h3:calc(16px * var(--fs-scale));    /* 文章三级标题 */
-  --fs-xl:calc(20px * var(--fs-scale));    /* 标题：面板/弹窗 */
-  --fs-headline:clamp(14px,2vw,20px);      /* 头部阶段描述（流式） */
+  /* 字号阶梯（202609 v3：流式 Fluid Type + 层级对比强化）
+     单一流式基准 --fs-base 随视口连续缩放（clamp 两端钳制），全部阶梯按固定比率派生：
+     - 1920 主流屏与旧固定值对齐（基线零差异）
+     - 2560 大屏放大 ~23%（正文 13→16px），阅读舒适
+     - ≤1366 窄屏由下限兜底 13px（正文不再缩小，压缩交给布局）
+     - v3 层级对比强化：标题步长 1.54→2.0、文章 h3 1.23→1.38、弹窗正文 1.15→1.23，
+       形成 26/18/16/13/10 五档明显落差（详见 specs/responsive.md §10） */
+  --fs-base:clamp(13px, 0.68vw, 16px);
+  --fs-2xs:calc(var(--fs-base) * 0.69);    /* 9.0 → 11.0  年份/坐标 */
+  --fs-xs:calc(var(--fs-base) * 0.77);     /* 10  → 12.3  徽章/分类/小节标签 */
+  --fs-sm:calc(var(--fs-base) * 0.92);     /* 12  → 14.7  标签/经历文本/成果 */
+  --fs-md:var(--fs-base);                  /* 13  → 16.0  正文/导航项 */
+  --fs-lg:calc(var(--fs-base) * 1.23);     /* 16  → 19.7  弹窗正文/文章（原 1.15） */
+  --fs-h4:calc(var(--fs-base) * 1.08);     /* 14  → 17.3  文章四级标题 */
+  --fs-h3:calc(var(--fs-base) * 1.38);     /* 18  → 22.1  文章三级标题（原 1.23） */
+  --fs-xl:calc(var(--fs-base) * 2.0);      /* 26  → 32.0  面板/弹窗标题（原 1.54） */
+  --fs-headline:clamp(14px, 2vw, 20px);    /* 头部阶段描述（流式） */
 }
 
 /* ============================================================
@@ -133,9 +144,25 @@
 /* ============================================================
    DESKTOP TIERS（202609 桌面分档，specs/responsive.md §9）
    ============================================================ */
-/* S 压缩档：641–1280px（平板竖屏/窄窗窗口/老笔记本；≤640 由 mobile-gate 接管） */
+/* S 压缩档：641–1280px（平板竖屏/窄窗窗口/老笔记本；≤640 由 mobile-gate 接管）
+   字号不在此档缩小——流式 clamp 下限 13px 兜底可读性，压缩交给面板 clamp 宽度 */
 @media(min-width:641px) and (max-width:1280px){
-  :root{ --fs-scale:0.9; --exp-timeline-maxh:26vh; }
+  :root{ --exp-timeline-maxh:26vh; }
+}
+
+/* XL 放大档：>1920px（2K/4K 高分辨率）
+   地图缩放上限 900→1050、面板上限 560/360→680/430、字体基准定格 16px：
+   三者在同一断点同步跳变并此后同步封顶（消除 1921–2353px 的字体滞后漂移窗口），
+   整幅构图（地图+面板+字号）等比放大，避免"巨大背景 + 小卡片"比例失调；
+   1920 主流屏基线零变化 */
+@media(min-width:1921px){
+  :root{
+    --map-scale-cap:1050;
+    --panel-display-max:680px;
+    --panel-console-max:430px;
+    --fs-base:16px;
+    --fs-headline:clamp(14px, 2vw, 24px);
+  }
 }
 
 /* XL 居中收缩档：>2400px（21:9/双屏），UI 容器收缩居中（base.css 引用） */
@@ -145,7 +172,7 @@
 
 /* H1 矮窗压缩档：高度 ≤700px（分屏上下/小窗） */
 @media(max-height:700px){
-  :root{ --content-top:8vh; --exp-timeline-maxh:22vh; --modal-head-img-h:90px; }
+  :root{ --content-top:8vh; --exp-timeline-maxh:22vh; }
 }
 
 /* H2 矮窗降级档：高度 ≤520px（隐藏经历时间线与鼠标坐标） */
