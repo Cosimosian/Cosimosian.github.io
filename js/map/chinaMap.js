@@ -115,7 +115,8 @@ class ChinaMap{
     const geo=global.CHINA_GEO_DATA;
     const cx = w * (w >= MAP_CONST.XL_WIDTH ? MAP_CONST.LAYOUT_CX_XL : MAP_CONST.LAYOUT_CX);
     const cy = h * MAP_CONST.LAYOUT_CY;
-    const scale = Math.min(Math.min(w,h) * MAP_CONST.SCALE_RATIO, MAP_CONST.SCALE_CAP);
+    const scaleCap = parseFloat(cssVar('--map-scale-cap'))||MAP_CONST.SCALE_CAP;
+    const scale = Math.min(Math.min(w,h) * MAP_CONST.SCALE_RATIO, scaleCap);
     this.mapParams={cx,cy,scale};
     const px=p=>{const q=lonLatToXY(p[0],p[1]);return[cx+q.x*scale,cy+q.y*scale]};
 
@@ -324,7 +325,7 @@ class ChinaMap{
     s.globalAlpha=1;
   }
 
-  // ---- 悬浮命中目标（经纬度 → 屏幕坐标列表） ----
+  // ---- 悬浮命中目标（经纬度 → 屏幕坐标列表；extra 联动点可带独立 label） ----
   _buildHoverTargets(){
     const t=[];
     const {cx,cy,scale}=this.mapParams;
@@ -335,9 +336,13 @@ class ChinaMap{
       t.push({x:cx+p.x*scale,y:cy+p.y*scale,label:(stage.experiences?.[0]?.text?.split(' ')[0]||'')});
     }
     (stage.experiences||[]).filter(e=>e.lat).forEach(e=>{
-      expPoints(e).forEach(([la,ln])=>{
-        const p=lonLatToXY(ln,la);
-        t.push({x:cx+p.x*scale,y:cy+p.y*scale,label:e.text.split(' ')[0]});
+      // 主坐标点：取经历名称首段
+      const p=lonLatToXY(e.lng,e.lat);
+      t.push({x:cx+p.x*scale,y:cy+p.y*scale,label:e.text.split(' ')[0]});
+      // 联动坐标点：可携带独立 label（如青岛研究院），缺省同主点
+      (e.extra||[]).forEach(x=>{
+        const q=lonLatToXY(x.lng,x.lat);
+        t.push({x:cx+q.x*scale,y:cy+q.y*scale,label:x.label||e.text.split(' ')[0]});
       });
     });
     return t;

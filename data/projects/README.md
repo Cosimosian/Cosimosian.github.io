@@ -7,7 +7,6 @@
 ```markdown
 ---
 outcome: “博世杯”一等奖        ← 可选 front matter（键: 值，逐行）
-image: https://…               ← 可选：覆盖弹窗头部图
 ---
 
 正文……                          ← 项目详细介绍（markdown 子集）
@@ -26,8 +25,9 @@ image: https://…               ← 可选：覆盖弹窗头部图
 
 ## 扩展接口
 
-- **front matter**：可添加任意新键（如 `gallery:`、`video:`、`repo:`），弹窗渲染器（`js/projectDoc.js`）按需消费；未消费的键被忽略，不影响显示
+- **front matter**：可添加任意新键（如 `gallery:`、`video:`、`repo:`），弹窗渲染器（`js/projectDoc.js` + `js/main.js`）按需消费；未消费的键被忽略，不影响显示
 - **正文**：新增语法需在 `js/projectDoc.js` 的 `renderMarkdown` 中扩展对应分支
+- **配图**：正文 `![]()` 引用本地路径（`assets/images/projects/` 占位图可替换），弹窗内以原比例完整显示（上限 460px 高、不裁剪）
 
 ## 加载与缓存
 

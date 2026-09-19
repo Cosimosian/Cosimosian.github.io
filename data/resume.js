@@ -30,7 +30,7 @@ const STAGES = {
     badge:'阶段 02',
     primaryLat:34.34, primaryLng:108.94,
     experiences:[
-      {year:2021.75,yearEnd:2023.42,type:'教育',text:'西安电子科技大学 软件工程学士（西电青岛研究院）',lat:34.34,lng:108.94,extra:[{lat:36.07,lng:120.38}]},
+      {year:2021.75,yearEnd:2023.42,type:'教育',text:'西安电子科技大学 软件工程学士',lat:34.34,lng:108.94,extra:[{lat:36.07,lng:120.38,label:'西安电子科技大学青岛研究院'}]},
       {year:2022.5,yearEnd:2022.58,type:'实习',text:'招商银行 数据分析',lat:34.34,lng:108.94},
       {year:2023.08,yearEnd:2023.33,type:'实习',text:'西门子 前端开发',lat:31.30,lng:120.62},
       {year:2023.83,yearEnd:2024.42,type:'工作',text:'德勤 网络安全风险咨询',lat:22.54,lng:114.06}

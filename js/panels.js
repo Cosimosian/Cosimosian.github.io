@@ -19,7 +19,8 @@ class Panels{
   }
 
   renderConsolePanel(stage){
-    const projects = PROJECTS.filter(p=>p.stage===stage);
+    // 项目按开始时间升序排列（同年开始保持原数据顺序）
+    const projects = PROJECTS.filter(p=>p.stage===stage).sort((a,b)=>a.year-b.year);
     const list = document.getElementById('console-list');
     const selectedId = this._getSelectedId();
     if(!projects.length){

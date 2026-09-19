@@ -56,14 +56,11 @@ const panels = new global.Panels({
 });
 
 // ============================================================
-// MODAL（图文详情：基础信息来自 PROJECTS，详细介绍来自 data/projects/<id>.md）
+// MODAL（标题/标签/成果来自 PROJECTS，图文详情来自 data/projects/<id>.md）
 // ============================================================
 async function openModal(p){
-  document.getElementById('modal-img').src=p.image;
   document.getElementById('modal-title').textContent=p.title;
-  document.getElementById('modal-desc').textContent=p.desc;
   document.getElementById('modal-tags').innerHTML=tagsHtml(p.tags);
-  document.getElementById('modal-location').textContent='📍 '+p.location;
   document.getElementById('modal-outcome').textContent=p.outcome?'🏆 '+p.outcome:'';
   document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
 
@@ -75,7 +72,6 @@ async function openModal(p){
     article.innerHTML=doc.bodyHtml;
     const oc=doc.meta.outcome||p.outcome;
     document.getElementById('modal-outcome').textContent=oc?'🏆 '+oc:'';
-    if(doc.meta.image)document.getElementById('modal-img').src=doc.meta.image;
   }catch(err){
     article.innerHTML='';
   }
