@@ -150,7 +150,20 @@
 .modal-article::-webkit-scrollbar{width:3px}
 .modal-article::-webkit-scrollbar-thumb{background:var(--color-accent);border-radius:2px;opacity:0.4}
 .modal-article p{margin:0 0 12px}
-.modal-article-img{max-width:100%;max-height:460px;min-height:110px;object-fit:contain;border-radius:10px;display:block;margin:12px auto;background:var(--color-tag-bg)}
+/* 图文混排模式：统一列宽观感（封顶 880px、居中、细边框、统一间距；小图保真不拉伸） */
+.modal-article-img{max-width:min(100%,880px);max-height:460px;min-height:110px;object-fit:contain;border-radius:10px;display:block;margin:14px auto;background:var(--color-tag-bg);border:1px solid var(--color-border)}
+/* 内嵌视频：与图片同容器规范，等比完整显示 */
+.modal-article-video{width:100%;max-width:min(100%,880px);max-height:460px;display:block;margin:14px auto;border-radius:10px;background:#000;border:1px solid var(--color-border)}
+/* 画廊模式（front matter gallery: true）：等宽瓦片网格，标题/段落跨整行 */
+.modal-article.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;align-content:start}
+.modal-article.gallery p,
+.modal-article.gallery h3,
+.modal-article.gallery h4,
+.modal-article.gallery h5,
+.modal-article.gallery ul{grid-column:1/-1}
+.modal-article.gallery .modal-article-img,
+.modal-article.gallery .modal-article-video{width:100%;aspect-ratio:4/3;object-fit:cover;margin:0;max-width:none;max-height:none;min-height:0;border-radius:8px;transition:transform 0.25s cubic-bezier(0.22,1,0.36,1)}
+.modal-article.gallery .modal-article-img:hover{transform:scale(1.03)}
 .modal-article h3{font-size:var(--fs-h3);font-family:var(--font-heading);letter-spacing:var(--ls-heading);color:var(--color-text);margin:18px 0 8px}
 .modal-article h4{font-size:var(--fs-h4);font-family:var(--font-heading);color:var(--color-text);margin:16px 0 6px}
 .modal-article h5{font-size:var(--fs-h4);font-family:var(--font-heading);color:var(--color-text);margin:18px 0 8px}

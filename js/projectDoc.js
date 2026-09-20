@@ -33,7 +33,7 @@ function inline(s){
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
 }
 
-// markdown 子集 → HTML（块级：段落/标题/图片/无序列表）
+// markdown 子集 → HTML（块级：段落/标题/图片·视频/无序列表）
 function renderMarkdown(md){
   const lines = md.split(/\r?\n/);
   let html = '';
@@ -44,13 +44,21 @@ function renderMarkdown(md){
   const flushList = () => { if(list){ html += '<ul>'+list+'</ul>'; list = null; } };
   const flush = () => { flushPara(); flushList(); };
 
+  // 媒体 URL 按扩展名区分：视频（mp4/webm/mov）渲染 <video>，其余渲染图片
+  const mediaHtml = (alt, src) => {
+    if(/\.(mp4|webm|mov)(\?.*)?$/i.test(src)){
+      return `<video class="modal-article-video" src="${esc(src)}" controls preload="metadata" alt="${esc(alt)}"></video>`;
+    }
+    return `<img class="modal-article-img" src="${esc(src)}" alt="${esc(alt)}" loading="lazy" onerror="window.ProjectDoc.imgFallback(this)">`;
+  };
+
   for(const raw of lines){
     const line = raw.trimEnd();
     const t = line.trim();
     if(!t){ flush(); continue; }
 
     const img = /^!\[([^\]]*)\]\(([^)\s]+)\)/.exec(t);
-    if(img){ flush(); html += `<img class="modal-article-img" src="${esc(img[2])}" alt="${esc(img[1])}" loading="lazy" onerror="window.ProjectDoc.imgFallback(this)">`; continue; }
+    if(img){ flush(); html += mediaHtml(img[1], img[2]); continue; }
 
     const h = /^(#{1,3})\s+(.*)$/.exec(t);
     if(h){ flush(); html += `<h${h[1].length+2} class="modal-article-h">${inline(h[2])}</h${h[1].length+2}>`; continue; }
