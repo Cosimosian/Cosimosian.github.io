@@ -8,8 +8,8 @@
 'use strict';
 
 const { YEAR_START, STAGE_ORDER, STAGES, PROJECTS } = global.RESUME;
-const { tagsHtml } = global.Utils;
 const { loadProjectDoc } = global.ProjectDoc;
+const { open: openModal, close: closeModal } = global.Modal;
 
 // ---- 单一状态（游标位置由 currentChapter + year 驱动） ----
 const state = { stage: STAGE_ORDER[0], year: YEAR_START, selectedProjectId: null };
@@ -56,29 +56,8 @@ const panels = new global.Panels({
 });
 
 // ============================================================
-// MODAL（标题/标签/成果来自 PROJECTS，图文详情来自 data/projects/<id>.md）
+// MODAL（共享自 js/modal.js，桌面/移动通用）
 // ============================================================
-async function openModal(p){
-  document.getElementById('modal-title').textContent=p.title;
-  document.getElementById('modal-tags').innerHTML=tagsHtml(p.tags);
-  document.getElementById('modal-outcome').textContent=p.outcome?'🏆 '+p.outcome:'';
-  document.getElementById('modal-overlay').classList.add('active');document.body.style.overflow='hidden';
-
-  // 加载独立 md 详情文档（缓存于 projectDoc.js）
-  const article=document.getElementById('modal-article');
-  article.innerHTML='<p style="opacity:0.5">详情加载中…</p>';
-  try{
-    const doc=await loadProjectDoc(p.id);
-    article.innerHTML=doc.bodyHtml;
-    const oc=doc.meta.outcome||p.outcome;
-    document.getElementById('modal-outcome').textContent=oc?'🏆 '+oc:'';
-  }catch(err){
-    article.innerHTML='';
-  }
-}
-
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('active'); document.body.style.overflow=''; }
-
 const modalOverlay = document.getElementById('modal-overlay');
 const onOverlayClick = e => { if(e.target===e.currentTarget) closeModal(); };
 const onEscape = e => { if(e.key==='Escape') closeModal(); };

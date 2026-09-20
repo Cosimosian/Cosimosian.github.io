@@ -180,4 +180,9 @@
   :root{ --exp-timeline-maxh:0px; }
 }
 
+/* 减弱动效（原 mobile-gate.css 迁移至此，202609 移动端启用） */
+@media(prefers-reduced-motion:reduce){
+  .caliper-slider,.modal-content{transition:none!important}
+}
+
 /* =======================================================

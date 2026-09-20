@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="css/base.css?v=20260920">
 <link rel="stylesheet" href="css/components.css?v=20260920">
 <link rel="stylesheet" href="css/timeline.css?v=20260920">
-<link rel="stylesheet" href="css/mobile-gate.css?v=20260920">
+<link rel="stylesheet" href="css/mobile.css?v=20260923">
 </head>
 <body>
 
@@ -75,26 +75,39 @@
   </div>
 </div>
 
+<!-- MOBILE UI（≤640px 显示；桌面端基线隐藏） -->
+<div id="mobile-ui">
+  <header class="m-header">
+    <div class="m-badge" id="m-badge">阶段 01</div>
+    <h1 class="m-desc" id="m-desc">自然器物之间：环境美学与人的感知联结</h1>
+    <button class="m-more" id="m-more" aria-label="经历时间线"><span></span><span></span><span></span></button>
+  </header>
+  <main class="m-flow" id="m-flow"></main>
+  <footer class="m-dots" id="m-dots"></footer>
+</div>
+
+<!-- 经历时间线抽屉（右侧滑入） -->
+<div id="m-drawer-overlay">
+  <aside class="m-drawer">
+    <button class="m-drawer-close" id="m-drawer-close" aria-label="关闭">×</button>
+    <div class="m-drawer-list" id="m-drawer-list"></div>
+  </aside>
+</div>
+
 <script src="assets/data/china-geo-data.js?v=20260920"></script>
 <script src="assets/data/map-style-data.js?v=20260920"></script>
-<script src="data/resume.js?v=20260920"></script>
+<script src="data/resume.js?v=20260923"></script>
 <script src="shared/projection.js?v=20260920"></script>
 <script src="shared/utils.js?v=20260920"></script>
 <script src="js/projectDoc.js?v=20260920"></script>
+<script src="js/modal.js?v=20260922"></script>
 <script src="js/map/chinaMap.js?v=20260920"></script>
 <script src="js/timeline.js?v=20260920"></script>
 <script src="js/theme.js?v=20260920"></script>
 <script src="js/experiences.js?v=20260920"></script>
 <script src="js/panels.js?v=20260920"></script>
 <script src="js/main.js?v=20260920"></script>
-
-<!-- MOBILE GATE -->
-<div class="mobile-gate">
-  <div class="gate-icon">🖥️</div>
-  <div class="gate-title">窗口过窄，无法完整展示</div>
-  <div class="gate-sub">本页面为桌面端布局，请旋转设备或调整窗口宽度至 640px 以上查看</div>
-  <div class="gate-hint">▌DESKTOP LAYOUT · MIN WIDTH 640PX</div>
-</div>
+<script src="js/mobile.js?v=20260922"></script>
 
 </body>
 </html>
