@@ -7,36 +7,33 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 /* ============================================================
-   THEME v1.0 — GARDEN：极简中国风（无我/园林/自然呼吸/平静/明媚/朦胧/水汽/书画气）
-   存档：v0.1 见 git tag theme-v0.1 与 css/tokens-v0.1.css
+   CSS VARIABLES — GARDEN (default)
    ============================================================ */
 :root{
-  --blur-amount:8px;
+  --blur-amount:10px;
   --touch-target:48px;
   --fs-title:clamp(2rem,8vw,4.5rem);
   --timeline-h:7vh;
-  --panel-bg:rgba(255,255,255,0.38);
-  --panel-border:1px solid rgba(51,48,42,0.14);
-  --panel-text-shadow:none;
-  --color-bg:#F6F1E7;          /* 宣纸暖白（明媚） */
-  --color-text:#33302A;        /* 淡墨 */
-  --color-accent:#A8463A;      /* 朱砂点染 */
-  --color-secondary:#5C6B73;   /* 黛青（河流/辅助） */
-  --color-muted:rgba(51,48,42,0.55);
-  --color-tag-bg:rgba(51,48,42,0.06);
-  --color-tag-text:#6B4A3A;
-  --color-border:rgba(51,48,42,0.16);
-  --color-shadow:rgba(51,48,42,0.08);
-  --map-bg:#F6F1E7;
-  --map-stroke:#33302A;
-  --map-marker-fill:#A8463A;
-  --caliper-track:rgba(51,48,42,0.25);
-  --caliper-tick:rgba(51,48,42,0.35);
-  --caliper-label:rgba(51,48,42,0.65);
-  --caliper-slider-bg:#A8463A;
-  --caliper-slider-border:#8A3527;
-  --stage-boundary:rgba(51,48,42,0.45);
-  --transition-theme:0.8s cubic-bezier(0.33,1,0.68,1);  /* 自然呼吸：慢呼气 */
+  --panel-bg:rgba(255,255,255,0.18);
+  --panel-border:1px solid rgba(255,255,255,0.45);
+  --panel-text-shadow:0 1px 3px rgba(0,0,0,0.35);
+  --color-bg:#F5F0E6;
+  --color-text:#3C3228;
+  --color-accent:#92A87C;
+  --color-muted:rgba(60,50,40,0.65);
+  --color-tag-bg:rgba(146,168,124,0.25);
+  --color-tag-text:#3C3228;
+  --color-border:rgba(255,255,255,0.45);
+  --map-bg:#F5F0E6;
+  --map-stroke:#92A87C;
+  --map-marker-fill:#92A87C;
+  --caliper-track:rgba(146,168,124,0.35);
+  --caliper-tick:rgba(146,168,124,0.45);
+  --caliper-label:rgba(60,50,40,0.75);
+  --caliper-slider-bg:#92A87C;
+  --caliper-slider-border:#6b8a5a;
+  --stage-boundary:rgba(146,168,124,0.7);
+  --transition-theme:0.6s cubic-bezier(0.22,1,0.36,1);
 
   /* 桌面分档响应式令牌（202609，见 specs/responsive.md §9） */
   --panel-display-w:28vw;   --panel-display-max:560px; --panel-display-min:300px;
@@ -52,14 +49,18 @@
   --modal-max-w:1600px;
 
   /* 字体族令牌（主题可覆盖 --font-heading 实现风格化，见各主题块） */
-  /* 中国风：宋体标题（思源宋体）+ 楷体可作装饰（霞鹜文楷已引入 CDN） */
-  --font-body:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-  --font-heading:'Noto Serif SC','LXGW WenKai','Songti SC','STSong','SimSun',serif;
+  /* 园林风格化（themes.md 提案）：如需衬线标题，将下行取消注释：
+     --font-heading:'Playfair Display','Noto Serif SC','思源宋体',serif; */
+  --font-body:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-heading:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
 
-  /* 强风格化管道（202609）：视觉大小/字距修正，主题块内覆盖，字号层级 --fs-* 永不改动 */
-  --fs-adjust:0.55;       /* 宋体小 x-height：同字号视觉放大 */
-  --ls-heading:0.03em;    /* 书画舒展 */
-  --ls-body:0.01em;
+  /* 强风格化预留（202609）：视觉大小/字距修正，主题块内覆盖，字号层级 --fs-* 永不改动 */
+  /* --fs-adjust：字体 x-height 修正（font-size-adjust），换字体时按比例填数值，
+     例：像素风大字面字体填 0.5~0.7 视觉缩小；衬线小字面字体填 0.55~0.65 视觉放大 */
+  --fs-adjust:from-font;
+  /* --ls-heading/--ls-body：标题/正文字距（像素风 +2px、科技风 -0.5px、衬线 +0.5px 等） */
+  --ls-heading:normal;
+  --ls-body:normal;
 
   /* 字号阶梯（202609 v3：流式 Fluid Type + 层级对比强化）
      单一流式基准 --fs-base 随视口连续缩放（clamp 两端钳制），全部阶梯按固定比率派生：
@@ -81,62 +82,40 @@
 }
 
 /* ============================================================
-   THEME v1.0 — CODE：冷酷千禧（child/鬼马/故障/叛逆/躁动/重复/局部喧闹）
+   THEME: CODE
    ============================================================ */
 [data-theme="code"]{
-  --blur-amount:4px;
-  --panel-bg:rgba(18,18,28,0.62);
-  --panel-border:1px solid rgba(0,255,204,0.3);
-  --panel-text-shadow:0 0 6px rgba(0,255,204,0.15);
-  --color-bg:#12121C;
-  --color-text:#E8E8F0;
-  --color-accent:#00FFCC;      /* 主荧光绿 */
-  --color-secondary:#FF4FD8;   /* 粉紫——局部喧闹的噪点色 */
-  --color-muted:rgba(200,200,220,0.55);
-  --color-tag-bg:rgba(0,255,204,0.10);
-  --color-tag-text:#00FFCC;
-  --color-border:rgba(0,255,204,0.35);
-  --color-shadow:rgba(0,255,204,0.25);
-  --map-bg:#12121C;--map-stroke:#00FFCC;--map-marker-fill:#00FFCC;
+  --panel-bg:rgba(22,33,62,0.15);
+  --panel-border:1px solid rgba(0,255,204,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,255,204,0.25);
+  --color-bg:#1a1a2e;--color-text:#EAEAEA;--color-accent:#00ffcc;
+  --color-muted:rgba(200,200,210,0.6);--color-tag-bg:rgba(0,255,204,0.12);
+  --color-tag-text:#00ffcc;--color-border:rgba(0,255,204,0.45);
+  --map-bg:#1a1a2e;--map-stroke:#00ffcc;--map-marker-fill:#00ffcc;
   --caliper-track:rgba(0,255,204,0.25);--caliper-tick:rgba(0,255,204,0.35);
-  --caliper-label:rgba(0,255,204,0.65);--caliper-slider-bg:#00FFCC;
-  --caliper-slider-border:#00AA88;--stage-boundary:rgba(0,255,204,0.6);
-  --transition-theme:0.2s steps(3);  /* 机械感跳变 */
-  /* 像素标题：Press Start 2P（CDN）+ Zpix 中文像素（系统字体，未装则回退无衬线） */
-  --font-heading:'Press Start 2P','Zpix','Fusion Pixel','Noto Sans SC',monospace;
-  --font-body:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-  --fs-adjust:0.75;   /* 像素字大字面视觉收敛 */
-  --ls-heading:1px;
-  --ls-body:0.02em;
+  --caliper-label:rgba(0,255,204,0.65);--caliper-slider-bg:#00ffcc;
+  --caliper-slider-border:#00aa88;--stage-boundary:rgba(0,255,204,0.6);
+  /* 风格化：千禧街机用几何无衬线标题（与正文同族） */
+  --font-heading:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  /* 强风格预留示例（像素风启用时按需填入）：
+     --font-body:'Press Start 2P','Zpix',monospace;
+     --fs-adjust:0.62; --ls-body:1px; --ls-heading:2px; */
 }
 
 /* ============================================================
-   THEME v1.0 — AI：玻璃拟态（生命孕育/时间轴粘液/温暖的冰冷/缓动/人造皮肤/硅基生命之眼）
+   THEME: AI
    ============================================================ */
 [data-theme="ai"]{
-  --blur-amount:18px;
-  --panel-bg:rgba(255,255,255,0.07);
-  --panel-border:1px solid rgba(94,214,255,0.25);
-  --panel-text-shadow:none;
-  --color-bg:#0A0E14;
-  --color-text:#E4EAF2;
-  --color-accent:#5ED6FF;      /* 赛博蓝（更柔） */
-  --color-secondary:#FFB86B;   /* 琥珀——温暖的冰冷 */
-  --color-muted:rgba(180,195,215,0.55);
-  --color-tag-bg:rgba(94,214,255,0.08);
-  --color-tag-text:#A8E4FF;
-  --color-border:rgba(94,214,255,0.28);
-  --color-shadow:rgba(94,214,255,0.30);
-  --map-bg:#0A0E14;--map-stroke:#5ED6FF;--map-marker-fill:#5ED6FF;
-  --caliper-track:rgba(94,214,255,0.25);--caliper-tick:rgba(94,214,255,0.35);
-  --caliper-label:rgba(94,214,255,0.65);--caliper-slider-bg:#5ED6FF;
-  --caliper-slider-border:#3FA8CC;--stage-boundary:rgba(94,214,255,0.5);
-  --transition-theme:0.8s cubic-bezier(0.16,1,0.3,1);  /* 缓动：黏滞强缓出 */
-  --font-heading:'Space Grotesk','Inter','Noto Sans SC',sans-serif;
-  --font-body:'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-  --fs-adjust:from-font;
-  --ls-heading:-0.01em;
-  --ls-body:0;
+  --panel-bg:rgba(10,10,10,0.15);
+  --panel-border:1px solid rgba(0,217,255,0.45);
+  --panel-text-shadow:0 0 6px rgba(0,217,255,0.25);
+  --color-bg:#0a0a0a;--color-text:#E0E0E0;--color-accent:#00d9ff;
+  --color-muted:rgba(200,200,210,0.55);--color-tag-bg:rgba(0,217,255,0.10);
+  --color-tag-text:#00d9ff;--color-border:rgba(0,217,255,0.45);
+  --map-bg:#0a0a0a;--map-stroke:#00d9ff;--map-marker-fill:#00d9ff;
+  --caliper-track:rgba(0,217,255,0.25);--caliper-tick:rgba(0,217,255,0.35);
+  --caliper-label:rgba(0,217,255,0.65);--caliper-slider-bg:#00d9ff;
+  --caliper-slider-border:#0099bb;--stage-boundary:rgba(0,217,255,0.6);
 }
 
 /* ============================================================
