@@ -1,0 +1,75 @@
+/* ============================================================
+   主题特效层（css/themes-effects.css，主题 v1.0）
+   规则：仅材质/动效/装饰（transform/animation/box-shadow/border-radius/伪元素），
+        不得修改主元素 width/height/margin/padding/position（硬性耦合约束）
+   ============================================================ */
+
+/* ============ GARDEN 极简中国风：自然呼吸（平静，无弹跳无闪烁） ============ */
+[data-theme="garden"] .console-item:hover:not(.active){
+  transform:scale(1.03) translateX(2px);
+  box-shadow:0 2px 10px var(--color-shadow);
+}
+[data-theme="garden"] .display-panel:hover{transform:scale(1.015)}
+[data-theme="garden"] .m-dot.active::after{animation:garden-breathe 4s ease-in-out infinite}
+[data-theme="garden"] .current-year-display{animation:garden-breathe 4s ease-in-out infinite}
+@keyframes garden-breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.22);opacity:0.75}}
+
+/* ============ CODE 冷酷千禧：鬼马贴纸 / 故障 / 躁动 / 局部喧闹 ============ */
+[data-theme="code"] .console-item{border-radius:12px 8px 14px 9px}
+[data-theme="code"] .display-tag{transform:rotate(-1.5deg)}
+[data-theme="code"] .display-tag:nth-child(even){transform:rotate(1.8deg)}
+[data-theme="code"] .display-category{border-radius:8px 4px 9px 5px}
+/* 局部喧闹：仅激活项触发 RGB 分裂故障 */
+[data-theme="code"] .console-item.active{animation:code-glitch 0.4s steps(2) 2}
+/* 躁动：hover 微抖 */
+[data-theme="code"] .console-item:hover:not(.active){animation:code-jitter 0.18s steps(2) 1}
+[data-theme="code"] .panel-theme-dot:hover{box-shadow:0 0 10px var(--color-secondary)}
+@keyframes code-glitch{
+  0%{text-shadow:2px 0 var(--color-secondary),-2px 0 var(--color-accent)}
+  50%{text-shadow:-2px 0 var(--color-secondary),2px 0 var(--color-accent);transform:translateX(1px)}
+  100%{text-shadow:none;transform:none}
+}
+@keyframes code-jitter{0%{transform:translateX(1px)}50%{transform:translateX(-1px)}100%{transform:none}}
+
+/* ============ AI 玻璃拟态：粘液时间轴 / 硅基瞳孔 / 人造皮肤光 / 生命呼吸 ============ */
+/* 玻璃面板：顶部高光边 + 皮下暖光 + 内高光（温暖的冰冷 + 人造皮肤） */
+[data-theme="ai"] .display-panel,
+[data-theme="ai"] .console-panel,
+[data-theme="ai"] .modal-content{
+  border-top:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 0 30px rgba(0,0,0,0.18),
+             inset 0 -24px 48px rgba(255,184,107,0.05),
+             inset 0 1px 0 rgba(255,255,255,0.12);
+}
+/* 时间轴粘液：轨道渐变 + 流动高光（装饰伪元素，不改主元素尺寸） */
+[data-theme="ai"] .caliper-track-line{
+  position:relative;overflow:hidden;border-radius:999px;
+  background:linear-gradient(90deg,rgba(94,214,255,0.55),rgba(255,184,107,0.45),rgba(94,214,255,0.55));
+  box-shadow:0 0 8px rgba(94,214,255,0.35);
+}
+[data-theme="ai"] .caliper-track-line::after{
+  content:'';position:absolute;top:-3px;bottom:-3px;width:36%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent);
+  border-radius:999px;
+  animation:ai-slime-flow 4s ease-in-out infinite;
+}
+@keyframes ai-slime-flow{0%{left:-40%}100%{left:110%}}
+/* 滑块液滴：圆润 + 液态高光 */
+[data-theme="ai"] .caliper-slider{
+  border-radius:3px 3px 2px 2px;
+  box-shadow:0 2px 6px rgba(94,214,255,0.5),0 -2px 6px rgba(94,214,255,0.25);
+}
+/* 硅基生命之眼：激活主题点瞳孔化（外发光 + 深色内核） */
+[data-theme="ai"] .panel-theme-dot.active{
+  box-shadow:0 0 10px var(--color-accent),inset 0 0 0 2px rgba(10,14,20,0.85);
+}
+/* 生命孕育：慢呼吸 */
+[data-theme="ai"] .current-year-display{animation:ai-breathe 4s ease-in-out infinite}
+[data-theme="ai"] .m-dot.active::after{animation:ai-breathe 4s ease-in-out infinite}
+@keyframes ai-breathe{0%,100%{opacity:1}50%{opacity:0.6}}
+
+/* ============ 减弱动效：主题特效全关 ============ */
+@media(prefers-reduced-motion:reduce){
+  .m-dot.active::after,.current-year-display,.caliper-track-line::after,
+  .console-item.active,.console-item:hover{animation:none!important}
+}
