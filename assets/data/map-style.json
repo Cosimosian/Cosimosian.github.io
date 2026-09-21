@@ -2,9 +2,22 @@
   "version": 8,
   "name": "resume-china-map",
   "metadata": {
-    "about": "个人履历站中国地图视觉基线（Maputnik 可编辑）。图层按 metadata.theme 分组，前端按当前主题过滤渲染。修改流程：Maputnik 打开编辑 → 导出 style.json → 运行 node scripts/wrap-style.js 生成 map-style-data.js。",
-    "themes": ["garden", "code", "ai", "future"],
-    "projection": { "type": "simple-cylindrical", "bounds": [73, 18, 135, 54] },
+    "about": "主题 v1.0 地图画法：garden 水墨（淡墨细线+朱砂星） / code 像素（荧光绿方块） / ai 玻璃（赛博蓝发光+琥珀暗角）。v0.1 备份见 map-style-v0.1.json",
+    "themes": [
+      "garden",
+      "code",
+      "ai",
+      "future"
+    ],
+    "projection": {
+      "type": "simple-cylindrical",
+      "bounds": [
+        73,
+        18,
+        135,
+        54
+      ]
+    },
     "canvasMapping": {
       "role:bg": "径向渐变起点色 + gradientEnd",
       "role:outline": "国界轮廓线（dash=手绘/像素叠层）",
@@ -13,93 +26,589 @@
       "role:lakes": "湖泊填充",
       "role:labels": "国名/周边地理文字",
       "role:marker": "城市标记（shape: star/square/dot/glow）"
-    }
+    },
+    "version": "1.0"
   },
   "sources": {
-    "china-geo": { "type": "geojson", "data": "assets/data/china-geo-data.js", "layers": ["outer", "holes"] },
-    "province-lines": { "type": "geojson", "data": "assets/data/china-geo-data.js", "layers": ["provinces"] },
-    "rivers": { "type": "geojson", "data": "assets/data/china-geo-data.js", "layers": ["rivers"] },
-    "lakes": { "type": "geojson", "data": "assets/data/china-geo-data.js", "layers": ["lakes"] }
+    "china-geo": {
+      "type": "geojson",
+      "data": "assets/data/china-geo-data.js",
+      "layers": [
+        "outer",
+        "holes"
+      ]
+    },
+    "province-lines": {
+      "type": "geojson",
+      "data": "assets/data/china-geo-data.js",
+      "layers": [
+        "provinces"
+      ]
+    },
+    "rivers": {
+      "type": "geojson",
+      "data": "assets/data/china-geo-data.js",
+      "layers": [
+        "rivers"
+      ]
+    },
+    "lakes": {
+      "type": "geojson",
+      "data": "assets/data/china-geo-data.js",
+      "layers": [
+        "lakes"
+      ]
+    }
   },
   "layers": [
-    { "id": "garden-bg", "type": "background", "metadata": { "theme": "garden", "role": "bg" },
-      "paint": { "background-color": "#F5F0E6", "gradient-end": "rgba(60,50,40,0.35)" } },
-    { "id": "garden-outline-fill", "type": "fill", "source": "china-geo", "metadata": { "theme": "garden", "role": "outline-fill" },
-      "paint": { "fill-color": "#92A87C", "fill-opacity": 0.05 } },
-    { "id": "garden-outline", "type": "line", "source": "china-geo", "metadata": { "theme": "garden", "role": "outline" },
-      "paint": { "line-color": "#92A87C", "line-width": 1.8, "line-opacity": 0.5 } },
-    { "id": "garden-outline-handdrawn", "type": "line", "source": "china-geo", "metadata": { "theme": "garden", "role": "outline-handdrawn" },
-      "paint": { "line-color": "#92A87C", "line-width": 3.2, "line-opacity": 0.14, "line-dasharray": [10, 6] } },
-    { "id": "garden-provinces", "type": "line", "source": "province-lines", "metadata": { "theme": "garden", "role": "provinces" },
-      "paint": { "line-color": "#92A87C", "line-width": 0.8, "line-opacity": 0.14 } },
-    { "id": "garden-rivers", "type": "line", "source": "rivers", "metadata": { "theme": "garden", "role": "rivers" },
-      "paint": { "line-color": "#7FA0B8", "line-width": 0.9, "line-opacity": 0.18 } },
-    { "id": "garden-lakes", "type": "fill", "source": "lakes", "metadata": { "theme": "garden", "role": "lakes" },
-      "paint": { "fill-color": "#9DB8C8", "fill-opacity": 0.12 } },
-    { "id": "garden-labels", "type": "symbol", "metadata": { "theme": "garden", "role": "labels" },
-      "paint": { "text-color": "#3C3228", "text-opacity": 0.12, "text-font": "serif" } },
-    { "id": "garden-surrounding", "type": "symbol", "metadata": { "theme": "garden", "role": "surrounding" },
-      "paint": { "text-color": "#3C3228", "text-opacity": 0.08, "text-font": "serif" } },
-    { "id": "garden-marker", "type": "circle", "metadata": { "theme": "garden", "role": "marker" },
-      "paint": { "circle-color": "#92A87C", "marker-shape": "star", "primary-radius": 4, "primary-halo": 8, "primary-opacity": 0.8, "primary-halo-opacity": 0.3, "secondary-radius": 2.5, "secondary-halo": 5, "secondary-opacity": 0.55, "secondary-halo-opacity": 0.2, "selected-radius": 3.5, "selected-opacity": 1 } },
-
-    { "id": "code-bg", "type": "background", "metadata": { "theme": "code", "role": "bg" },
-      "paint": { "background-color": "#1a1a2e", "gradient-end": "rgba(0,0,0,0.55)" } },
-    { "id": "code-outline-fill", "type": "fill", "source": "china-geo", "metadata": { "theme": "code", "role": "outline-fill" },
-      "paint": { "fill-color": "#00ffcc", "fill-opacity": 0.04 } },
-    { "id": "code-outline", "type": "line", "source": "china-geo", "metadata": { "theme": "code", "role": "outline" },
-      "paint": { "line-color": "#00ffcc", "line-width": 2, "line-opacity": 0.55 } },
-    { "id": "code-outline-pixel", "type": "line", "source": "china-geo", "metadata": { "theme": "code", "role": "outline-pixel" },
-      "paint": { "line-color": "#00ffcc", "line-width": 1, "line-opacity": 0.5, "line-dasharray": [4, 4] } },
-    { "id": "code-provinces", "type": "line", "source": "province-lines", "metadata": { "theme": "code", "role": "provinces" },
-      "paint": { "line-color": "#00ffcc", "line-width": 0.8, "line-opacity": 0.15 } },
-    { "id": "code-rivers", "type": "line", "source": "rivers", "metadata": { "theme": "code", "role": "rivers" },
-      "paint": { "line-color": "#0d8f83", "line-width": 1, "line-opacity": 0.25 } },
-    { "id": "code-lakes", "type": "fill", "source": "lakes", "metadata": { "theme": "code", "role": "lakes" },
-      "paint": { "fill-color": "#0a3a4a", "fill-opacity": 0.3 } },
-    { "id": "code-labels", "type": "symbol", "metadata": { "theme": "code", "role": "labels" },
-      "paint": { "text-color": "#EAEAEA", "text-opacity": 0.15, "text-font": "sans-serif" } },
-    { "id": "code-surrounding", "type": "symbol", "metadata": { "theme": "code", "role": "surrounding" },
-      "paint": { "text-color": "#EAEAEA", "text-opacity": 0.1, "text-font": "sans-serif" } },
-    { "id": "code-marker", "type": "circle", "metadata": { "theme": "code", "role": "marker" },
-      "paint": { "circle-color": "#00ffcc", "marker-shape": "square", "primary-radius": 4, "primary-halo": 8, "primary-opacity": 0.8, "primary-halo-opacity": 0.3, "secondary-radius": 2.5, "secondary-halo": 5, "secondary-opacity": 0.55, "secondary-halo-opacity": 0.2, "selected-radius": 3.5, "selected-opacity": 1 } },
-
-    { "id": "ai-bg", "type": "background", "metadata": { "theme": "ai", "role": "bg" },
-      "paint": { "background-color": "#0a0a0a", "gradient-end": "rgba(0,217,255,0.10)" } },
-    { "id": "ai-outline-fill", "type": "fill", "source": "china-geo", "metadata": { "theme": "ai", "role": "outline-fill" },
-      "paint": { "fill-color": "#00d9ff", "fill-opacity": 0.03 } },
-    { "id": "ai-outline", "type": "line", "source": "china-geo", "metadata": { "theme": "ai", "role": "outline" },
-      "paint": { "line-color": "#00d9ff", "line-width": 1.2, "line-opacity": 0.5, "line-glow": 12 } },
-    { "id": "ai-provinces", "type": "line", "source": "province-lines", "metadata": { "theme": "ai", "role": "provinces" },
-      "paint": { "line-color": "#00d9ff", "line-width": 0.6, "line-opacity": 0.08 } },
-    { "id": "ai-rivers", "type": "line", "source": "rivers", "metadata": { "theme": "ai", "role": "rivers" },
-      "paint": { "line-color": "#0a5a7a", "line-width": 0.8, "line-opacity": 0.22 } },
-    { "id": "ai-lakes", "type": "fill", "source": "lakes", "metadata": { "theme": "ai", "role": "lakes" },
-      "paint": { "fill-color": "#062a3a", "fill-opacity": 0.35 } },
-    { "id": "ai-labels", "type": "symbol", "metadata": { "theme": "ai", "role": "labels" },
-      "paint": { "text-color": "#E0E0E0", "text-opacity": 0.12, "text-font": "sans-serif" } },
-    { "id": "ai-surrounding", "type": "symbol", "metadata": { "theme": "ai", "role": "surrounding" },
-      "paint": { "text-color": "#E0E0E0", "text-opacity": 0.08, "text-font": "sans-serif" } },
-    { "id": "ai-marker", "type": "circle", "metadata": { "theme": "ai", "role": "marker" },
-      "paint": { "circle-color": "#00d9ff", "marker-shape": "glow", "primary-radius": 4, "primary-halo": 8, "primary-opacity": 0.8, "primary-halo-opacity": 0.3, "secondary-radius": 2.5, "secondary-halo": 5, "secondary-opacity": 0.55, "secondary-halo-opacity": 0.2, "selected-radius": 3.5, "selected-opacity": 1 } },
-
-    { "id": "future-bg", "type": "background", "metadata": { "theme": "future", "role": "bg" },
-      "paint": { "background-color": "#060606", "gradient-end": "rgba(0,0,0,0.5)" } },
-    { "id": "future-outline-fill", "type": "fill", "source": "china-geo", "metadata": { "theme": "future", "role": "outline-fill" },
-      "paint": { "fill-color": "rgba(180,180,190,0.5)", "fill-opacity": 0.03 } },
-    { "id": "future-outline", "type": "line", "source": "china-geo", "metadata": { "theme": "future", "role": "outline" },
-      "paint": { "line-color": "rgba(180,180,190,0.5)", "line-width": 1.4, "line-opacity": 0.4 } },
-    { "id": "future-provinces", "type": "line", "source": "province-lines", "metadata": { "theme": "future", "role": "provinces" },
-      "paint": { "line-color": "rgba(180,180,190,0.4)", "line-width": 0.7, "line-opacity": 0.1 } },
-    { "id": "future-rivers", "type": "line", "source": "rivers", "metadata": { "theme": "future", "role": "rivers" },
-      "paint": { "line-color": "rgba(140,150,160,0.5)", "line-width": 0.8, "line-opacity": 0.15 } },
-    { "id": "future-lakes", "type": "fill", "source": "lakes", "metadata": { "theme": "future", "role": "lakes" },
-      "paint": { "fill-color": "rgba(120,130,140,0.4)", "fill-opacity": 0.2 } },
-    { "id": "future-labels", "type": "symbol", "metadata": { "theme": "future", "role": "labels" },
-      "paint": { "text-color": "#cccccc", "text-opacity": 0.1, "text-font": "sans-serif" } },
-    { "id": "future-surrounding", "type": "symbol", "metadata": { "theme": "future", "role": "surrounding" },
-      "paint": { "text-color": "#cccccc", "text-opacity": 0.06, "text-font": "sans-serif" } },
-    { "id": "future-marker", "type": "circle", "metadata": { "theme": "future", "role": "marker" },
-      "paint": { "circle-color": "#888", "marker-shape": "dot", "primary-radius": 4, "primary-halo": 8, "primary-opacity": 0.8, "primary-halo-opacity": 0.3, "secondary-radius": 2.5, "secondary-halo": 5, "secondary-opacity": 0.55, "secondary-halo-opacity": 0.2, "selected-radius": 3.5, "selected-opacity": 1 } }
+    {
+      "id": "garden-bg",
+      "type": "background",
+      "metadata": {
+        "theme": "garden",
+        "role": "bg"
+      },
+      "paint": {
+        "background-color": "#F6F1E7",
+        "gradient-end": "rgba(51,48,42,0.25)"
+      }
+    },
+    {
+      "id": "garden-outline-fill",
+      "type": "fill",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "garden",
+        "role": "outline-fill"
+      },
+      "paint": {
+        "fill-color": "#33302A",
+        "fill-opacity": 0.04
+      }
+    },
+    {
+      "id": "garden-outline",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "garden",
+        "role": "outline"
+      },
+      "paint": {
+        "line-color": "#33302A",
+        "line-width": 1.4,
+        "line-opacity": 0.45
+      }
+    },
+    {
+      "id": "garden-outline-handdrawn",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "garden",
+        "role": "outline-handdrawn"
+      },
+      "paint": {
+        "line-color": "#33302A",
+        "line-width": 2.6,
+        "line-opacity": 0.12,
+        "line-dasharray": [
+          12,
+          7
+        ]
+      }
+    },
+    {
+      "id": "garden-provinces",
+      "type": "line",
+      "source": "province-lines",
+      "metadata": {
+        "theme": "garden",
+        "role": "provinces"
+      },
+      "paint": {
+        "line-color": "#33302A",
+        "line-width": 0.6,
+        "line-opacity": 0.09
+      }
+    },
+    {
+      "id": "garden-rivers",
+      "type": "line",
+      "source": "rivers",
+      "metadata": {
+        "theme": "garden",
+        "role": "rivers"
+      },
+      "paint": {
+        "line-color": "#5C6B73",
+        "line-width": 0.8,
+        "line-opacity": 0.22
+      }
+    },
+    {
+      "id": "garden-lakes",
+      "type": "fill",
+      "source": "lakes",
+      "metadata": {
+        "theme": "garden",
+        "role": "lakes"
+      },
+      "paint": {
+        "fill-color": "#9FB4BC",
+        "fill-opacity": 0.14
+      }
+    },
+    {
+      "id": "garden-labels",
+      "type": "symbol",
+      "metadata": {
+        "theme": "garden",
+        "role": "labels"
+      },
+      "paint": {
+        "text-color": "#33302A",
+        "text-opacity": 0.14,
+        "text-font": "serif"
+      }
+    },
+    {
+      "id": "garden-surrounding",
+      "type": "symbol",
+      "metadata": {
+        "theme": "garden",
+        "role": "surrounding"
+      },
+      "paint": {
+        "text-color": "#33302A",
+        "text-opacity": 0.09,
+        "text-font": "serif"
+      }
+    },
+    {
+      "id": "garden-marker",
+      "type": "circle",
+      "metadata": {
+        "theme": "garden",
+        "role": "marker"
+      },
+      "paint": {
+        "circle-color": "#A8463A",
+        "marker-shape": "star",
+        "primary-radius": 4,
+        "primary-halo": 8,
+        "primary-opacity": 0.8,
+        "primary-halo-opacity": 0.3,
+        "secondary-radius": 2.5,
+        "secondary-halo": 5,
+        "secondary-opacity": 0.55,
+        "secondary-halo-opacity": 0.2,
+        "selected-radius": 3.5,
+        "selected-opacity": 1
+      }
+    },
+    {
+      "id": "code-bg",
+      "type": "background",
+      "metadata": {
+        "theme": "code",
+        "role": "bg"
+      },
+      "paint": {
+        "background-color": "#12121C",
+        "gradient-end": "rgba(0,0,0,0.6)"
+      }
+    },
+    {
+      "id": "code-outline-fill",
+      "type": "fill",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "code",
+        "role": "outline-fill"
+      },
+      "paint": {
+        "fill-color": "#00FFCC",
+        "fill-opacity": 0.04
+      }
+    },
+    {
+      "id": "code-outline",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "code",
+        "role": "outline"
+      },
+      "paint": {
+        "line-color": "#00FFCC",
+        "line-width": 2,
+        "line-opacity": 0.5
+      }
+    },
+    {
+      "id": "code-outline-pixel",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "code",
+        "role": "outline-pixel"
+      },
+      "paint": {
+        "line-color": "#00FFCC",
+        "line-width": 1,
+        "line-opacity": 0.5,
+        "line-dasharray": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "id": "code-provinces",
+      "type": "line",
+      "source": "province-lines",
+      "metadata": {
+        "theme": "code",
+        "role": "provinces"
+      },
+      "paint": {
+        "line-color": "#00FFCC",
+        "line-width": 0.8,
+        "line-opacity": 0.14
+      }
+    },
+    {
+      "id": "code-rivers",
+      "type": "line",
+      "source": "rivers",
+      "metadata": {
+        "theme": "code",
+        "role": "rivers"
+      },
+      "paint": {
+        "line-color": "#0D5C52",
+        "line-width": 0.9,
+        "line-opacity": 0.3
+      }
+    },
+    {
+      "id": "code-lakes",
+      "type": "fill",
+      "source": "lakes",
+      "metadata": {
+        "theme": "code",
+        "role": "lakes"
+      },
+      "paint": {
+        "fill-color": "#0A2A3A",
+        "fill-opacity": 0.35
+      }
+    },
+    {
+      "id": "code-labels",
+      "type": "symbol",
+      "metadata": {
+        "theme": "code",
+        "role": "labels"
+      },
+      "paint": {
+        "text-color": "#E8E8F0",
+        "text-opacity": 0.16,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "code-surrounding",
+      "type": "symbol",
+      "metadata": {
+        "theme": "code",
+        "role": "surrounding"
+      },
+      "paint": {
+        "text-color": "#E8E8F0",
+        "text-opacity": 0.1,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "code-marker",
+      "type": "circle",
+      "metadata": {
+        "theme": "code",
+        "role": "marker"
+      },
+      "paint": {
+        "circle-color": "#00FFCC",
+        "marker-shape": "square",
+        "primary-radius": 4,
+        "primary-halo": 8,
+        "primary-opacity": 0.8,
+        "primary-halo-opacity": 0.3,
+        "secondary-radius": 2.5,
+        "secondary-halo": 5,
+        "secondary-opacity": 0.55,
+        "secondary-halo-opacity": 0.2,
+        "selected-radius": 3.5,
+        "selected-opacity": 1
+      }
+    },
+    {
+      "id": "ai-bg",
+      "type": "background",
+      "metadata": {
+        "theme": "ai",
+        "role": "bg"
+      },
+      "paint": {
+        "background-color": "#0A0E14",
+        "gradient-end": "rgba(255,184,107,0.08)"
+      }
+    },
+    {
+      "id": "ai-outline-fill",
+      "type": "fill",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "ai",
+        "role": "outline-fill"
+      },
+      "paint": {
+        "fill-color": "#5ED6FF",
+        "fill-opacity": 0.03
+      }
+    },
+    {
+      "id": "ai-outline",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "ai",
+        "role": "outline"
+      },
+      "paint": {
+        "line-color": "#5ED6FF",
+        "line-width": 1.2,
+        "line-opacity": 0.5,
+        "line-glow": 12
+      }
+    },
+    {
+      "id": "ai-provinces",
+      "type": "line",
+      "source": "province-lines",
+      "metadata": {
+        "theme": "ai",
+        "role": "provinces"
+      },
+      "paint": {
+        "line-color": "#5ED6FF",
+        "line-width": 0.6,
+        "line-opacity": 0.08
+      }
+    },
+    {
+      "id": "ai-rivers",
+      "type": "line",
+      "source": "rivers",
+      "metadata": {
+        "theme": "ai",
+        "role": "rivers"
+      },
+      "paint": {
+        "line-color": "#2A5A70",
+        "line-width": 0.8,
+        "line-opacity": 0.25
+      }
+    },
+    {
+      "id": "ai-lakes",
+      "type": "fill",
+      "source": "lakes",
+      "metadata": {
+        "theme": "ai",
+        "role": "lakes"
+      },
+      "paint": {
+        "fill-color": "#0E2A38",
+        "fill-opacity": 0.4
+      }
+    },
+    {
+      "id": "ai-labels",
+      "type": "symbol",
+      "metadata": {
+        "theme": "ai",
+        "role": "labels"
+      },
+      "paint": {
+        "text-color": "#E4EAF2",
+        "text-opacity": 0.12,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "ai-surrounding",
+      "type": "symbol",
+      "metadata": {
+        "theme": "ai",
+        "role": "surrounding"
+      },
+      "paint": {
+        "text-color": "#E4EAF2",
+        "text-opacity": 0.08,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "ai-marker",
+      "type": "circle",
+      "metadata": {
+        "theme": "ai",
+        "role": "marker"
+      },
+      "paint": {
+        "circle-color": "#5ED6FF",
+        "marker-shape": "glow",
+        "primary-radius": 4,
+        "primary-halo": 8,
+        "primary-opacity": 0.8,
+        "primary-halo-opacity": 0.3,
+        "secondary-radius": 2.5,
+        "secondary-halo": 5,
+        "secondary-opacity": 0.55,
+        "secondary-halo-opacity": 0.2,
+        "selected-radius": 3.5,
+        "selected-opacity": 1
+      }
+    },
+    {
+      "id": "future-bg",
+      "type": "background",
+      "metadata": {
+        "theme": "future",
+        "role": "bg"
+      },
+      "paint": {
+        "background-color": "#060606",
+        "gradient-end": "rgba(0,0,0,0.5)"
+      }
+    },
+    {
+      "id": "future-outline-fill",
+      "type": "fill",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "future",
+        "role": "outline-fill"
+      },
+      "paint": {
+        "fill-color": "rgba(180,180,190,0.5)",
+        "fill-opacity": 0.03
+      }
+    },
+    {
+      "id": "future-outline",
+      "type": "line",
+      "source": "china-geo",
+      "metadata": {
+        "theme": "future",
+        "role": "outline"
+      },
+      "paint": {
+        "line-color": "rgba(180,180,190,0.5)",
+        "line-width": 1.4,
+        "line-opacity": 0.4
+      }
+    },
+    {
+      "id": "future-provinces",
+      "type": "line",
+      "source": "province-lines",
+      "metadata": {
+        "theme": "future",
+        "role": "provinces"
+      },
+      "paint": {
+        "line-color": "rgba(180,180,190,0.4)",
+        "line-width": 0.7,
+        "line-opacity": 0.1
+      }
+    },
+    {
+      "id": "future-rivers",
+      "type": "line",
+      "source": "rivers",
+      "metadata": {
+        "theme": "future",
+        "role": "rivers"
+      },
+      "paint": {
+        "line-color": "rgba(140,150,160,0.5)",
+        "line-width": 0.8,
+        "line-opacity": 0.15
+      }
+    },
+    {
+      "id": "future-lakes",
+      "type": "fill",
+      "source": "lakes",
+      "metadata": {
+        "theme": "future",
+        "role": "lakes"
+      },
+      "paint": {
+        "fill-color": "rgba(120,130,140,0.4)",
+        "fill-opacity": 0.2
+      }
+    },
+    {
+      "id": "future-labels",
+      "type": "symbol",
+      "metadata": {
+        "theme": "future",
+        "role": "labels"
+      },
+      "paint": {
+        "text-color": "#cccccc",
+        "text-opacity": 0.1,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "future-surrounding",
+      "type": "symbol",
+      "metadata": {
+        "theme": "future",
+        "role": "surrounding"
+      },
+      "paint": {
+        "text-color": "#cccccc",
+        "text-opacity": 0.06,
+        "text-font": "sans-serif"
+      }
+    },
+    {
+      "id": "future-marker",
+      "type": "circle",
+      "metadata": {
+        "theme": "future",
+        "role": "marker"
+      },
+      "paint": {
+        "circle-color": "#888",
+        "marker-shape": "dot",
+        "primary-radius": 4,
+        "primary-halo": 8,
+        "primary-opacity": 0.8,
+        "primary-halo-opacity": 0.3,
+        "secondary-radius": 2.5,
+        "secondary-halo": 5,
+        "secondary-opacity": 0.55,
+        "secondary-halo-opacity": 0.2,
+        "selected-radius": 3.5,
+        "selected-opacity": 1
+      }
+    }
   ]
 }

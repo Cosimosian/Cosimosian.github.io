@@ -121,7 +121,7 @@ class ChinaMap{
     const px=p=>{const q=lonLatToXY(p[0],p[1]);return[cx+q.x*scale,cy+q.y*scale]};
 
     // 背景径向渐变
-    const bg=tok.bg?tok.bg['background-color']:'#F5F0E6';
+    const bg=tok.bg?tok.bg['background-color']:'#F6F1E7';
     const end=tok.bg&&tok.bg['gradient-end']?tok.bg['gradient-end']:'rgba(0,0,0,0.35)';
     const grad=s.createRadialGradient(cx,cy,scale*0.3,cx,cy,scale*1.4);
     grad.addColorStop(0,bg);grad.addColorStop(1,end);
@@ -184,7 +184,7 @@ class ChinaMap{
       const hit=new Set();
       expCities.forEach(c=>geo.provinces.forEach((ring,idx)=>{if(inRing(ring,c))hit.add(idx)}));
       if(hit.size){
-        const ac=(tok.marker&&tok.marker['circle-color'])||'#92A87C';
+        const ac=(tok.marker&&tok.marker['circle-color'])||'#A8463A';
         s.fillStyle=ac;s.globalAlpha=MAP_CONST.PROVINCE_HL_ALPHA;
         hit.forEach(idx=>{s.beginPath();tracePath(geo.provinces[idx]);s.closePath();s.fill()});
         s.globalAlpha=1;
