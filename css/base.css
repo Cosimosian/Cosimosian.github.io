@@ -11,6 +11,15 @@ body{
   transition:background var(--transition-theme),color var(--transition-theme);
 }
 
+/* 材质氛围层（主题 v1.0）：铺于地图之上、UI 之下；--texture-overlay 由各主题定义 */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+  background-image:var(--texture-overlay, none);
+  opacity:var(--texture-opacity, 0);
+  transition:opacity var(--transition-theme);
+}
+
 /* --- MAP CANVAS --- */
 #china-map-bg{position:fixed;inset:0;z-index:0;width:100vw;height:100vh}
 

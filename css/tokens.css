@@ -61,6 +61,11 @@
   --ls-heading:0.03em;    /* 书画舒展 */
   --ls-body:0.01em;
 
+  /* 材质纹理（v1.0 启用）：body::after 氛围层（base.css 引用），alpha 内嵌于 SVG/渐变 */
+  --texture-opacity:1;
+  /* 宣纸颗粒 + 顶部水汽雾（朦胧） */
+  --texture-overlay:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E"),radial-gradient(58% 30% at 50% 0%,rgba(255,255,255,0.5),rgba(255,255,255,0) 72%);
+
   /* 字号阶梯（202609 v3：流式 Fluid Type + 层级对比强化）
      单一流式基准 --fs-base 随视口连续缩放（clamp 两端钳制），全部阶梯按固定比率派生：
      - 1920 主流屏与旧固定值对齐（基线零差异）
@@ -108,6 +113,9 @@
   --fs-adjust:0.75;   /* 像素字大字面视觉收敛 */
   --ls-heading:1px;
   --ls-body:0.02em;
+  /* 贴纸重复图案（重复/鬼马）：16px 平铺荧光绿+粉紫像素点 */
+  --texture-opacity:1;
+  --texture-overlay:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='1' y='1' width='3' height='3' fill='%2300FFCC' fill-opacity='0.5'/%3E%3Crect x='10' y='9' width='2' height='2' fill='%23FF4FD8' fill-opacity='0.45'/%3E%3Crect x='6' y='12' width='2' height='2' fill='%2300FFCC' fill-opacity='0.35'/%3E%3C/svg%3E");
 }
 
 /* ============================================================
@@ -137,6 +145,9 @@
   --fs-adjust:from-font;
   --ls-heading:-0.01em;
   --ls-body:0;
+  /* 人造皮肤：细颗粒噪点（更密、更淡），叠加皮下暖光（温暖的冰冷） */
+  --texture-opacity:1;
+  --texture-overlay:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E"),radial-gradient(70% 60% at 50% 110%,rgba(255,184,107,0.10),rgba(255,184,107,0) 70%);
 }
 
 /* ============================================================
