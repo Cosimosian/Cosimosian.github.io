@@ -1,0 +1,89 @@
+/* ============================================================
+   Loading 页（纸艺工作台 Paper-cut Atelier）
+   风格：剪纸层叠 + 手绘描边 + 柔和投影；装备/箭头用主题强调色染色
+   ============================================================ */
+body{
+  margin:0;height:100vh;overflow:hidden;
+  background:var(--color-bg);
+  color:var(--color-text);
+  font-family:var(--font-body);
+  transition:background 0.6s;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-user-select:none;user-select:none;
+}
+
+/* ---- 中央舞台 ---- */
+.stage{
+  position:relative;
+  width:min(80vw,480px);
+  aspect-ratio:4/3;
+  display:flex;align-items:center;justify-content:center;
+}
+.figure{position:relative;z-index:2}
+.figure svg{display:block}
+/* 装备层：头发/眼镜等，叠在小人头上（多层 absolute 重叠对齐） */
+.figure .equip{position:absolute;top:0;left:0;width:200px;height:250px;transition:opacity 0.25s,transform 0.25s}
+.figure .equip svg{position:absolute;top:0;left:0}
+.figure .equip.off{opacity:0}
+
+/* ---- 手（真实风格、纸色、屏幕外伸入） ---- */
+.hand{
+  position:absolute;z-index:3;
+  width:96px;height:120px;
+  opacity:0;pointer-events:none;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,0.15));
+}
+.hand svg{width:100%;height:100%}
+.hand-left{left:-110px;top:50%;transform:translateY(-50%)}
+.hand-right{right:-110px;top:50%;transform:translateY(-50%)}
+/* 手部动画：伸入 → 操作 → 缩回 */
+.hand.enter{animation:hand-in 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.hand.exit{animation:hand-out 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.hand.hold{animation:hand-hold 0.6s ease-in-out infinite alternate}
+@keyframes hand-in{from{opacity:0;transform:translate(0,-50%)}to{opacity:1;transform:translate(calc(0px + var(--reach,70px)),-50%)}}
+@keyframes hand-out{from{opacity:1}to{opacity:0;transform:translate(var(--reach,70px),-50%)}}
+@keyframes hand-hold{from{transform:translate(calc(var(--reach,70px) - 4px),-50%)}to{transform:translate(calc(var(--reach,70px) + 4px),-50%)}}
+.hand-right{--reach:-70px}
+.hand-left{--reach:70px}
+
+/* ---- 装备预告区 ---- */
+.next-hint{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  opacity:0.75;
+}
+.next-hint-label{font-size:11px;letter-spacing:2px;color:var(--color-muted)}
+.next-hint-slot svg{width:34px;height:34px;opacity:0.5}
+.next-hint-slot svg .sketch{stroke-dasharray:3 3;animation:dash 2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-12}}
+
+/* ---- 进度条 ---- */
+.progress-wrap{
+  position:fixed;left:50%;bottom:8vh;transform:translateX(-50%);
+  display:flex;align-items:center;gap:12px;
+  width:min(60vw,360px);
+}
+.progress-track{flex:1;height:2px;background:var(--color-border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--color-accent);transition:width 0.2s linear;border-radius:2px}
+.progress-num{font-size:11px;color:var(--color-muted);font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
+
+/* ---- 进入示意（剪纸箭头，无文字） ---- */
+.enter{
+  position:fixed;right:6vw;bottom:6vh;
+  width:80px;height:40px;cursor:pointer;
+  opacity:0;pointer-events:none;transform:translateX(20px);
+  transition:opacity 0.5s,transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.enter.show{opacity:1;pointer-events:auto;transform:translateX(0)}
+.enter-arrow path{stroke:var(--color-accent);fill:none}
+.enter-arrow{filter:drop-shadow(0 2px 3px rgba(0,0,0,0.2));animation:arrow-breathe 1.6s ease-in-out infinite}
+@keyframes arrow-breathe{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+
+/* ---- 小人头呼吸 ---- */
+.figure{animation:figure-breathe 3s ease-in-out infinite}
+@keyframes figure-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* ---- 减弱动效 ---- */
+@media(prefers-reduced-motion:reduce){
+  .hand,.enter-arrow,.figure,.next-hint-slot svg .sketch{animation:none!important}
+}
